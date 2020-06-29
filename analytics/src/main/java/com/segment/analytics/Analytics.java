@@ -81,6 +81,7 @@ public class Analytics {
       }
     }
     client.enqueue(message);
+    System.out.println("Message:: "+ message);
   }
 
   /** Flush events in the message queue. */
@@ -118,7 +119,7 @@ public class Analytics {
         throw new NullPointerException("writeKey cannot be null or empty.");
       }
       this.writeKey = writeKey;
-      this.endpoint = Endpoints.newFixedEndpoint(dataPlaneURI  + "/v1/batch");
+      this.endpoint = Endpoints.newFixedEndpoint(dataPlaneURI);
     }
 
     /** Set a custom networking client. */
@@ -159,18 +160,6 @@ public class Analytics {
       this.userAgent = userAgent;
       return this;
     } 
-    
-    /** Sets an DATA_PLANE endpoint that will be used in place of DAFAULT_ENDPOINT. */
-    
-    public Builder configURL(String configURL) {
-    	if (configURL == null || configURL.trim().length() == 0) {
-    		throw new NullPointerException("configURL cannot be null or empty.");
-    	}
-    	
-    	this.configURL = configURL;
-    	
-    	return this;
-    }
 
     /** Add a {@link MessageTransformer} for transforming messages. */
     @Beta

@@ -13,7 +13,7 @@ public class TestAnalytics {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		final Analytics analytics =
-		        Analytics.builder("1dgURTY4fptGJK0c0RA8SXr7l9z","https://hosted.rudderlabs.com")
+		        Analytics.builder("1dgURTY4fptGJK0c0RA8SXr7l9z","https://85b2ad0864ad.ngrok.io")
 		            .build();
 		
 		final String userId = System.getProperty("user.name");
@@ -31,7 +31,7 @@ public class TestAnalytics {
 	                .userId(userId));
 	      }
 	    }
-	   
+	   System.out.println("Loadded and tracked");
 	    analytics.enqueue(IdentifyMessage.builder()
 	    	    .userId("f4ca124298")
 //	    	    .traits(ImmutableMap.builder()
