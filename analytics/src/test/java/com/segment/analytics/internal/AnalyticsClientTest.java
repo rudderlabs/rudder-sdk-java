@@ -201,7 +201,7 @@ public class AnalyticsClientTest {
     // Throw a HTTP error 3 times.
     Response response =
         new Response(
-            "https://api.segment.io", 500, "Server Error", Collections.<Header>emptyList(), null);
+            "https://api.rudderlabs.com", 500, "Server Error", Collections.<Header>emptyList(), null);
     RetrofitError retrofitError = RetrofitError.httpError(null, response, null, null);
     when(segmentService.upload(batch))
         .thenThrow(retrofitError)
@@ -226,7 +226,7 @@ public class AnalyticsClientTest {
     // Throw a HTTP error 3 times.
     Response response =
         new Response(
-            "https://api.segment.io", 429, "Rate Limited", Collections.<Header>emptyList(), null);
+            "https://api.rudderlabs.com", 429, "Rate Limited", Collections.<Header>emptyList(), null);
     RetrofitError retrofitError = RetrofitError.httpError(null, response, null, null);
     when(segmentService.upload(batch))
         .thenThrow(retrofitError)
@@ -251,7 +251,7 @@ public class AnalyticsClientTest {
     // Throw a HTTP error that should not be retried.
     Response response =
         new Response(
-            "https://api.segment.io", 404, "Not Found", Collections.<Header>emptyList(), null);
+            "https://api.rudderlabs.com", 404, "Not Found", Collections.<Header>emptyList(), null);
     RetrofitError retrofitError = RetrofitError.httpError(null, response, null, null);
     doThrow(retrofitError).when(segmentService).upload(batch);
 

@@ -96,7 +96,7 @@ public class Analytics {
   /** Fluent API for creating {@link Analytics} instances. */
   public static class Builder {
     private static final Endpoint DEFAULT_ENDPOINT =
-        Endpoints.newFixedEndpoint("https://api.segment.io");
+        Endpoints.newFixedEndpoint("https://api.rudderlabs.com");
     private static final String DEFAULT_USER_AGENT = "analytics-java/" + AnalyticsVersion.get();
 
     private final String writeKey;

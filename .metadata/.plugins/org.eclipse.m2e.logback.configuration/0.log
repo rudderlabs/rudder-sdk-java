@@ -1,0 +1,17 @@
+2020-06-29 12:34:39,347 [Worker-3: Building workspace] INFO  o.e.m.c.i.p.WorkspaceClassifierResolverManager - Resolving P/analytics: com.segment.analytics.java:analytics:2.1.2-SNAPSHOT with classifier  to /analytics/target/classes
+2020-06-29 12:34:39,350 [Worker-3: Building workspace] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2020-06-29 12:34:39,350 [Worker-3: Building workspace] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/sajalmohanta/rudder-sdk-java/analytics-cli/src/main/resources
+2020-06-29 12:34:39,350 [Worker-3: Building workspace] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2020-06-29 12:34:39,350 [Worker-3: Building workspace] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/sajalmohanta/rudder-sdk-java/analytics-cli/src/test/resources
+2020-06-29 12:34:39,354 [Worker-3: Building workspace] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2020-06-29 12:34:39,354 [Worker-3: Building workspace] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/sajalmohanta/rudder-sdk-java/analytics-core/src/main/resources
+2020-06-29 12:34:39,355 [Worker-3: Building workspace] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2020-06-29 12:34:39,355 [Worker-3: Building workspace] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/sajalmohanta/rudder-sdk-java/analytics-core/src/test/resources
+2020-06-29 12:34:39,357 [Worker-3: Building workspace] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2020-06-29 12:34:39,357 [Worker-3: Building workspace] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/sajalmohanta/rudder-sdk-java/analytics-sample/src/main/resources
+2020-06-29 12:34:39,358 [Worker-3: Building workspace] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2020-06-29 12:34:39,358 [Worker-3: Building workspace] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/sajalmohanta/rudder-sdk-java/analytics-sample/src/test/resources
+2020-06-29 12:34:39,362 [Worker-3: Building workspace] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2020-06-29 12:34:39,363 [Worker-3: Building workspace] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2020-06-29 12:34:39,364 [Worker-3: Building workspace] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2020-06-29 12:34:39,364 [Worker-3: Building workspace] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/sajalmohanta/rudder-sdk-java/analytics-spring-boot-starter/src/test/resources

@@ -247,7 +247,7 @@ public class AnalyticsBuilderTest {
 
   @Test
   public void buildsWithValidEndpoint() {
-    Analytics analytics = builder.endpoint("https://api.segment.io").build();
+    Analytics analytics = builder.endpoint("https://api.rudderlabs.com").build();
     assertThat(analytics).isNotNull();
   }
 
