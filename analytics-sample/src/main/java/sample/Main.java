@@ -17,10 +17,7 @@ public class Main {
 
     // https://segment.com/segment-engineering/sources/test-java/debugger
     final Analytics analytics =
-        Analytics.builder("xemyw6oe3n")
-            .plugin(blockingFlush.plugin())
-            .plugin(new LoggingPlugin())
-            .client(createClient())
+        Analytics.builder("1dgURTY4fptGJK0c0RA8SXr7l9z","https://hosted.rudderlabs.com")
             .build();
 
     final String userId = System.getProperty("user.name");

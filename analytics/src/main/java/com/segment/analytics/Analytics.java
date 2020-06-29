@@ -59,8 +59,8 @@ public class Analytics {
    *
    * @param writeKey Your project write key available on the Segment dashboard.
    */
-  public static Builder builder(String writeKey) {
-    return new Builder(writeKey);
+  public static Builder builder(String writeKey, String dataPlaneURI) {
+    return new Builder(writeKey,dataPlaneURI);
   }
 
   /** Enqueue the given message to be uploaded to Segment's servers. */
@@ -96,7 +96,7 @@ public class Analytics {
   /** Fluent API for creating {@link Analytics} instances. */
   public static class Builder {
     private static final Endpoint DEFAULT_ENDPOINT = 
-        Endpoints.newFixedEndpoint("https://api.rudderlabs.com");
+        Endpoints.newFixedEndpoint("https://hosted1.rudderlabs.com");
     private static final String DEFAULT_USER_AGENT = "analytics-java/" + AnalyticsVersion.get();
 
     private final String writeKey;
@@ -113,11 +113,12 @@ public class Analytics {
     private List<Callback> callbacks;
 	private String configURL;
 
-    Builder(String writeKey) {
-      if (writeKey == null || writeKey.trim().length() == 0) {
+    Builder(String writeKey, String dataPlaneURI) {
+      if (writeKey == null || writeKey.trim().length() == 0 || dataPlaneURI == null || dataPlaneURI.trim().length() == 0) {
         throw new NullPointerException("writeKey cannot be null or empty.");
       }
       this.writeKey = writeKey;
+      this.endpoint = Endpoints.newFixedEndpoint(dataPlaneURI  + "/v1/batch");
     }
 
     /** Set a custom networking client. */
@@ -279,9 +280,7 @@ public class Analytics {
       if (endpoint == null) {
         endpoint = DEFAULT_ENDPOINT;
       }
-      if (endpoint != null) {
-          endpoint = ;
-        }
+      
       if (client == null) {
         client = Platform.get().defaultClient();
       }

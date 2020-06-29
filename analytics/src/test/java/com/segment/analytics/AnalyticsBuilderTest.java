@@ -17,13 +17,13 @@ public class AnalyticsBuilderTest {
 
   @Before
   public void setUp() {
-    builder = Analytics.builder("foo");
+    builder = Analytics.builder("foo","foo");
   }
 
   @Test
   public void nullWriteKey() {
     try {
-      builder = Analytics.builder(null);
+      builder = Analytics.builder(null,null);
       fail("Should fail for null writeKey");
     } catch (NullPointerException e) {
       assertThat(e).hasMessage("writeKey cannot be null or empty.");
@@ -33,14 +33,14 @@ public class AnalyticsBuilderTest {
   @Test
   public void emptyWriteKey() {
     try {
-      builder = Analytics.builder("");
+      builder = Analytics.builder("","");
       fail("Should fail for empty writeKey");
     } catch (NullPointerException e) {
       assertThat(e).hasMessage("writeKey cannot be null or empty.");
     }
 
     try {
-      builder = Analytics.builder("  ");
+      builder = Analytics.builder("  "," ");
       fail("Should fail for empty writeKey");
     } catch (NullPointerException e) {
       assertThat(e).hasMessage("writeKey cannot be null or empty.");
