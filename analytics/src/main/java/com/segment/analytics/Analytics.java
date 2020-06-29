@@ -95,7 +95,7 @@ public class Analytics {
 
   /** Fluent API for creating {@link Analytics} instances. */
   public static class Builder {
-    private static final Endpoint DEFAULT_ENDPOINT =
+    private static final Endpoint DEFAULT_ENDPOINT = 
         Endpoints.newFixedEndpoint("https://api.rudderlabs.com");
     private static final String DEFAULT_USER_AGENT = "analytics-java/" + AnalyticsVersion.get();
 
@@ -111,6 +111,7 @@ public class Analytics {
     private int flushQueueSize;
     private long flushIntervalInMillis;
     private List<Callback> callbacks;
+	private String configURL;
 
     Builder(String writeKey) {
       if (writeKey == null || writeKey.trim().length() == 0) {
@@ -145,7 +146,7 @@ public class Analytics {
       if (endpoint == null || endpoint.trim().length() == 0) {
         throw new NullPointerException("endpoint cannot be null or empty.");
       }
-      this.endpoint = Endpoints.newFixedEndpoint(endpoint);
+      this.endpoint = Endpoints.newFixedEndpoint(endpoint  + "/v1/batch");
       return this;
     }
 
@@ -156,6 +157,18 @@ public class Analytics {
       }
       this.userAgent = userAgent;
       return this;
+    } 
+    
+    /** Sets an DATA_PLANE endpoint that will be used in place of DAFAULT_ENDPOINT. */
+    
+    public Builder configURL(String configURL) {
+    	if (configURL == null || configURL.trim().length() == 0) {
+    		throw new NullPointerException("configURL cannot be null or empty.");
+    	}
+    	
+    	this.configURL = configURL;
+    	
+    	return this;
     }
 
     /** Add a {@link MessageTransformer} for transforming messages. */
@@ -266,6 +279,9 @@ public class Analytics {
       if (endpoint == null) {
         endpoint = DEFAULT_ENDPOINT;
       }
+      if (endpoint != null) {
+          endpoint = ;
+        }
       if (client == null) {
         client = Platform.get().defaultClient();
       }
