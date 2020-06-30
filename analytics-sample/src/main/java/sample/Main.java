@@ -1,8 +1,9 @@
 package sample;
 
 import com.jakewharton.retrofit.Ok3Client;
-import com.segment.analytics.Analytics;
-import com.segment.analytics.messages.TrackMessage;
+import com.rudder.analytics.Analytics;
+import com.rudder.analytics.messages.TrackMessage;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -17,7 +18,10 @@ public class Main {
 
     // https://segment.com/segment-engineering/sources/test-java/debugger
     final Analytics analytics =
-        Analytics.builder("1dgURTY4fptGJK0c0RA8SXr7l9z","https://hosted.rudderlabs.com")
+        Analytics.builder("xemyw6oe3n","")
+            .plugin(blockingFlush.plugin())
+            .plugin(new LoggingPlugin())
+            .client(createClient())
             .build();
 
     final String userId = System.getProperty("user.name");
