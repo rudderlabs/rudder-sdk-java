@@ -15,7 +15,7 @@
   <dependencies>
     <dependency>
       <groupId>com.rudderstack.sdk.java</groupId>
-      <artifactId>rudder-sdk-java</artifactId>
+      <artifactId>sdk</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
