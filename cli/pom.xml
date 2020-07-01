@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <artifactId>sdk</artifactId>
     <groupId>com.rudderstack.sdk.java</groupId>
     <version>1.0.0</version>
   </parent>
-
-  <artifactId>rudder-cli</artifactId>
+  <artifactId>cli</artifactId>
   <name>RudderStack SDK Java CLI</name>
-
   <dependencies>
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
@@ -19,7 +15,7 @@
     </dependency>
     <dependency>
       <groupId>com.rudderstack.sdk.java</groupId>
-      <artifactId>sdk</artifactId>
+      <artifactId>client</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -27,16 +23,14 @@
       <artifactId>docopt</artifactId>
     </dependency>
   </dependencies>
-
   <build>
     <sourceDirectory>src/main/kotlin</sourceDirectory>
-
     <plugins>
       <plugin>
         <artifactId>kotlin-maven-plugin</artifactId>
         <groupId>org.jetbrains.kotlin</groupId>
         <version>${kotlin.version}</version>
-        <configuration />
+        <configuration/>
         <executions>
           <execution>
             <id>compile</id>
@@ -78,5 +72,4 @@
       </plugin>
     </plugins>
   </build>
-
 </project>
