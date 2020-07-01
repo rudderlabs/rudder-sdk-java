@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-    com.segment.analytics.autoconfigure.SegmentAnalyticsAutoConfiguration
+    com.rudderstack.sdk.autoconfigure.SegmentAnalyticsAutoConfiguration

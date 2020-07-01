@@ -9,7 +9,7 @@ For Maven, include this dependency in your `pom.xml`:
 
 ```xml
 <dependency>
-  <groupId>com.segment.analytics.java</groupId>
+  <groupId>com.rudderstack.sdk.java</groupId>
   <artifactId>analytics-spring-boot-starter</artifactId>
   <version>${segment.analytics.version}</version>
 </dependency>
@@ -18,7 +18,7 @@ For Maven, include this dependency in your `pom.xml`:
 For Gradle,
 
 ```bash
-compile 'com.segment.analytics.java:analytics-spring-boot-starter:+'
+compile 'com.rudderstack.sdk.java:analytics-spring-boot-starter:+'
 ```
 
 In your Spring Boot configuration (`application.properties`, environment, or
