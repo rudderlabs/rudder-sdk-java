@@ -9,8 +9,8 @@
   <description>JAVA SDK for RudderStack. Steer your customer data.</description>
   <url>https://github.com/rudderlabs/rudder-sdk-java</url>
   <modules>
-    <module>core</module>
-    <module>client</module>
+    <module>sdk-core</module>
+    <module>sdk-client</module>
   </modules>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -27,8 +27,8 @@
     <backo.version>1.0.0</backo.version>
     <spring.boot.version>1.2.5.RELEASE</spring.boot.version>
     <docopt.version>0.6.0.20150202</docopt.version>
-    <bintray.repo>bintray-examples/repo</bintray.repo>
-    <bintray.package>maven-example</bintray.package>
+    <bintray.repo>rudderstack</bintray.repo>
+    <bintray.package>sdk</bintray.package>
     <!-- Test Dependencies -->
     <junit.version>4.11</junit.version>
     <burst.version>1.0.2</burst.version>
@@ -236,7 +236,7 @@
   </build>
   <distributionManagement>
     <repository>
-      <id>bintray-repo-maven-example</id>
+      <id>rudderstack</id>
       <url>https://api.bintray.com/maven/${bintray.subject}/${bintray.repo}/${bintray.package}/;publish=1</url>
     </repository>
   </distributionManagement>

@@ -6,7 +6,7 @@
     <groupId>com.rudderstack.sdk.java</groupId>
     <version>1.0.0</version>
   </parent>
-  <artifactId>cli</artifactId>
+  <artifactId>sdk-cli</artifactId>
   <name>RudderStack SDK Java CLI</name>
   <dependencies>
     <dependency>
@@ -15,7 +15,7 @@
     </dependency>
     <dependency>
       <groupId>com.rudderstack.sdk.java</groupId>
-      <artifactId>client</artifactId>
+      <artifactId>sdk-client</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
