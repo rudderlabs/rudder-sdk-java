@@ -8,10 +8,11 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 /**
- * The screen call lets you record whenever a user sees a screen, along with any properties about
- * the screen.
+ * The screen call lets you record whenever a user sees a screen, along with any
+ * properties about the screen.
  *
- * <p>Use {@link #builder} to construct your own instances.
+ * <p>
+ * Use {@link #builder} to construct your own instances.
  *
  * @see <a href="https://segment.com/docs/spec/screen/">Screen</a>
  */

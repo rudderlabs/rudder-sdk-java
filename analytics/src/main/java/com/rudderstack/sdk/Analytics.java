@@ -27,15 +27,18 @@ import retrofit.converter.GsonConverter;
 /**
  * The entry point into the Segment for Java library.
  *
- * <p>The idea is simple: one pipeline for all your data. Segment is the single hub to collect,
- * translate and route your data with the flip of a switch.
+ * <p>
+ * The idea is simple: one pipeline for all your data. Segment is the single hub
+ * to collect, translate and route your data with the flip of a switch.
  *
- * <p>Analytics for Java will automatically batch events and upload it periodically to Segment's
- * servers for you. You only need to instrument Segment once, then flip a switch to install new
- * tools.
+ * <p>
+ * Analytics for Java will automatically batch events and upload it periodically
+ * to Segment's servers for you. You only need to instrument Segment once, then
+ * flip a switch to install new tools.
  *
- * <p>This class is the main entry point into the client API. Use {@link #builder} to construct your
- * own instances.
+ * <p>
+ * This class is the main entry point into the client API. Use {@link #builder}
+ * to construct your own instances.
  *
  */
 public class Analytics {
@@ -44,11 +47,8 @@ public class Analytics {
   private final List<MessageInterceptor> messageInterceptors;
   private final Log log;
 
-  Analytics(
-      AnalyticsClient client,
-      List<MessageTransformer> messageTransformers,
-      List<MessageInterceptor> messageInterceptors,
-      Log log) {
+  Analytics(AnalyticsClient client, List<MessageTransformer> messageTransformers,
+      List<MessageInterceptor> messageInterceptors, Log log) {
     this.client = client;
     this.messageTransformers = messageTransformers;
     this.messageInterceptors = messageInterceptors;
@@ -61,7 +61,7 @@ public class Analytics {
    * @param writeKey Your project write key available on the Rudder dashboard.
    */
   public static Builder builder(String writeKey, String dataPlaneURI) {
-    return new Builder(writeKey,dataPlaneURI);
+    return new Builder(writeKey, dataPlaneURI);
   }
 
   /** Enqueue the given message to be uploaded to Rudder's servers. */
@@ -82,7 +82,7 @@ public class Analytics {
       }
     }
     client.enqueue(message);
-    System.out.println("Message:: "+ message);
+    System.out.println("Message:: " + message);
   }
 
   /** Flush events in the message queue. */
@@ -97,9 +97,8 @@ public class Analytics {
 
   /** Fluent API for creating {@link Analytics} instances. */
   public static class Builder {
-    private static final Endpoint DEFAULT_ENDPOINT =
-        Endpoints.newFixedEndpoint("https://hosted1.rudderlabs.com");
-    private static final String DEFAULT_USER_AGENT = "analytics-java/" + AnalyticsVersion.get();
+    private static final Endpoint DEFAULT_ENDPOINT = Endpoints.newFixedEndpoint("https://hosted.rudderlabs.com");
+    private static final String DEFAULT_USER_AGENT = "rudderstack-analytics-java/" + AnalyticsVersion.get();
 
     private final String writeKey;
     private Client client;
@@ -113,10 +112,11 @@ public class Analytics {
     private int flushQueueSize;
     private long flushIntervalInMillis;
     private List<Callback> callbacks;
-	private String configURL;
+    private String configURL;
 
     Builder(String writeKey, String dataPlaneURI) {
-      if (writeKey == null || writeKey.trim().length() == 0 || dataPlaneURI == null || dataPlaneURI.trim().length() == 0) {
+      if (writeKey == null || writeKey.trim().length() == 0 || dataPlaneURI == null
+          || dataPlaneURI.trim().length() == 0) {
         throw new NullPointerException("writeKey cannot be null or empty.");
       }
       this.writeKey = writeKey;
@@ -149,7 +149,7 @@ public class Analytics {
       if (endpoint == null || endpoint.trim().length() == 0) {
         throw new NullPointerException("endpoint cannot be null or empty.");
       }
-      this.endpoint = Endpoints.newFixedEndpoint(endpoint  + "/v1/batch");
+      this.endpoint = Endpoints.newFixedEndpoint(endpoint + "/v1/batch");
       return this;
     }
 
@@ -261,11 +261,10 @@ public class Analytics {
 
     /** Create a {@link Analytics} client. */
     public Analytics build() {
-      Gson gson =
-          new GsonBuilder() //
-              .registerTypeAdapterFactory(new AutoValueAdapterFactory()) //
-              .registerTypeAdapter(Date.class, new ISO8601DateAdapter()) //
-              .create();
+      Gson gson = new GsonBuilder() //
+          .registerTypeAdapterFactory(new AutoValueAdapterFactory()) //
+          .registerTypeAdapter(Date.class, new ISO8601DateAdapter()) //
+          .create();
 
       if (endpoint == null) {
         endpoint = DEFAULT_ENDPOINT;
@@ -305,33 +304,19 @@ public class Analytics {
         callbacks = Collections.unmodifiableList(callbacks);
       }
 
-      RestAdapter restAdapter =
-          new RestAdapter.Builder()
-              .setConverter(new GsonConverter(gson))
-              .setEndpoint(endpoint)
-              .setClient(client)
-              .setRequestInterceptor(new AnalyticsRequestInterceptor(writeKey, userAgent))
-              .setLogLevel(RestAdapter.LogLevel.FULL)
-              .setLog(
-                  new RestAdapter.Log() {
-                    @Override
-                    public void log(String message) {
-                      log.print(Log.Level.VERBOSE, "%s", message);
-                    }
-                  })
-              .build();
+      RestAdapter restAdapter = new RestAdapter.Builder().setConverter(new GsonConverter(gson)).setEndpoint(endpoint)
+          .setClient(client).setRequestInterceptor(new AnalyticsRequestInterceptor(writeKey, userAgent))
+          .setLogLevel(RestAdapter.LogLevel.FULL).setLog(new RestAdapter.Log() {
+            @Override
+            public void log(String message) {
+              log.print(Log.Level.VERBOSE, "%s", message);
+            }
+          }).build();
 
       RudderService segmentService = restAdapter.create(RudderService.class);
 
-      AnalyticsClient analyticsClient =
-          AnalyticsClient.create(
-              segmentService,
-              flushQueueSize,
-              flushIntervalInMillis,
-              log,
-              threadFactory,
-              networkExecutor,
-              callbacks);
+      AnalyticsClient analyticsClient = AnalyticsClient.create(segmentService, flushQueueSize, flushIntervalInMillis,
+          log, threadFactory, networkExecutor, callbacks);
       return new Analytics(analyticsClient, messageTransformers, messageInterceptors, log);
     }
   }

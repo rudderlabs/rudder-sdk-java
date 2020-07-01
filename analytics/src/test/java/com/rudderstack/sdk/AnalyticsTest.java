@@ -23,22 +23,22 @@ import org.mockito.Mock;
 
 @RunWith(BurstJUnit4.class)
 public class AnalyticsTest {
-  @Mock AnalyticsClient client;
-  @Mock Log log;
-  @Mock MessageTransformer messageTransformer;
-  @Mock MessageInterceptor messageInterceptor;
+  @Mock
+  AnalyticsClient client;
+  @Mock
+  Log log;
+  @Mock
+  MessageTransformer messageTransformer;
+  @Mock
+  MessageInterceptor messageInterceptor;
   Analytics analytics;
 
   @Before
   public void setUp() {
     initMocks(this);
 
-    analytics =
-        new Analytics(
-            client,
-            Collections.singletonList(messageTransformer),
-            Collections.singletonList(messageInterceptor),
-            log);
+    analytics = new Analytics(client, Collections.singletonList(messageTransformer),
+        Collections.singletonList(messageInterceptor), log);
   }
 
   @Test

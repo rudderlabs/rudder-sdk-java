@@ -6,7 +6,10 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
 
-/** A {@link TypeAdapterFactory} that allows deserialization of {@link AutoValue} classes. */
+/**
+ * A {@link TypeAdapterFactory} that allows deserialization of {@link AutoValue}
+ * classes.
+ */
 public final class AutoValueAdapterFactory implements TypeAdapterFactory {
   @SuppressWarnings("unchecked")
   @Override

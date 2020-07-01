@@ -23,13 +23,13 @@ public class AnalyticsBuilderTest {
 
   @Before
   public void setUp() {
-    builder = Analytics.builder("foo","foo");
+    builder = Analytics.builder("foo", "foo");
   }
 
   @Test
   public void nullWriteKey() {
     try {
-      builder = Analytics.builder(null,null);
+      builder = Analytics.builder(null, null);
       fail("Should fail for null writeKey");
     } catch (NullPointerException e) {
       assertThat(e).hasMessage("writeKey cannot be null or empty.");
@@ -39,14 +39,14 @@ public class AnalyticsBuilderTest {
   @Test
   public void emptyWriteKey() {
     try {
-      builder = Analytics.builder("","");
+      builder = Analytics.builder("", "");
       fail("Should fail for empty writeKey");
     } catch (NullPointerException e) {
       assertThat(e).hasMessage("writeKey cannot be null or empty.");
     }
 
     try {
-      builder = Analytics.builder("  "," ");
+      builder = Analytics.builder("  ", " ");
       fail("Should fail for empty writeKey");
     } catch (NullPointerException e) {
       assertThat(e).hasMessage("writeKey cannot be null or empty.");
@@ -193,7 +193,8 @@ public class AnalyticsBuilderTest {
       assertThat(e).hasMessage("flushInterval must not be less than 1 second.");
     }
 
-    // Exercise a bug where we only checked the number passed without converting to milliseconds
+    // Exercise a bug where we only checked the number passed without converting to
+    // milliseconds
     try {
       builder.flushInterval(2000, TimeUnit.NANOSECONDS);
       fail("Should fail for flushInterval < 1 second");
@@ -301,8 +302,7 @@ public class AnalyticsBuilderTest {
 
   @Test
   public void multipleCallbacks() {
-    Analytics analytics =
-        builder.callback(mock(Callback.class)).callback(mock(Callback.class)).build();
+    Analytics analytics = builder.callback(mock(Callback.class)).callback(mock(Callback.class)).build();
 
     assertThat(analytics).isNotNull();
   }

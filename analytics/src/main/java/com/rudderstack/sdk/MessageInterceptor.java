@@ -13,15 +13,15 @@ import com.rudderstack.sdk.messages.TrackMessage;
 @Beta
 public interface MessageInterceptor {
   /**
-   * Called for every message. This will be called on the same thread the request was made and after
-   * all {@link MessageTransformer}'s have been called. Returning {@code null} will skip processing
-   * this message any further.
+   * Called for every message. This will be called on the same thread the request
+   * was made and after all {@link MessageTransformer}'s have been called.
+   * Returning {@code null} will skip processing this message any further.
    */
   Message intercept(Message message);
 
   /**
-   * A {@link MessageInterceptor} that lets you implement more strongly typed methods and add
-   * transformations specific to the event type.
+   * A {@link MessageInterceptor} that lets you implement more strongly typed
+   * methods and add transformations specific to the event type.
    */
   abstract class Typed implements MessageInterceptor {
     @Override

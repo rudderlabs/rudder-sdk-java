@@ -8,13 +8,15 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 /**
- * The group API call is how you associate an individual user with a group—be it a company,
- * organization, account, project, team or whatever other crazy name you came up with for the same
- * concept! It also lets you record custom traits about the group, like industry or number of
- * employees. Calling group is a slightly more advanced feature, but it’s helpful if you have
- * accounts with multiple users.
+ * The group API call is how you associate an individual user with a group—be it
+ * a company, organization, account, project, team or whatever other crazy name
+ * you came up with for the same concept! It also lets you record custom traits
+ * about the group, like industry or number of employees. Calling group is a
+ * slightly more advanced feature, but it’s helpful if you have accounts with
+ * multiple users.
  *
- * <p>Use {@link #builder} to construct your own instances.
+ * <p>
+ * Use {@link #builder} to construct your own instances.
  *
  * @see <a href="https://segment.com/docs/spec/group/">Group</a>
  */
