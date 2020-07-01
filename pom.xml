@@ -9,8 +9,9 @@
   <description>JAVA SDK for RudderStack. Steer your customer data.</description>
   <url>https://github.com/rudderlabs/rudder-sdk-java</url>
   <modules>
-    <module>client</module>
     <module>core</module>
+    <module>client</module>
+    <module>cli</module>
   </modules>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
