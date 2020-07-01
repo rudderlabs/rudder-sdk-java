@@ -4,7 +4,7 @@
   <parent>
     <artifactId>sdk</artifactId>
     <groupId>com.rudderstack.sdk.java</groupId>
-    <version>1.0.0</version>
+    <version>${project.version}</version>
   </parent>
   <artifactId>sdk-cli</artifactId>
   <name>RudderStack SDK Java CLI</name>

@@ -15,9 +15,9 @@
                <snapshots>
                    <enabled>false</enabled>
                </snapshots>
-               <id>bintray-rudderstack-maven</id>
+               <id>bintray-rudderstack-rudderstack</id>
                <name>bintray</name>
-               <url>https://dl.bintray.com/rudderstack/maven</url>
+               <url>https://dl.bintray.com/rudderstack/rudderstack</url>
            </repository>
        </repositories>
        <pluginRepositories>
@@ -25,9 +25,9 @@
                <snapshots>
                    <enabled>false</enabled>
                </snapshots>
-               <id>bintray-rudderstack-maven</id>
+               <id>bintray-rudderstack-rudderstack</id>
                <name>bintray-plugins</name>
-               <url>https://dl.bintray.com/rudderstack/maven</url>
+               <url>https://dl.bintray.com/rudderstack/rudderstack</url>
            </pluginRepository>
        </pluginRepositories>
        <id>bintray</id>
