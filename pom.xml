@@ -27,8 +27,6 @@
     <backo.version>1.0.0</backo.version>
     <spring.boot.version>1.2.5.RELEASE</spring.boot.version>
     <docopt.version>0.6.0.20150202</docopt.version>
-    <bintray.repo>rudderstack</bintray.repo>
-    <bintray.package>sdk</bintray.package>
     <!-- Test Dependencies -->
     <junit.version>4.11</junit.version>
     <burst.version>1.0.2</burst.version>
@@ -191,7 +189,7 @@
           <archive>
             <manifest>
               <mainClass>
-                com.rudderstack.sdk.Analytics
+                com.rudderstack.sdk.java.Analytics
               </mainClass>
             </manifest>
           </archive>
@@ -236,8 +234,8 @@
   </build>
   <distributionManagement>
     <repository>
-      <id>rudderstack</id>
-      <url>https://api.bintray.com/maven/${bintray.subject}/${bintray.repo}/${bintray.package}/;publish=1</url>
+      <id>bintray-rudderstack-rudderstack</id>
+      <url>https://api.bintray.com/maven/rudderstack/rudderstack/sdk/;publish=1</url>
     </repository>
   </distributionManagement>
 </project>

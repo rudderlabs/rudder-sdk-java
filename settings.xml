@@ -3,37 +3,37 @@
   xmlns='http://maven.apache.org/SETTINGS/1.0.0' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
 <servers>
   <server>
-    <id>bintray-repo-maven-example</id>
-    <username>bintray-examples</username>
-    <password>**********</password>
+    <id>bintray-rudderstack-rudderstack</id>
+    <username>${env.BINTRAY_USER}</username>
+    <password>${env.BINTRAY_PASSWORD}</password>
   </server>
 </servers>
 <profiles>
-  <profile>
-    <repositories>
-      <repository>
-        <snapshots>
-          <enabled>false</enabled>
-        </snapshots>
-        <id>central</id>
-        <name>bintray</name>
-        <url>http://jcenter.bintray.com</url>
-      </repository>
-    </repositories>
-    <pluginRepositories>
-      <pluginRepository>
-        <snapshots>
-          <enabled>false</enabled>
-        </snapshots>
-        <id>central</id>
-        <name>bintray-plugins</name>
-        <url>http://jcenter.bintray.com</url>
-      </pluginRepository>
-    </pluginRepositories>
-    <id>bintray</id>
-  </profile>
+   <profile>
+       <repositories>
+           <repository>
+               <snapshots>
+                   <enabled>false</enabled>
+               </snapshots>
+               <id>bintray-rudderstack-maven</id>
+               <name>bintray</name>
+               <url>https://dl.bintray.com/rudderstack/maven</url>
+           </repository>
+       </repositories>
+       <pluginRepositories>
+           <pluginRepository>
+               <snapshots>
+                   <enabled>false</enabled>
+               </snapshots>
+               <id>bintray-rudderstack-maven</id>
+               <name>bintray-plugins</name>
+               <url>https://dl.bintray.com/rudderstack/maven</url>
+           </pluginRepository>
+       </pluginRepositories>
+       <id>bintray</id>
+   </profile>
 </profiles>
 <activeProfiles>
-  <activeProfile>bintray</activeProfile>
+   <activeProfile>bintray</activeProfile>
 </activeProfiles>
 </settings>
