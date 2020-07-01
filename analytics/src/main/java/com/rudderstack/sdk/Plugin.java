@@ -1,6 +1,6 @@
-package com.rudder.analytics;
+package com.rudderstack.sdk;
 
-import com.rudder.analytics.Beta;
+import com.rudderstack.sdk.Beta;
 
 /**
  * Plugins configure an {@link Analytics.Builder} instance. Plugins can be used to consolidate logic

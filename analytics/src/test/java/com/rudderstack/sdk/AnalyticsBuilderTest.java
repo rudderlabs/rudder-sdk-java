@@ -1,4 +1,4 @@
-package com.rudder.analytics;
+package com.rudderstack.sdk;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -12,11 +12,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import com.rudder.analytics.Analytics;
-import com.rudder.analytics.Callback;
-import com.rudder.analytics.MessageInterceptor;
-import com.rudder.analytics.MessageTransformer;
-import com.rudder.analytics.Plugin;
+import com.rudderstack.sdk.Analytics;
+import com.rudderstack.sdk.Callback;
+import com.rudderstack.sdk.MessageInterceptor;
+import com.rudderstack.sdk.MessageTransformer;
+import com.rudderstack.sdk.Plugin;
 
 public class AnalyticsBuilderTest {
   Analytics.Builder builder;

@@ -1,10 +1,10 @@
-package com.rudder.analytics;
+package com.rudderstack.sdk;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import com.rudder.analytics.AnalyticsRequestInterceptor;
-import com.rudder.analytics.messages.*;
+import com.rudderstack.sdk.AnalyticsRequestInterceptor;
+import com.rudderstack.sdk.messages.*;
 
 import org.junit.Test;
 import retrofit.RequestInterceptor.RequestFacade;

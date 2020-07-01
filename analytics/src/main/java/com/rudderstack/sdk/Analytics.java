@@ -1,15 +1,15 @@
-package com.rudder.analytics;
+package com.rudderstack.sdk;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.rudder.analytics.Beta;
-import com.rudder.analytics.gson.AutoValueAdapterFactory;
-import com.rudder.analytics.gson.ISO8601DateAdapter;
-import com.rudder.analytics.http.RudderService;
-import com.rudder.analytics.internal.AnalyticsClient;
-import com.rudder.analytics.internal.AnalyticsVersion;
-import com.rudder.analytics.messages.Message;
-import com.rudder.analytics.messages.MessageBuilder;
+import com.rudderstack.sdk.Beta;
+import com.rudderstack.sdk.gson.AutoValueAdapterFactory;
+import com.rudderstack.sdk.gson.ISO8601DateAdapter;
+import com.rudderstack.sdk.http.RudderService;
+import com.rudderstack.sdk.internal.AnalyticsClient;
+import com.rudderstack.sdk.internal.AnalyticsVersion;
+import com.rudderstack.sdk.messages.Message;
+import com.rudderstack.sdk.messages.MessageBuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -97,7 +97,7 @@ public class Analytics {
 
   /** Fluent API for creating {@link Analytics} instances. */
   public static class Builder {
-    private static final Endpoint DEFAULT_ENDPOINT = 
+    private static final Endpoint DEFAULT_ENDPOINT =
         Endpoints.newFixedEndpoint("https://hosted1.rudderlabs.com");
     private static final String DEFAULT_USER_AGENT = "analytics-java/" + AnalyticsVersion.get();
 
@@ -142,8 +142,8 @@ public class Analytics {
     }
 
     /**
-     * Set an endpoint that this client should upload events to. 
-     * 
+     * Set an endpoint that this client should upload events to.
+     *
      */
     public Builder endpoint(String endpoint) {
       if (endpoint == null || endpoint.trim().length() == 0) {
@@ -160,7 +160,7 @@ public class Analytics {
       }
       this.userAgent = userAgent;
       return this;
-    } 
+    }
 
     /** Add a {@link MessageTransformer} for transforming messages. */
     @Beta
@@ -270,7 +270,7 @@ public class Analytics {
       if (endpoint == null) {
         endpoint = DEFAULT_ENDPOINT;
       }
-      
+
       if (client == null) {
         client = Platform.get().defaultClient();
       }

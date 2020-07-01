@@ -1,12 +1,12 @@
-package com.rudder.analytics;
+package com.rudderstack.sdk;
 
-import com.rudder.analytics.messages.AliasMessage;
-import com.rudder.analytics.messages.GroupMessage;
-import com.rudder.analytics.messages.IdentifyMessage;
-import com.rudder.analytics.messages.Message;
-import com.rudder.analytics.messages.MessageBuilder;
-import com.rudder.analytics.messages.ScreenMessage;
-import com.rudder.analytics.messages.TrackMessage;
+import com.rudderstack.sdk.messages.AliasMessage;
+import com.rudderstack.sdk.messages.GroupMessage;
+import com.rudderstack.sdk.messages.IdentifyMessage;
+import com.rudderstack.sdk.messages.Message;
+import com.rudderstack.sdk.messages.MessageBuilder;
+import com.rudderstack.sdk.messages.ScreenMessage;
+import com.rudderstack.sdk.messages.TrackMessage;
 
 public final class TestUtils {
   private TestUtils() {

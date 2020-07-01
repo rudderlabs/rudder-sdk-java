@@ -1,8 +1,8 @@
 package sample;
 
 import com.jakewharton.retrofit.Ok3Client;
-import com.rudder.analytics.Analytics;
-import com.rudder.analytics.messages.TrackMessage;
+import com.rudderstack.sdk.Analytics;
+import com.rudderstack.sdk.messages.TrackMessage;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

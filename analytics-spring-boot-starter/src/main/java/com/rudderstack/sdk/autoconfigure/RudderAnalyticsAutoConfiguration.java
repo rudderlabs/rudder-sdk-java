@@ -15,7 +15,7 @@ import com.rudderstack.sdk.Analytics;
  */
 @Configuration
 @EnableConfigurationProperties(RudderProperties.class)
-@ConditionalOnProperty("rudder.analytics.writeKey")
+@ConditionalOnProperty("rudderstack.sdk.writeKey")
 public class RudderAnalyticsAutoConfiguration {
 
   @Autowired private RudderProperties properties;

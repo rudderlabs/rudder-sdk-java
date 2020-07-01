@@ -1,13 +1,13 @@
-package com.rudder.analytics;
+package com.rudderstack.sdk;
 
-import com.rudder.analytics.Beta;
-import com.rudder.analytics.messages.AliasMessage;
-import com.rudder.analytics.messages.GroupMessage;
-import com.rudder.analytics.messages.IdentifyMessage;
-import com.rudder.analytics.messages.Message;
-import com.rudder.analytics.messages.PageMessage;
-import com.rudder.analytics.messages.ScreenMessage;
-import com.rudder.analytics.messages.TrackMessage;
+import com.rudderstack.sdk.Beta;
+import com.rudderstack.sdk.messages.AliasMessage;
+import com.rudderstack.sdk.messages.GroupMessage;
+import com.rudderstack.sdk.messages.IdentifyMessage;
+import com.rudderstack.sdk.messages.Message;
+import com.rudderstack.sdk.messages.PageMessage;
+import com.rudderstack.sdk.messages.ScreenMessage;
+import com.rudderstack.sdk.messages.TrackMessage;
 
 /** Intercept every message after it is built to process it further. */
 @Beta

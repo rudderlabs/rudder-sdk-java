@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.rudder.analytics.Analytics;
-import com.rudder.analytics.messages.*;
+import com.rudderstack.sdk.Analytics;
+import com.rudderstack.sdk.messages.*;
 
 
 
@@ -17,7 +17,7 @@ public class TestAnalytics {
 		final Analytics analytics =
 		        Analytics.builder("1dgURTY4fptGJK0c0RA8SXr7l9z","https://85b2ad0864ad.ngrok.io")
 		            .build();
-		
+
 		final String userId = System.getProperty("user.name");
 	    final String anonymousId = UUID.randomUUID().toString();
 
@@ -42,7 +42,7 @@ public class TestAnalytics {
 //	    	        .build()
 //	    	    )
 	    	);
-	    
+
 	    analytics.enqueue(ScreenMessage.builder("Schedule")
 	    	    .userId("f4ca124298")
 //	    	    .properties(ImmutableMap.builder()
@@ -51,7 +51,7 @@ public class TestAnalytics {
 //	    	        .build()
 //	    	    )
 	    	);
-	    
+
 	    analytics.enqueue(PageMessage.builder("Schedule")
 	    	    .userId("f4ca124298")
 //	    	    .properties(ImmutableMap.builder()
@@ -60,7 +60,7 @@ public class TestAnalytics {
 //	    	        .build()
 //	    	    )
 	    	);
-	    
+
 	    analytics.enqueue(GroupMessage.builder("some-group-id")
 	    	    .userId("f4ca124298")
 //	    	    .traits(ImmutableMap.builder()
@@ -69,7 +69,7 @@ public class TestAnalytics {
 //	    	        .build()
 //	    	    )
 	    	);
-	    
+
 	    analytics.enqueue(AliasMessage.builder("previousId")
 	    	    .userId("f4ca124298")
 	    	);

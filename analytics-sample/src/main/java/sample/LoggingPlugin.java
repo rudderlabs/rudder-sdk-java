@@ -1,10 +1,10 @@
 package sample;
 
-import com.rudder.analytics.Analytics;
-import com.rudder.analytics.Callback;
-import com.rudder.analytics.Log;
-import com.rudder.analytics.Plugin;
-import com.rudder.analytics.messages.Message;
+import com.rudderstack.sdk.Analytics;
+import com.rudderstack.sdk.Callback;
+import com.rudderstack.sdk.Log;
+import com.rudderstack.sdk.Plugin;
+import com.rudderstack.sdk.messages.Message;
 
 /**
  * A {@link Plugin} implementation that redirects client logs to standard output and logs callback

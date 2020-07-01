@@ -1,6 +1,6 @@
-package com.rudder.analytics;
+package com.rudderstack.sdk;
 
-import com.rudder.analytics.messages.Message;
+import com.rudderstack.sdk.messages.Message;
 
 /**
  * Callback invoked when the client library is done processing a message.

@@ -1,11 +1,11 @@
 package sample;
 
-import com.rudder.analytics.Analytics;
-import com.rudder.analytics.Callback;
-import com.rudder.analytics.MessageTransformer;
-import com.rudder.analytics.Plugin;
-import com.rudder.analytics.messages.Message;
-import com.rudder.analytics.messages.MessageBuilder;
+import com.rudderstack.sdk.Analytics;
+import com.rudderstack.sdk.Callback;
+import com.rudderstack.sdk.MessageTransformer;
+import com.rudderstack.sdk.Plugin;
+import com.rudderstack.sdk.messages.Message;
+import com.rudderstack.sdk.messages.MessageBuilder;
 
 import java.util.concurrent.Phaser;
 

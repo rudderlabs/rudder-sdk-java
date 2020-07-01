@@ -1,4 +1,4 @@
-package com.rudder.analytics;
+package com.rudderstack.sdk;
 
 import javax.annotation.Nonnull;
 import okhttp3.Credentials;

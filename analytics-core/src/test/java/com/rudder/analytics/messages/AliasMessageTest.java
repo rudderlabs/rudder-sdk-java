@@ -1,11 +1,11 @@
-package com.rudder.analytics.messages;
+package com.rudderstack.sdk.messages;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-import com.rudder.analytics.messages.AliasMessage;
+import com.rudderstack.sdk.messages.AliasMessage;
 
 public class AliasMessageTest {
 

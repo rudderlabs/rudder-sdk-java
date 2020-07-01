@@ -1,4 +1,4 @@
-package com.rudder.analytics;
+package com.rudderstack.sdk;
 
 import static java.lang.Thread.MIN_PRIORITY;
 

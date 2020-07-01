@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *
  * @author Christopher Smith
  */
-@ConfigurationProperties("rudder.analytics")
+@ConfigurationProperties("rudderstack.sdk.writeKey")
 public class RudderProperties {
 
   private String writeKey;
