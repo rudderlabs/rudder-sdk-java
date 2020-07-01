@@ -4,9 +4,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>analytics-parent</artifactId>
+    <artifactId>rudder-sdk-java</artifactId>
     <groupId>com.rudderstack.sdk.java</groupId>
-    <version>2.1.2-SNAPSHOT</version>
+    <version>1.0.0</version>
   </parent>
 
   <artifactId>analytics-cli</artifactId>

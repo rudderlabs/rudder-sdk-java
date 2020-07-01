@@ -54,7 +54,7 @@ public class AnalyticsClientTest {
   Log log = Log.NONE;
   ThreadFactory threadFactory;
   @Mock BlockingQueue<Message> messageQueue;
-  @Mock RudderService segmentService;
+  @Mock RudderService rudderService;
   @Mock ExecutorService networkExecutor;
   @Mock Callback callback;
 
@@ -68,7 +68,7 @@ public class AnalyticsClientTest {
   AnalyticsClient newClient() {
     return new AnalyticsClient(
         messageQueue,
-        segmentService,
+        rudderService,
         50,
         TimeUnit.HOURS.toMillis(1),
         log,
@@ -180,7 +180,7 @@ public class AnalyticsClientTest {
 
     // Throw a network error 3 times.
     RetrofitError retrofitError = RetrofitError.networkError(null, new IOException());
-    when(segmentService.upload(batch))
+    when(rudderService.upload(batch))
         .thenThrow(retrofitError)
         .thenThrow(retrofitError)
         .thenThrow(retrofitError)
@@ -190,7 +190,7 @@ public class AnalyticsClientTest {
     batchUploadTask.run();
 
     // Verify that we tried to upload 4 times, 3 failed and 1 succeeded.
-    verify(segmentService, times(4)).upload(batch);
+    verify(rudderService, times(4)).upload(batch);
     verify(callback).success(trackMessage);
   }
 
@@ -203,9 +203,9 @@ public class AnalyticsClientTest {
     // Throw a HTTP error 3 times.
     Response response =
         new Response(
-            "https://api.segment.io", 500, "Server Error", Collections.<Header>emptyList(), null);
+            "https://api.rudderlabs.com", 500, "Server Error", Collections.<Header>emptyList(), null);
     RetrofitError retrofitError = RetrofitError.httpError(null, response, null, null);
-    when(segmentService.upload(batch))
+    when(rudderService.upload(batch))
         .thenThrow(retrofitError)
         .thenThrow(retrofitError)
         .thenThrow(retrofitError)
@@ -215,7 +215,7 @@ public class AnalyticsClientTest {
     batchUploadTask.run();
 
     // Verify that we tried to upload 4 times, 3 failed and 1 succeeded.
-    verify(segmentService, times(4)).upload(batch);
+    verify(rudderService, times(4)).upload(batch);
     verify(callback).success(trackMessage);
   }
 
@@ -228,9 +228,9 @@ public class AnalyticsClientTest {
     // Throw a HTTP error 3 times.
     Response response =
         new Response(
-            "https://api.segment.io", 429, "Rate Limited", Collections.<Header>emptyList(), null);
+            "https://api.rudderlabs.com", 429, "Rate Limited", Collections.<Header>emptyList(), null);
     RetrofitError retrofitError = RetrofitError.httpError(null, response, null, null);
-    when(segmentService.upload(batch))
+    when(rudderService.upload(batch))
         .thenThrow(retrofitError)
         .thenThrow(retrofitError)
         .thenThrow(retrofitError)
@@ -240,7 +240,7 @@ public class AnalyticsClientTest {
     batchUploadTask.run();
 
     // Verify that we tried to upload 4 times, 3 failed and 1 succeeded.
-    verify(segmentService, times(4)).upload(batch);
+    verify(rudderService, times(4)).upload(batch);
     verify(callback).success(trackMessage);
   }
 
@@ -253,15 +253,15 @@ public class AnalyticsClientTest {
     // Throw a HTTP error that should not be retried.
     Response response =
         new Response(
-            "https://api.segment.io", 404, "Not Found", Collections.<Header>emptyList(), null);
+            "https://api.rudderlabs.com", 404, "Not Found", Collections.<Header>emptyList(), null);
     RetrofitError retrofitError = RetrofitError.httpError(null, response, null, null);
-    doThrow(retrofitError).when(segmentService).upload(batch);
+    doThrow(retrofitError).when(rudderService).upload(batch);
 
     BatchUploadTask batchUploadTask = new BatchUploadTask(client, BACKO, batch);
     batchUploadTask.run();
 
     // Verify we only tried to upload once.
-    verify(segmentService).upload(batch);
+    verify(rudderService).upload(batch);
     verify(callback).failure(trackMessage, retrofitError);
   }
 
@@ -272,13 +272,13 @@ public class AnalyticsClientTest {
     Batch batch = batchFor(trackMessage);
     RetrofitError retrofitError =
         RetrofitError.conversionError(null, null, null, null, new ConversionException("fake"));
-    doThrow(retrofitError).when(segmentService).upload(batch);
+    doThrow(retrofitError).when(rudderService).upload(batch);
 
     BatchUploadTask batchUploadTask = new BatchUploadTask(client, BACKO, batch);
     batchUploadTask.run();
 
     // Verify we only tried to upload once.
-    verify(segmentService).upload(batch);
+    verify(rudderService).upload(batch);
     verify(callback).failure(trackMessage, retrofitError);
   }
 
@@ -288,13 +288,13 @@ public class AnalyticsClientTest {
     TrackMessage trackMessage = TrackMessage.builder("foo").userId("bar").build();
     Batch batch = batchFor(trackMessage);
     RetrofitError retrofitError = RetrofitError.networkError(null, new IOException());
-    when(segmentService.upload(batch)).thenThrow(retrofitError);
+    when(rudderService.upload(batch)).thenThrow(retrofitError);
 
     BatchUploadTask batchUploadTask = new BatchUploadTask(client, BACKO, batch);
     batchUploadTask.run();
 
     // 50 == MAX_ATTEMPTS in AnalyticsClient.java
-    verify(segmentService, times(50)).upload(batch);
+    verify(rudderService, times(50)).upload(batch);
     verify(callback)
         .failure(
             eq(trackMessage),

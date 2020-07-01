@@ -10,19 +10,17 @@
   </parent>
 
   <groupId>com.rudderstack.sdk.java</groupId>
-  <artifactId>analytics-parent</artifactId>
-  <version>2.1.2-SNAPSHOT</version>
+  <artifactId>rudder-sdk-java</artifactId>
+  <version>1.0.0</version>
   <packaging>pom</packaging>
-  <name>Analytics for Java (Parent)</name>
-  <description>The hassle-free way to add analytics to your Android app.</description>
-  <url>https://github.com/segmentio/analytics-java</url>
+  <name>RudderStack SDK for Java (Parent)</name>
+  <description>JAVA SDK for RudderStack. Steer your customer data.</description>
+  <url>https://github.com/rudderlabs/rudder-sdk-java</url>
 
   <modules>
     <module>analytics-core</module>
     <module>analytics</module>
-    <module>analytics-sample</module>
     <module>analytics-cli</module>
-    <module>analytics-spring-boot-starter</module>
   </modules>
 
   <properties>
@@ -49,15 +47,15 @@
   </properties>
 
   <scm>
-    <url>https://github.com/segmentio/analytics-java/</url>
-    <connection>scm:git:https://github.com/segmentio/analytics-java.git</connection>
-    <developerConnection>scm:git:git@github.com:segmentio/analytics-java.git</developerConnection>
+    <url>https://github.com/rudderlabs/rudder-sdk-java</url>
+    <connection>scm:git:https://github.com/rudderlabs/rudder-sdk.java.git</connection>
+    <developerConnection>scm:git:git@github.com:rudderlabs/rudder-sdk-java.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
 
   <issueManagement>
     <system>GitHub Issues</system>
-    <url>https://github.com/segmentio/analytics-java/issues</url>
+    <url>https://github.com/rudderlabs/rudder-sdk-java/issues</url>
   </issueManagement>
 
   <licenses>

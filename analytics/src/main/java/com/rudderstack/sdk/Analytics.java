@@ -313,9 +313,9 @@ public class Analytics {
             }
           }).build();
 
-      RudderService segmentService = restAdapter.create(RudderService.class);
+      RudderService rudderService = restAdapter.create(RudderService.class);
 
-      AnalyticsClient analyticsClient = AnalyticsClient.create(segmentService, flushQueueSize, flushIntervalInMillis,
+      AnalyticsClient analyticsClient = AnalyticsClient.create(rudderService, flushQueueSize, flushIntervalInMillis,
           log, threadFactory, networkExecutor, callbacks);
       return new Analytics(analyticsClient, messageTransformers, messageInterceptors, log);
     }

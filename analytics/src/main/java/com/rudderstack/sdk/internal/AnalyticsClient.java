@@ -48,9 +48,9 @@ public class AnalyticsClient {
   private final ExecutorService looperExecutor;
   private final ScheduledExecutorService flushScheduler;
 
-  public static AnalyticsClient create(RudderService segmentService, int flushQueueSize, long flushIntervalInMillis,
+  public static AnalyticsClient create(RudderService rudderService, int flushQueueSize, long flushIntervalInMillis,
       Log log, ThreadFactory threadFactory, ExecutorService networkExecutor, List<Callback> callbacks) {
-    return new AnalyticsClient(new LinkedBlockingQueue<Message>(), segmentService, flushQueueSize,
+    return new AnalyticsClient(new LinkedBlockingQueue<Message>(), rudderService, flushQueueSize,
         flushIntervalInMillis, log, threadFactory, networkExecutor,      callbacks);
   }
 
