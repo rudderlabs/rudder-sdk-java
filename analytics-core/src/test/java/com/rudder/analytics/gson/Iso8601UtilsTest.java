@@ -1,8 +1,8 @@
-package com.rudder.analytics.gson;
+package com.rudderstack.sdk.gson;
 
-import static com.rudder.analytics.TestUtils.newDate;
-import static com.rudder.analytics.gson.Iso8601Utils.format;
-import static com.rudder.analytics.gson.Iso8601Utils.parse;
+import static com.rudderstack.sdk.TestUtils.newDate;
+import static com.rudderstack.sdk.gson.Iso8601Utils.format;
+import static com.rudderstack.sdk.gson.Iso8601Utils.parse;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;

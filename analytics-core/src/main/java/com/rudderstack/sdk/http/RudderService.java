@@ -1,6 +1,6 @@
-package com.rudder.analytics.http;
+package com.rudderstack.sdk.http;
 
-import com.rudder.analytics.messages.Batch;
+import com.rudderstack.sdk.messages.Batch;
 
 import retrofit.http.Body;
 import retrofit.http.POST;

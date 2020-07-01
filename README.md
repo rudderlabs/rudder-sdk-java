@@ -6,7 +6,7 @@ Rudder is an open-source Segment alternative written in Go, built for the enterp
 **Long answer:**
 Rudder is a platform for collecting, storing and routing customer event data to dozens of tools. Rudder is open-source, can run in your cloud environment (AWS, GCP, Azure or even your data-centre) and provides a powerful transformation framework to process your event data on the fly.
 
-Released under [MIT License](https://opensource.org/licenses/MITj)
+Released under [MIT License](https://opensource.org/licenses/MIT)
 
 ## Getting Started with JAVA SDK
 
@@ -14,8 +14,8 @@ Released under [MIT License](https://opensource.org/licenses/MITj)
 
 ```xml
 <dependency>
-  <groupId>com.segment.analytics.java</groupId>
-  <artifactId>analytics</artifactId>
+  <groupId>com.rudderstack.sdk.java</groupId>
+  <artifactId>rudderanalytics</artifactId>
   <version>LATEST</version>
 </dependency>
 ```
@@ -23,7 +23,7 @@ Released under [MIT License](https://opensource.org/licenses/MITj)
 *or if you're using Gradle:*
 
 ```bash
-compile 'com.segment.analytics.java:analytics:+'
+compile 'com.rudderstack.sdk.java:rudderanalytics:+'
 ```
 
 ## Initialize ```RudderClient```

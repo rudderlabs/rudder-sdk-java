@@ -1,4 +1,4 @@
-package com.rudder.analytics.gson;
+package com.rudderstack.sdk.gson;
 
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;

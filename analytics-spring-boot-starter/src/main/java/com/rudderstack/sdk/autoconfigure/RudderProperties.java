@@ -1,4 +1,4 @@
-package com.rudder.analytics.autoconfigure;
+package com.rudderstack.sdk.autoconfigure;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

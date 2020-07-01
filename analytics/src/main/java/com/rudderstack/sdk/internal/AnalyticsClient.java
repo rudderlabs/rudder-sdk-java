@@ -1,16 +1,16 @@
-package com.rudder.analytics.internal;
+package com.rudderstack.sdk.internal;
 
-import com.rudder.analytics.Callback;
-import com.rudder.analytics.Log;
-import com.rudder.analytics.http.RudderService;
-import com.rudder.analytics.internal.AnalyticsVersion;
-import com.rudder.analytics.messages.Batch;
-import com.rudder.analytics.messages.Message;
+import com.rudderstack.sdk.Callback;
+import com.rudderstack.sdk.Log;
+import com.rudderstack.sdk.http.RudderService;
+import com.rudderstack.sdk.internal.AnalyticsVersion;
+import com.rudderstack.sdk.messages.Batch;
+import com.rudderstack.sdk.messages.Message;
 import com.segment.backo.Backo;
 
-import static com.rudder.analytics.Log.Level.DEBUG;
-import static com.rudder.analytics.Log.Level.ERROR;
-import static com.rudder.analytics.Log.Level.VERBOSE;
+import static com.rudderstack.sdk.Log.Level.DEBUG;
+import static com.rudderstack.sdk.Log.Level.ERROR;
+import static com.rudderstack.sdk.Log.Level.VERBOSE;
 
 import java.io.IOException;
 import java.util.ArrayList;

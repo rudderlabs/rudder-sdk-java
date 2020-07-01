@@ -1,11 +1,11 @@
-package com.rudder.analytics.internal;
+package com.rudderstack.sdk.internal;
 
 import java.util.Date;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.rudder.analytics.messages.Message;
+import com.rudderstack.sdk.messages.Message;
 
 class FlushMessage implements Message {
   static final FlushMessage POISON = new FlushMessage();

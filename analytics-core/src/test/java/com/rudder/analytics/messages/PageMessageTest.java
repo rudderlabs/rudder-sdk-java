@@ -1,9 +1,9 @@
-package com.rudder.analytics.messages;
+package com.rudderstack.sdk.messages;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.common.collect.ImmutableMap;
-import com.rudder.analytics.messages.PageMessage;
+import com.rudderstack.sdk.messages.PageMessage;
 
 import org.junit.Test;
 

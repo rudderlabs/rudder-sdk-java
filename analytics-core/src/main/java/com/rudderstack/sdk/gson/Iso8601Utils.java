@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.rudder.analytics.gson;
+package com.rudderstack.sdk.gson;
 
 import com.google.gson.JsonParseException;
 import java.util.Calendar;

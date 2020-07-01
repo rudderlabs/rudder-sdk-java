@@ -1,4 +1,4 @@
-package com.rudder.analytics.gson;
+package com.rudderstack.sdk.gson;
 
 import com.google.auto.value.AutoValue;
 import com.google.gson.Gson;

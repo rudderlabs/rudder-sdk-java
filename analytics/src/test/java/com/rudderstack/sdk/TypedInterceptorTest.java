@@ -1,15 +1,15 @@
-package com.rudder.analytics;
+package com.rudderstack.sdk;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import com.rudder.analytics.MessageInterceptor;
-import com.rudder.analytics.messages.AliasMessage;
-import com.rudder.analytics.messages.GroupMessage;
-import com.rudder.analytics.messages.IdentifyMessage;
-import com.rudder.analytics.messages.PageMessage;
-import com.rudder.analytics.messages.ScreenMessage;
-import com.rudder.analytics.messages.TrackMessage;
+import com.rudderstack.sdk.MessageInterceptor;
+import com.rudderstack.sdk.messages.AliasMessage;
+import com.rudderstack.sdk.messages.GroupMessage;
+import com.rudderstack.sdk.messages.IdentifyMessage;
+import com.rudderstack.sdk.messages.PageMessage;
+import com.rudderstack.sdk.messages.ScreenMessage;
+import com.rudderstack.sdk.messages.TrackMessage;
 
 import org.junit.Test;
 

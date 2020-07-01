@@ -1,4 +1,4 @@
-package com.rudder.analytics;
+package com.rudderstack.sdk;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;
@@ -6,14 +6,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import com.rudder.analytics.Analytics;
-import com.rudder.analytics.Log;
-import com.rudder.analytics.MessageInterceptor;
-import com.rudder.analytics.MessageTransformer;
-import com.rudder.analytics.TestUtils.MessageBuilderTest;
-import com.rudder.analytics.internal.AnalyticsClient;
-import com.rudder.analytics.messages.Message;
-import com.rudder.analytics.messages.MessageBuilder;
+import com.rudderstack.sdk.Analytics;
+import com.rudderstack.sdk.Log;
+import com.rudderstack.sdk.MessageInterceptor;
+import com.rudderstack.sdk.MessageTransformer;
+import com.rudderstack.sdk.TestUtils.MessageBuilderTest;
+import com.rudderstack.sdk.internal.AnalyticsClient;
+import com.rudderstack.sdk.messages.Message;
+import com.rudderstack.sdk.messages.MessageBuilder;
 import com.squareup.burst.BurstJUnit4;
 import java.util.Collections;
 import org.junit.Before;

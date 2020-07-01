@@ -1,4 +1,4 @@
-package com.rudder.analytics;
+package com.rudderstack.sdk;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -6,7 +6,7 @@ import java.util.GregorianCalendar;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
-import com.rudder.analytics.messages.*;
+import com.rudderstack.sdk.messages.*;
 
 public final class TestUtils {
   private TestUtils() {

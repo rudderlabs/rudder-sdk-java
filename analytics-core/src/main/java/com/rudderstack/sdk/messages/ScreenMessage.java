@@ -1,7 +1,7 @@
-package com.rudder.analytics.messages;
+package com.rudderstack.sdk.messages;
 
 import com.google.auto.value.AutoValue;
-import com.rudder.analytics.gson.AutoGson;
+import com.rudderstack.sdk.gson.AutoGson;
 
 import java.util.Date;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.rudder.analytics.internal;
+package com.rudderstack.sdk.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -12,16 +12,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import com.rudder.analytics.Callback;
-import com.rudder.analytics.Log;
-import com.rudder.analytics.TestUtils.MessageBuilderTest;
-import com.rudder.analytics.http.RudderService;
-import com.rudder.analytics.internal.AnalyticsClient;
-import com.rudder.analytics.internal.FlushMessage;
-import com.rudder.analytics.internal.AnalyticsClient.BatchUploadTask;
-import com.rudder.analytics.messages.Batch;
-import com.rudder.analytics.messages.Message;
-import com.rudder.analytics.messages.TrackMessage;
+import com.rudderstack.sdk.Callback;
+import com.rudderstack.sdk.Log;
+import com.rudderstack.sdk.TestUtils.MessageBuilderTest;
+import com.rudderstack.sdk.http.RudderService;
+import com.rudderstack.sdk.internal.AnalyticsClient;
+import com.rudderstack.sdk.internal.FlushMessage;
+import com.rudderstack.sdk.internal.AnalyticsClient.BatchUploadTask;
+import com.rudderstack.sdk.messages.Batch;
+import com.rudderstack.sdk.messages.Message;
+import com.rudderstack.sdk.messages.TrackMessage;
 import com.segment.backo.Backo;
 import com.squareup.burst.BurstJUnit4;
 import java.io.IOException;

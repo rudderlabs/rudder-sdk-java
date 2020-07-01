@@ -1,4 +1,4 @@
-package com.rudder.analytics;
+package com.rudderstack.sdk;
 
 /** Abstraction for logging messages. */
 public interface Log {

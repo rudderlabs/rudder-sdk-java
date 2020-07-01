@@ -1,4 +1,4 @@
-package com.rudder.analytics.messages;
+package com.rudderstack.sdk.messages;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;

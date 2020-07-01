@@ -1,7 +1,7 @@
-package com.rudder.analytics.http;
+package com.rudderstack.sdk.http;
 
 import com.google.auto.value.AutoValue;
-import com.rudder.analytics.gson.AutoGson;
+import com.rudderstack.sdk.gson.AutoGson;
 
 @AutoValue
 @AutoGson

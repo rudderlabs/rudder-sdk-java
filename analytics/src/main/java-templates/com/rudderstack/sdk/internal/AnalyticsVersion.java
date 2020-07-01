@@ -1,4 +1,4 @@
-package com.segment.analytics.internal;
+package com.rudderstack.sdk.internal;
 
 public final class AnalyticsVersion {
   private AnalyticsVersion() {

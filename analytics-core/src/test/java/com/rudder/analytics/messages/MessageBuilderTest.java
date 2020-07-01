@@ -1,12 +1,12 @@
-package com.rudder.analytics.messages;
+package com.rudderstack.sdk.messages;
 
-import static com.rudder.analytics.TestUtils.newDate;
+import static com.rudderstack.sdk.TestUtils.newDate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
 import com.google.common.collect.ImmutableMap;
-import com.rudder.analytics.TestUtils;
-import com.rudder.analytics.messages.Message;
+import com.rudderstack.sdk.TestUtils;
+import com.rudderstack.sdk.messages.Message;
 import com.squareup.burst.BurstJUnit4;
 import java.util.Date;
 import java.util.Map;
