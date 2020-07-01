@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
-  <parent>
-    <groupId>org.sonatype.oss</groupId>
-    <artifactId>oss-parent</artifactId>
-    <version>7</version>
-  </parent>
-
   <groupId>com.rudderstack.sdk.java</groupId>
   <artifactId>sdk</artifactId>
   <version>1.0.0</version>
@@ -16,13 +8,10 @@
   <name>RudderStack SDK for Java (Parent)</name>
   <description>JAVA SDK for RudderStack. Steer your customer data.</description>
   <url>https://github.com/rudderlabs/rudder-sdk-java</url>
-
   <modules>
-    <module>analytics-core</module>
-    <module>analytics</module>
-    <module>analytics-cli</module>
+    <module>client</module>
+    <module>core</module>
   </modules>
-
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>1.7</java.version>
@@ -38,33 +27,30 @@
     <backo.version>1.0.0</backo.version>
     <spring.boot.version>1.2.5.RELEASE</spring.boot.version>
     <docopt.version>0.6.0.20150202</docopt.version>
-
+    <bintray.repo>bintray-examples/repo</bintray.repo>
+    <bintray.package>maven-example</bintray.package>
     <!-- Test Dependencies -->
     <junit.version>4.11</junit.version>
     <burst.version>1.0.2</burst.version>
     <assertj.version>2.0.0</assertj.version>
     <mockito.version>1.9.5</mockito.version>
   </properties>
-
   <scm>
     <url>https://github.com/rudderlabs/rudder-sdk-java</url>
     <connection>scm:git:https://github.com/rudderlabs/rudder-sdk.java.git</connection>
     <developerConnection>scm:git:git@github.com:rudderlabs/rudder-sdk-java.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
-
   <issueManagement>
     <system>GitHub Issues</system>
     <url>https://github.com/rudderlabs/rudder-sdk-java/issues</url>
   </issueManagement>
-
   <licenses>
     <license>
       <name>The MIT License (MIT)</name>
       <url>http://opensource.org/licenses/MIT</url>
     </license>
   </licenses>
-
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -150,10 +136,19 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
   <build>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>2.3.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>2.1.2</version>
+        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
@@ -165,7 +160,6 @@
             <showWarnings>true</showWarnings>
           </configuration>
         </plugin>
-
         <plugin>
           <groupId>com.diffplug.spotless</groupId>
           <artifactId>spotless-maven-plugin</artifactId>
@@ -180,52 +174,8 @@
             </java>
           </configuration>
         </plugin>
-
-        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-        <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
-          <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>templating-maven-plugin</artifactId>
-                    <versionRange>[1.0-alpha-3,)</versionRange>
-                    <goals>
-                      <goal>filter-sources</goal>
-                      <goal>filter-test-sources</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <execute>
-                      <runOnIncremental>true</runOnIncremental>
-                      <runOnConfiguration>true</runOnConfiguration>
-                    </execute>
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-enforcer-plugin</artifactId>
-                    <versionRange>[1.0.0,)</versionRange>
-                    <goals>
-                      <goal>enforce</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore />
-                  </action>
-                </pluginExecution>
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
-          </configuration>
-        </plugin>
       </plugins>
     </pluginManagement>
-
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -259,7 +209,7 @@
             <format>html</format>
             <format>xml</format>
           </formats>
-          <check />
+          <check/>
         </configuration>
       </plugin>
       <plugin>
@@ -284,4 +234,10 @@
       </plugin>
     </plugins>
   </build>
+  <distributionManagement>
+    <repository>
+      <id>bintray-repo-maven-example</id>
+      <url>https://api.bintray.com/maven/${bintray.subject}/${bintray.repo}/${bintray.package}/;publish=1</url>
+    </repository>
+  </distributionManagement>
 </project>
