@@ -4,36 +4,8 @@
 <servers>
   <server>
     <id>bintray-rudderstack-rudderstack</id>
-    <username>${env.BINTRAY_USER}</username>
-    <password>${env.BINTRAY_PASSWORD}</password>
+    <username></username>
+    <password></password>
   </server>
 </servers>
-<profiles>
-   <profile>
-       <repositories>
-           <repository>
-               <snapshots>
-                   <enabled>false</enabled>
-               </snapshots>
-               <id>bintray-rudderstack-rudderstack</id>
-               <name>bintray</name>
-               <url>https://dl.bintray.com/rudderstack/rudderstack</url>
-           </repository>
-       </repositories>
-       <pluginRepositories>
-           <pluginRepository>
-               <snapshots>
-                   <enabled>false</enabled>
-               </snapshots>
-               <id>bintray-rudderstack-rudderstack</id>
-               <name>bintray-plugins</name>
-               <url>https://dl.bintray.com/rudderstack/rudderstack</url>
-           </pluginRepository>
-       </pluginRepositories>
-       <id>bintray</id>
-   </profile>
-</profiles>
-<activeProfiles>
-   <activeProfile>bintray</activeProfile>
-</activeProfiles>
 </settings>
