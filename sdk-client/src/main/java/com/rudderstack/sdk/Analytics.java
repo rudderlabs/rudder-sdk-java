@@ -82,7 +82,6 @@ public class Analytics {
       }
     }
     client.enqueue(message);
-    System.out.println("Message:: " + message);
   }
 
   /** Flush events in the message queue. */
