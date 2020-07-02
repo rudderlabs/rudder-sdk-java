@@ -28,7 +28,7 @@
     <backo.version>1.0.0</backo.version>
     <spring.boot.version>1.2.5.RELEASE</spring.boot.version>
     <docopt.version>0.6.0.20150202</docopt.version>
-    <!-- Test Dependencies -->
+      <!-- Test Dependencies -->
     <junit.version>4.11</junit.version>
     <burst.version>1.0.2</burst.version>
     <assertj.version>2.0.0</assertj.version>
@@ -197,30 +197,6 @@
           <descriptorRefs>
             <descriptorRef>jar-with-dependencies</descriptorRef>
           </descriptorRefs>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>cobertura-maven-plugin</artifactId>
-        <version>2.7</version>
-        <configuration>
-          <formats>
-            <format>html</format>
-            <format>xml</format>
-          </formats>
-          <check/>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>animal-sniffer-maven-plugin</artifactId>
-        <version>1.16</version>
-        <configuration>
-          <signature>
-            <groupId>org.codehaus.mojo.signature</groupId>
-            <artifactId>java17</artifactId>
-            <version>1.0</version>
-          </signature>
         </configuration>
       </plugin>
       <plugin>
