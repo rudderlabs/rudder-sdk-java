@@ -236,6 +236,7 @@
   <distributionManagement>
     <repository>
       <id>bintray-rudderstack-rudderstack</id>
+      <name>rudderstack-rudderstack</name>
       <url>https://api.bintray.com/maven/rudderstack/rudderstack/sdk/;publish=1</url>
     </repository>
   </distributionManagement>
