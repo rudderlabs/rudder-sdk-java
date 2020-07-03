@@ -2,15 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.rudderstack.sdk.java</groupId>
-  <artifactId>sdk</artifactId>
+  <artifactId>rudderanalytics</artifactId>
   <version>${project.version}</version>
   <packaging>pom</packaging>
   <name>RudderStack SDK for Java (Parent)</name>
   <description>JAVA SDK for RudderStack. Steer your customer data.</description>
   <url>https://github.com/rudderlabs/rudder-sdk-java</url>
   <modules>
-    <module>sdk-core</module>
-    <module>sdk-client</module>
+    <module>rudderanalytics-core</module>
+    <module>rudderanalytics-client</module>
   </modules>
   <properties>
     <project.version>1.0.0</project.version>
