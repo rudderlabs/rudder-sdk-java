@@ -33,24 +33,24 @@ and
 *or if you're using Gradle:*
 
 ```bash
-compile 'com.rudderstack.sdk.java:rudderanalytics:+'
+implementation 'com.rudderstack.sdk.java:rudderanalytics-client:1.0.0'
 ```
 
 ## Initialize ```RudderClient```
 ```java
 RudderAnalytics analytics = RudderAnalytics.builder(
-        "1dgURTY4fptGJK0c0RA8SXr7l9z",
-        "https://3a5931a1e147.ngrok.io"
+        "write_key",
+        "http://data-plane-url"
 ).build();
 ```
 
 ## Send Events
 ```java
 Map<String, Object> map = new HashMap<>();
-map.put("name", "Michael Bolton");
-map.put("email", "mbolton@example.com");
+map.put("name", "John Marshal");
+map.put("email", "john@example.com");
 analytics.enqueue(IdentifyMessage.builder()
-        .userId("f4ca124298")
+        .userId("6754ds7d9")
         .traits(map)
 );
 ```
