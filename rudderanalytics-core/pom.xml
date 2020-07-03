@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.rudderstack.sdk.java</groupId>
-    <artifactId>rudderanalytics</artifactId>
+    <artifactId>rudderanalytics-parent</artifactId>
     <version>${project.version}</version>
   </parent>
   <artifactId>rudderanalytics-core</artifactId>

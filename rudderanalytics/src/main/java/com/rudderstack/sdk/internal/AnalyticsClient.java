@@ -1,5 +1,4 @@
 package com.rudderstack.sdk.internal;
-
 import com.rudderstack.sdk.Callback;
 import com.rudderstack.sdk.Log;
 import com.rudderstack.sdk.http.RudderService;

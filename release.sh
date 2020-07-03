@@ -24,6 +24,6 @@ VERSION_NAME=1.0.0
 #   -u $BINTRAY_USER:$BINTRAY_PASSWORD \
 #   https://api.bintray.com/content/rudderstack/rudderstack/$PACKAGE_NAME/$VERSION_NAME/com/rudderstack/sdk/java/sdk-core/$VERSION_NAME/sdk-core-$VERSION_NAME.jar
 
-curl -T ~/.m2/repository/com/rudderstack/sdk/java/rudderanalytics/1.0.0/rudderanalytics-1.0.0.pom \
+curl -T ./rudderanalytics-core/target/rudderanalytics-core-1.0.0.jar \
   -u $BINTRAY_USER:$BINTRAY_PASSWORD \
-  https://api.bintray.com/maven/rudderstack/rudderstack/sdk/;publish=1/com/rudderstack/sdk/java/rudderanalytics/1.0.0/rudderanalytics-1.0.0.pom
+  https://api.bintray.com/maven/rudderstack/rudderstack/sdk/com/rudderstack/sdk/java/rudderanalytics-core/1.0.0/rudderanalytics-core-1.0.0.jar/;publish=0
