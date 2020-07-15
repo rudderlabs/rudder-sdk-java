@@ -44,14 +44,14 @@ RudderAnalytics analytics = RudderAnalytics.builder(
         "write_key",
         "http://data-plane-url"
 )
-.plugin(flushBlock.plugin()) // It is needed to use FlushBlock
-.plugin(new PluginLog()) // Specific Logging for FlushBlock
+.synchronize(true) // optional (default : false).
+.plugin(new PluginLog()) // Specific Logging for Synchronize
 .build();
 
 ...YOUR CODE...
 
 analytics.flush(); // Trigger a flush.
-flushBlock.block(); // Block until the flush completes.
+analytics.blockFlush(); // Block until the flush completes.
 analytics.shutdown(); // Shut down after the flush is complete.
 ```
 
