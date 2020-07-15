@@ -24,10 +24,10 @@ import retrofit.client.Client;
 import retrofit.converter.GsonConverter;
 
 /**
- * The entry point into the Segment for Java library.
+ * The entry point into the Rudder for Java library.
  *
  * <p>
- * The idea is simple: one pipeline for all your data. Segment is the single hub
+ * The idea is simple: one pipeline for all your data. Rudder is the single hub
  * to collect, translate and route your data with the flip of a switch.
  *
  * <p>
@@ -44,6 +44,7 @@ public class RudderAnalytics {
     private final List<MessageTransformer> messageTransformers;
     private final List<MessageInterceptor> messageInterceptors;
     private final Log log;
+    final static FlushBlock flushBlock = FlushBlock.create();
 
     RudderAnalytics(AnalyticsClient client, List<MessageTransformer> messageTransformers,
                     List<MessageInterceptor> messageInterceptors, Log log) {
@@ -97,7 +98,13 @@ public class RudderAnalytics {
     public void shutdown() {
         client.shutdown();
     }
-
+    /**
+     * Block until the flush completes
+     */
+    public void blockFlush() {
+    	flushBlock.block();
+    }
+    
     /**
      * Fluent API for creating {@link RudderAnalytics} instances.
      */
@@ -118,6 +125,7 @@ public class RudderAnalytics {
         private long flushIntervalInMillis;
         private List<Callback> callbacks;
         private String configURL;
+        
 
         Builder(String writeKey, String dataPlaneURI) {
             if (writeKey == null || writeKey.trim().length() == 0 || dataPlaneURI == null
@@ -283,6 +291,18 @@ public class RudderAnalytics {
             }
             plugin.configure(this);
             return this;
+        }
+        
+        /**
+         * Use a {@link FlushBlock} to implement synchronization 
+         */
+       
+        public Builder synchronize(boolean isSynchronize) {
+        	if (isSynchronize) {
+        		this.plugin(flushBlock.plugin());
+        	}
+        	
+        	return this;
         }
 
         /**
