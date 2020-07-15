@@ -1,3 +1,4 @@
+
 # What is Rudder?
 
 **Short answer:**
@@ -16,7 +17,7 @@ Released under [MIT License](https://opensource.org/licenses/MIT)
 <dependency>
    <groupId>com.rudderstack.sdk.java</groupId>
 	 <artifactId>rudderanalytics-client</artifactId>
-   <version>1.0.0</version>
+   <version>1.0.1</version>
 </dependency>
 ```
 and
@@ -33,15 +34,25 @@ and
 *or if you're using Gradle:*
 
 ```bash
-implementation 'com.rudderstack.sdk.java:rudderanalytics-client:1.0.0'
+implementation 'com.rudderstack.sdk.java:rudderanalytics-client:1.0.1'
 ```
 
 ## Initialize ```RudderClient```
 ```java
+FlushBlock flushBlock = FlushBlock.create(); // Initialization in order to block further method invocation until the flush completes. 
 RudderAnalytics analytics = RudderAnalytics.builder(
         "write_key",
         "http://data-plane-url"
-).build();
+)
+.plugin(flushBlock.plugin()) // It is needed to use FlushBlock
+.plugin(new PluginLog()) // Specific Logging for FlushBlock
+.build();
+
+...YOUR CODE...
+
+analytics.flush(); // Trigger a flush.
+flushBlock.block(); // Block until the flush completes.
+analytics.shutdown(); // Shut down after the flush is complete.
 ```
 
 ## Send Events
