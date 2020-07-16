@@ -14,7 +14,6 @@ import javax.annotation.Nullable;
  * <p>
  * Use {@link #builder} to construct your own instances.
  *
- * @see <a href="https://segment.com/docs/spec/screen/">Screen</a>
  */
 @AutoValue
 @AutoGson //
@@ -62,7 +61,6 @@ public abstract class ScreenMessage implements Message {
     /**
      * Set a map of information that describe the screen. These can be anything you want.
      *
-     * @see <a href="https://segment.com/docs/spec/screen/#properties">Properties</a>
      */
     public Builder properties(Map<String, ?> properties) {
       if (properties == null) {

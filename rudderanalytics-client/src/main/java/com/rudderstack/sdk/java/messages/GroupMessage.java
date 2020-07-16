@@ -18,7 +18,6 @@ import javax.annotation.Nullable;
  * <p>
  * Use {@link #builder} to construct your own instances.
  *
- * @see <a href="https://segment.com/docs/spec/group/">Group</a>
  */
 @AutoValue
 @AutoGson //
@@ -29,7 +28,6 @@ public abstract class GroupMessage implements Message {
    *
    * @param groupId A unique identifier for the group in your database.
    * @throws IllegalArgumentException if the event name is null or empty
-   * @see <a href="https://segment.com/docs/spec/group/#group-id">Group ID</a>
    */
   public static Builder builder(String groupId) {
     return new Builder(groupId);
@@ -66,7 +64,6 @@ public abstract class GroupMessage implements Message {
     /**
      * Set a map of information you know about a group, like number of employees or website.
      *
-     * @see <a href="https://segment.com/docs/spec/group/#traits">Traits</a>
      */
     public Builder traits(Map<String, ?> traits) {
       if (traits == null) {

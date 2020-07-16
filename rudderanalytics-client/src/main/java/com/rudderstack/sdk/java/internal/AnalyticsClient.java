@@ -33,7 +33,7 @@ public class AnalyticsClient {
     static {
         Map<String, String> library = new LinkedHashMap<>();
         library.put("name", "rudder-sdk-java");
-        library.put("version", "1.0.0");
+        library.put("version", "1.0.1");
         Map<String, Object> context = new LinkedHashMap<>();
         context.put("library", Collections.unmodifiableMap(library));
         CONTEXT = Collections.unmodifiableMap(context);

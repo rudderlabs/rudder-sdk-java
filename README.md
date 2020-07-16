@@ -38,13 +38,12 @@ implementation 'com.rudderstack.sdk.java:rudderanalytics-client:1.0.1'
 ```
 
 ## Initialize ```RudderClient```
-```java
-FlushBlock flushBlock = FlushBlock.create(); // Initialization in order to block further method invocation until the flush completes. 
+```java 
 RudderAnalytics analytics = RudderAnalytics.builder(
         "write_key",
         "http://data-plane-url"
 )
-.synchronize(true) // optional (default : false).
+.synchronize(true) // optional (default : false).It is required to block further method invocation until the flush completes.
 .plugin(new PluginLog()) // Specific Logging for Synchronize
 .build();
 

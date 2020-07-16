@@ -13,7 +13,6 @@ import javax.annotation.Nullable;
  *
  * <p>Use {@link #builder} to construct your own instances.
  *
- * @see <a href="https://segment.com/docs/spec/track">Track</a>
  */
 @AutoValue
 @AutoGson //
@@ -24,7 +23,6 @@ public abstract class TrackMessage implements Message {
    *
    * @param event The event is the name of the action that a user has performed.
    * @throws IllegalArgumentException if the event name is null or empty
-   * @see <a href="https://segment.com/docs/spec/track/#event">Track Event</a>
    */
   public static Builder builder(String event) {
     return new Builder(event);
@@ -61,7 +59,6 @@ public abstract class TrackMessage implements Message {
     /**
      * Set a map of information that describe the event. These can be anything you want.
      *
-     * @see <a href="https://segment.com/docs/spec/track/#properties">Properties</a>
      */
     public Builder properties(Map<String, ?> properties) {
       if (properties == null) {

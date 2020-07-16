@@ -13,7 +13,6 @@ import javax.annotation.Nullable;
  *
  * <p>Use {@link #builder} to construct your own instances.
  *
- * @see <a href="https://segment.com/docs/spec/identify/">Identify</a>
  */
 @AutoValue
 @AutoGson //
@@ -47,7 +46,6 @@ public abstract class IdentifyMessage implements Message {
     /**
      * Set a map of information of the user, like email or name.
      *
-     * @see <a href="https://segment.com/docs/spec/identify/#traits">Traits</a>
      */
     public Builder traits(Map<String, ?> traits) {
       if (traits == null) {
