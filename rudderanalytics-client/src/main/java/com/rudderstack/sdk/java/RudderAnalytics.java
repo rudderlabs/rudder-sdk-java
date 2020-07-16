@@ -37,7 +37,7 @@ import retrofit.converter.GsonConverter;
  *
  * <p>
  * This class is the main entry point into the client API. Use {@link #builder}
- * to construct your own instances.
+ * to construct your own instances.abcded
  */
 public class RudderAnalytics {
     private final AnalyticsClient client;
