@@ -53,7 +53,7 @@ public final class FlushBlocking {
 	    };
 	  }
 
-	  public void block() {
+	void block() {
 	    phaser.arriveAndAwaitAdvance();
 	  }
 	}
