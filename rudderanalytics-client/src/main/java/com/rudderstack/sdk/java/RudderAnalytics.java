@@ -110,7 +110,7 @@ public class RudderAnalytics {
      */
     public static class Builder {
         private static final Endpoint DEFAULT_ENDPOINT = Endpoints.newFixedEndpoint("https://hosted.rudderlabs.com");
-        private static final String DEFAULT_USER_AGENT = "rudderstack-analytics-java/1.0.0";
+        private static final String DEFAULT_USER_AGENT = "rudderstack-analytics-java/1.0.1";
 
         private final String writeKey;
         private Client client;
