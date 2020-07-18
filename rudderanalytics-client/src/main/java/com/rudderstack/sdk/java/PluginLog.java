@@ -1,9 +1,5 @@
 package com.rudderstack.sdk.java;
 
-import com.rudderstack.sdk.java.Callback;
-import com.rudderstack.sdk.java.Log;
-import com.rudderstack.sdk.java.Plugin;
-import com.rudderstack.sdk.java.RudderAnalytics;
 import com.rudderstack.sdk.java.messages.Message;
 
 public class PluginLog implements Plugin {

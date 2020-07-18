@@ -102,6 +102,7 @@ public class RudderAnalytics {
      * Block until the flush completes
      */
     public void blockFlush() {
+        flush();
     	flushBlock.block();
     }
     
@@ -124,9 +125,7 @@ public class RudderAnalytics {
         private int flushQueueSize;
         private long flushIntervalInMillis;
         private List<Callback> callbacks;
-        private String configURL;
         
-
         Builder(String writeKey, String dataPlaneUrl) {
             if (writeKey == null || writeKey.trim().length() == 0 || dataPlaneUrl == null
                     || dataPlaneUrl.trim().length() == 0) {

@@ -1,9 +1,5 @@
 package com.rudderstack.sdk.java;
 import java.util.concurrent.Phaser;
-import com.rudderstack.sdk.java.RudderAnalytics;
-import com.rudderstack.sdk.java.Callback;
-import com.rudderstack.sdk.java.MessageTransformer;
-import com.rudderstack.sdk.java.Plugin;
 import com.rudderstack.sdk.java.messages.MessageBuilder;
 import com.rudderstack.sdk.java.messages.Message;
 
@@ -17,7 +13,12 @@ public final class FlushBlocking {
 
     public static FlushBlocking create() {
         if (instance == null) {
-            instance = new FlushBlocking();     
+			synchronized(FlushBlocking.class) {
+                if (instance == null) {
+                    instance = new FlushBlocking(); 
+                }
+            }
+                
         }
         return instance;
     }
