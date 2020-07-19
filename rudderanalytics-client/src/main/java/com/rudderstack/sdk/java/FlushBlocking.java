@@ -17,8 +17,7 @@ public final class FlushBlocking {
                 if (instance == null) {
                     instance = new FlushBlocking(); 
                 }
-            }
-                
+            }       
         }
         return instance;
     }
@@ -33,7 +32,23 @@ public final class FlushBlocking {
 	            new MessageTransformer() {
 	              @Override
 	              public boolean transform(MessageBuilder builder) {
-	                phaser.register();
+			// 		System.out.printf("%-20s: %10s, registered=%s, arrived=%s, unarrived=%s phase=%s%n",
+			// 		"BeforeRegister",
+			// 		Thread.currentThread().getName(),
+			// 		phaser.getRegisteredParties(),
+			// 		phaser.getArrivedParties(),
+			// 		phaser.getUnarrivedParties(),
+			// 		phaser.getPhase()
+			// );
+					phaser.register();
+				// 	System.out.printf("%-20s: %10s, registered=%s, arrived=%s, unarrived=%s phase=%s%n",
+				// 		"AfterRegister",
+				// 		Thread.currentThread().getName(),
+				// 		phaser.getRegisteredParties(),
+				// 		phaser.getArrivedParties(),
+				// 		phaser.getUnarrivedParties(),
+				// 		phaser.getPhase()
+				// );
 	                return true;
 	              }
 	            });
@@ -42,9 +57,24 @@ public final class FlushBlocking {
 	            new Callback() {
 	              @Override
 	              public void success(Message message) {
-	                phaser.arrive();
+				// 	System.out.printf("%-20s: %10s, registered=%s, arrived=%s, unarrived=%s phase=%s%n",
+				// 		"BeforeArrive",
+				// 		Thread.currentThread().getName(),
+				// 		phaser.getRegisteredParties(),
+				// 		phaser.getArrivedParties(),
+				// 		phaser.getUnarrivedParties(),
+				// 		phaser.getPhase()
+				// );
+					phaser.arriveAndDeregister();
+				// 	System.out.printf("%-20s: %10s, registered=%s, arrived=%s, unarrived=%s phase=%s%n",
+				// 		"AfterArrive",
+				// 		Thread.currentThread().getName(),
+				// 		phaser.getRegisteredParties(),
+				// 		phaser.getArrivedParties(),
+				// 		phaser.getUnarrivedParties(),
+				// 		phaser.getPhase()
+				// );
 	              }
-
 	              @Override
 	              public void failure(Message message, Throwable throwable) {
 	                phaser.arrive();
@@ -54,7 +84,24 @@ public final class FlushBlocking {
 	    };
 	  }
 
-	void block() {
-	    phaser.arriveAndAwaitAdvance();
+	 void block() {
+		// System.out.println("Block Thread : " + Thread.currentThread().getName());
+		// System.out.printf("%-20s: %10s, registered=%s, arrived=%s, unarrived=%s phase=%s%n",
+		// 				"BeforeMainArrive",
+		// 				Thread.currentThread().getName(),
+		// 				phaser.getRegisteredParties(),
+		// 				phaser.getArrivedParties(),
+		// 				phaser.getUnarrivedParties(),
+		// 				phaser.getPhase()
+		// 		);
+		phaser.arriveAndAwaitAdvance();
+		// System.out.printf("%-20s: %10s, registered=%s, arrived=%s, unarrived=%s phase=%s%n",
+		// 				"AfterMainArrive",
+		// 				Thread.currentThread().getName(),
+		// 				phaser.getRegisteredParties(),
+		// 				phaser.getArrivedParties(),
+		// 				phaser.getUnarrivedParties(),
+		// 				phaser.getPhase()
+		// 		);
 	  }
 	}

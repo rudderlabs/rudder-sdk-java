@@ -101,9 +101,10 @@ public class RudderAnalytics {
     /**
      * Block until the flush completes
      */
-    public void blockFlush() {
+    synchronized public void blockFlush() {
         flush();
-    	flushBlock.block();
+        flushBlock.block();
+        
     }
     
     /**
