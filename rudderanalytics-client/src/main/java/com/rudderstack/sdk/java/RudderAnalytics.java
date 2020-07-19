@@ -299,7 +299,7 @@ public class RudderAnalytics {
         public Builder synchronize(boolean isSynchronize) {
         	if (isSynchronize) {
         		flushBlock = FlushBlocking.create();
-        		this.plugin(flushBlock.plugin());
+        		plugin(flushBlock.plugin());
         	}
         	
         	return this;
