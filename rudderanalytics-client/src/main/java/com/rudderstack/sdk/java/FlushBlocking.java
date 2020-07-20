@@ -77,7 +77,7 @@ public final class FlushBlocking {
 	              }
 	              @Override
 	              public void failure(Message message, Throwable throwable) {
-	                phaser.arrive();
+	                phaser.arriveAndDeregister();
 	              }
 	            });
 	      }
