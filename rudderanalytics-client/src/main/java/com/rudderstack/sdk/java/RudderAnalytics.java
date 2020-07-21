@@ -103,8 +103,7 @@ public class RudderAnalytics {
      */
     synchronized public void blockFlush() {
         flush();
-        flushBlock.block();
-        
+        flushBlock.block();   
     }
     
     /**
@@ -301,8 +300,7 @@ public class RudderAnalytics {
         	if (isSynchronize) {
         		flushBlock = FlushBlocking.create();
         		plugin(flushBlock.plugin());
-        	}
-        	
+        	}	
         	return this;
         }
 

@@ -44,13 +44,13 @@ RudderAnalytics analytics = RudderAnalytics.builder(
         "http://data-plane-url"
 )
 .synchronize(true) // optional (default : false).It is required to block further method invocation until the flush completes.
-.plugin(new PluginLog()) // Specific Logging for Synchronize
+.plugin(new PluginLog()) // optional. Used for Logging 
 .build();
 
 ...YOUR CODE...
 
-analytics.flush(); // Trigger a flush.
-analytics.blockFlush(); // Block until the flush completes.
+analytics.flush(); // Triggers a flush.
+analytics.blockFlush(); //optional. Triggers a flush and block until the flush completes. Required in case of Synchronize. It calls implicitly the `flush` method. So, explicit `flush` call is not required.
 analytics.shutdown(); // Shut down after the flush is complete.
 ```
 

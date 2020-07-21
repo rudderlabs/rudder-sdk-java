@@ -5,7 +5,7 @@
 
   <groupId>com.rudderstack.sdk.java</groupId>
   <artifactId>rudderanalytics-client</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
 
   <name>rudderanalytics-client</name>
   <url>https://github.com/rudderlabs/rudder-sdk-java</url>

@@ -2,6 +2,10 @@ package com.rudderstack.sdk.java;
 
 import com.rudderstack.sdk.java.messages.Message;
 
+/**
+ * A {@link Plugin} implementation that redirects client logs to standard output and logs callback.
+ * events.
+ */
 public class PluginLog implements Plugin {
 	  @Override
 	  public void configure(RudderAnalytics.Builder builder) {
