@@ -8,54 +8,54 @@ import com.rudderstack.sdk.java.messages.Message;
  */
 public final class FlushBlocking {
 
-	private static FlushBlocking instance = null;
+  private static FlushBlocking instance = null;
 
-    private FlushBlocking() {
-    	this.phaser = new Phaser(1);
-    }
+  private FlushBlocking() {
+    this.phaser = new Phaser(1);
+  }
 
-    public static FlushBlocking create() {
+  public static FlushBlocking create() {
+    if (instance == null) {
+      synchronized(FlushBlocking.class) {
         if (instance == null) {
-			synchronized(FlushBlocking.class) {
-                if (instance == null) {
-                    instance = new FlushBlocking(); 
-                }
-            }       
+          instance = new FlushBlocking();
         }
-        return instance;
+      }
     }
+    return instance;
+  }
 
-	  final Phaser phaser;
+  final Phaser phaser;
 
-	   Plugin plugin() {
-	    return new Plugin() {
-	      @Override
-	      public void configure(RudderAnalytics.Builder builder) {
-	        builder.messageTransformer(
-	            new MessageTransformer() {
-	              @Override
-	              public boolean transform(MessageBuilder builder) {
-					phaser.register();
-	                return true;
-	              }
-	            });
+  Plugin plugin() {
+    return new Plugin() {
+      @Override
+      public void configure(RudderAnalytics.Builder builder) {
+        builder.messageTransformer(
+            new MessageTransformer() {
+              @Override
+              public boolean transform(MessageBuilder builder) {
+                phaser.register();
+                return true;
+              }
+            });
 
-	        builder.callback(
-	            new Callback() {
-	              @Override
-	              public void success(Message message) {
-					phaser.arriveAndDeregister();
-	              }
-	              @Override
-	              public void failure(Message message, Throwable throwable) {
-	                phaser.arriveAndDeregister();
-	              }
-	            });
-	      }
-	    };
-	  }
+        builder.callback(
+            new Callback() {
+              @Override
+              public void success(Message message) {
+                phaser.arriveAndDeregister();
+              }
+              @Override
+              public void failure(Message message, Throwable throwable) {
+                phaser.arriveAndDeregister();
+              }
+            });
+      }
+    };
+  }
 
-	 void block() {
-		phaser.arriveAndAwaitAdvance();
-	  }
-	}
+  void block() {
+    phaser.arriveAndAwaitAdvance();
+  }
+}

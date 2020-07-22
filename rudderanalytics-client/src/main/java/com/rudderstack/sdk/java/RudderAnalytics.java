@@ -98,14 +98,15 @@ public class RudderAnalytics {
     public void shutdown() {
         client.shutdown();
     }
+
     /**
      * Block until the flush completes
      */
     synchronized public void blockFlush() {
         flush();
-        flushBlock.block();   
+        flushBlock.block();
     }
-    
+
     /**
      * Fluent API for creating {@link RudderAnalytics} instances.
      */
@@ -125,7 +126,7 @@ public class RudderAnalytics {
         private int flushQueueSize;
         private long flushIntervalInMillis;
         private List<Callback> callbacks;
-        
+
         Builder(String writeKey, String dataPlaneUrl) {
             if (writeKey == null || writeKey.trim().length() == 0 || dataPlaneUrl == null
                     || dataPlaneUrl.trim().length() == 0) {
@@ -291,16 +292,15 @@ public class RudderAnalytics {
             plugin.configure(this);
             return this;
         }
-        
+
         /**
-         * Use a {@link FlushBlock} to implement synchronization 
+         * Use a {@link FlushBlock} to implement synchronization
          */
-       
         public Builder synchronize(boolean isSynchronize) {
         	if (isSynchronize) {
         		flushBlock = FlushBlocking.create();
         		plugin(flushBlock.plugin());
-        	}	
+        	}
         	return this;
         }
 
