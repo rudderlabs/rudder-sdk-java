@@ -13,7 +13,6 @@ import java.util.Map;
  *
  * <p>Use {@link #builder} to construct your own instances.
  *
- * @see <a href="https://segment.com/docs/spec/alias/">Alias</a>
  */
 @AutoValue
 @AutoGson

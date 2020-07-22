@@ -9,6 +9,9 @@ pom.xml.next
 release.properties
 .vscode
 
+**/bin
+**/.factorypath
+
 ### Java ###
 *.class
 

@@ -13,7 +13,6 @@ import javax.annotation.Nullable;
  *
  * <p>Use {@link #builder} to construct your own instances.
  *
- * @see <a href="https://segment.com/docs/spec/page/">Page</a>
  */
 @AutoValue
 @AutoGson //
@@ -24,7 +23,6 @@ public abstract class PageMessage implements Message {
    *
    * @param name The name of the page the user is on.
    * @throws IllegalArgumentException if the page name is null or empty
-   * @see <a href="https://segment.com/docs/spec/page/#name">Page</a>
    */
   public static Builder builder(String name) {
     return new Builder(name);
@@ -61,7 +59,6 @@ public abstract class PageMessage implements Message {
     /**
      * Set a map of information that describe the page. These can be anything you want.
      *
-     * @see <a href="https://segment.com/docs/spec/page/#properties">Properties</a>
      */
     public Builder properties(Map<String, ?> properties) {
       if (properties == null) {

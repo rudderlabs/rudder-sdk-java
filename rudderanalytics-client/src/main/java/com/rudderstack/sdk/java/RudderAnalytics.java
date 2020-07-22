@@ -24,10 +24,10 @@ import retrofit.client.Client;
 import retrofit.converter.GsonConverter;
 
 /**
- * The entry point into the Segment for Java library.
+ * The entry point into the Rudder for Java library.
  *
  * <p>
- * The idea is simple: one pipeline for all your data. Segment is the single hub
+ * The idea is simple: one pipeline for all your data. Rudder is the single hub
  * to collect, translate and route your data with the flip of a switch.
  *
  * <p>
@@ -44,6 +44,7 @@ public class RudderAnalytics {
     private final List<MessageTransformer> messageTransformers;
     private final List<MessageInterceptor> messageInterceptors;
     private final Log log;
+    private static FlushBlocking flushBlock = null;
 
     RudderAnalytics(AnalyticsClient client, List<MessageTransformer> messageTransformers,
                     List<MessageInterceptor> messageInterceptors, Log log) {
@@ -58,8 +59,8 @@ public class RudderAnalytics {
      *
      * @param writeKey Your project write key available on the Rudder dashboard.
      */
-    public static Builder builder(String writeKey, String dataPlaneURI) {
-        return new Builder(writeKey, dataPlaneURI);
+    public static Builder builder(String writeKey, String dataPlaneUrl) {
+        return new Builder(writeKey, dataPlaneUrl);
     }
 
     /**
@@ -99,11 +100,19 @@ public class RudderAnalytics {
     }
 
     /**
+     * Block until the flush completes
+     */
+    synchronized public void blockFlush() {
+        flush();
+        flushBlock.block();
+    }
+
+    /**
      * Fluent API for creating {@link RudderAnalytics} instances.
      */
     public static class Builder {
         private static final Endpoint DEFAULT_ENDPOINT = Endpoints.newFixedEndpoint("https://hosted.rudderlabs.com");
-        private static final String DEFAULT_USER_AGENT = "rudderstack-analytics-java/1.0.0";
+        private static final String DEFAULT_USER_AGENT = "rudderstack-analytics-java/1.0.1";
 
         private final String writeKey;
         private Client client;
@@ -117,15 +126,14 @@ public class RudderAnalytics {
         private int flushQueueSize;
         private long flushIntervalInMillis;
         private List<Callback> callbacks;
-        private String configURL;
 
-        Builder(String writeKey, String dataPlaneURI) {
-            if (writeKey == null || writeKey.trim().length() == 0 || dataPlaneURI == null
-                    || dataPlaneURI.trim().length() == 0) {
+        Builder(String writeKey, String dataPlaneUrl) {
+            if (writeKey == null || writeKey.trim().length() == 0 || dataPlaneUrl == null
+                    || dataPlaneUrl.trim().length() == 0) {
                 throw new NullPointerException("writeKey cannot be null or empty.");
             }
             this.writeKey = writeKey;
-            this.endpoint = Endpoints.newFixedEndpoint(dataPlaneURI);
+            this.endpoint = Endpoints.newFixedEndpoint(dataPlaneUrl);
         }
 
         /**
@@ -283,6 +291,17 @@ public class RudderAnalytics {
             }
             plugin.configure(this);
             return this;
+        }
+
+        /**
+         * Use a {@link FlushBlock} to implement synchronization
+         */
+        public Builder synchronize(boolean isSynchronize) {
+        	if (isSynchronize) {
+        		flushBlock = FlushBlocking.create();
+        		plugin(flushBlock.plugin());
+        	}
+        	return this;
         }
 
         /**

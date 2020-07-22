@@ -12,10 +12,10 @@ import com.rudderstack.sdk.java.messages.Message;
  */
 public interface Callback {
   /**
-   * Invoked when the message is successfully uploaded to Segment.
+   * Invoked when the message is successfully uploaded to Rudder.
    *
    * <p>
-   * Note: The Segment HTTP API itself is asynchronous, so this doesn't indicate
+   * Note: The Rudder HTTP API itself is asynchronous, so this doesn't indicate
    * whether the message was sent to all integrations or not — just that the
    * message was sent to the Rudder API and will be sent to integrations at a
    * later time.

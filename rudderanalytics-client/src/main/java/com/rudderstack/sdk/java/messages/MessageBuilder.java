@@ -47,7 +47,6 @@ public abstract class MessageBuilder<T extends Message, V extends MessageBuilder
    * may be dropped.
    *
    * @deprecated Use {@link #messageId(String)} instead.
-   * @see <a href="https://segment.com/docs/spec/common/">Common Fields</a>
    */
   public V messageId(UUID messageId) {
     if (messageId == null) {
@@ -62,7 +61,6 @@ public abstract class MessageBuilder<T extends Message, V extends MessageBuilder
    * for you. This ID is typically used for deduping - messages with the same IDs as previous events
    * may be dropped.
    *
-   * @see <a href="https://segment.com/docs/spec/common/">Common Fields</a>
    */
   public V messageId(String messageId) {
     if (isNullOrEmpty(messageId)) {
@@ -76,7 +74,6 @@ public abstract class MessageBuilder<T extends Message, V extends MessageBuilder
    * Set a timestamp for the event. By default, the current timestamp is used, but you may override
    * it for historical import.
    *
-   * @see <a href="https://segment.com/docs/spec/common/#-timestamp-">Timestamp</a>
    */
   public V timestamp(Date timestamp) {
     if (timestamp == null) {
@@ -94,7 +91,6 @@ public abstract class MessageBuilder<T extends Message, V extends MessageBuilder
    * automatically, depending on the library you send data from. Some keys, such as location and
    * speed need to be manually entered.
    *
-   * @see <a href="https://segment.com/docs/spec/common/#context">Context</a>
    */
   public V context(Map<String, ?> context) {
     if (context == null) {
@@ -109,8 +105,6 @@ public abstract class MessageBuilder<T extends Message, V extends MessageBuilder
    * absolutely unique identifier.
    *
    * @deprecated Use {@link #anonymousId(String)} instead.
-   * @see <a href="https://segment.com/docs/spec/identify/#identities">Identities</a>
-   * @see <a href="https://segment.com/docs/spec/identify/#anonymous-id">Anonymous ID</a>
    */
   public V anonymousId(UUID anonymousId) {
     if (anonymousId == null) {
@@ -124,8 +118,6 @@ public abstract class MessageBuilder<T extends Message, V extends MessageBuilder
    * The Anonymous ID is a pseudo-unique substitute for a User ID, for cases when you don’t have an
    * absolutely unique identifier.
    *
-   * @see <a href="https://segment.com/docs/spec/identify/#identities">Identities</a>
-   * @see <a href="https://segment.com/docs/spec/identify/#anonymous-id">Anonymous ID</a>
    */
   public V anonymousId(String anonymousId) {
     if (isNullOrEmpty(anonymousId)) {
@@ -138,8 +130,6 @@ public abstract class MessageBuilder<T extends Message, V extends MessageBuilder
   /**
    * The User ID is a persistent unique identifier for a user (such as a database ID).
    *
-   * @see <a href="https://segment.com/docs/spec/identify/#identities">Identities</a>
-   * @see <a href="https://segment.com/docs/spec/identify/#user-id">User ID</a>
    */
   public V userId(String userId) {
     if (isNullOrEmpty(userId)) {
@@ -153,7 +143,6 @@ public abstract class MessageBuilder<T extends Message, V extends MessageBuilder
    * Set whether this message is sent to the specified integration or not. 'All' is a special key
    * that applies when no key for a specific integration is found.
    *
-   * @see <a href="https://segment.com/docs/spec/common/#integrations">Integrations</a>
    */
   public V enableIntegration(String key, boolean enable) {
     if (isNullOrEmpty(key)) {
@@ -170,7 +159,6 @@ public abstract class MessageBuilder<T extends Message, V extends MessageBuilder
    * Pass in some options that will only be used by the target integration. This will implicitly
    * mark the integration as enabled.
    *
-   * @see <a href="https://segment.com/docs/spec/common/#integrations">Integrations</a>
    */
   public V integrationOptions(String key, Map<String, ? super Object> options) {
     if (isNullOrEmpty(key)) {
