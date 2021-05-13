@@ -14,24 +14,24 @@
 	<description>RudderStack’s Java SDK allows you to track your customer event data from your Java code. Once enabled, the event requests hit the RudderStack servers. RudderStack then routes the events to the specified destination platforms as configured by you.</description>
 	<url>https://github.com/rudderlabs/rudder-sdk-java</url>
 	<licenses>
-  <license>
-   <name>MIT License</name>
-   <url>https://github.com/rudderlabs/rudder-sdk-android/blob/master/LICENSE</url>
-  </license>
- </licenses>
- <developers>
-  <developer>
-   <name>Sajal Mohanta</name>
-   <email>sajal@rudderstack.com</email>
-   <organization>rudderstack</organization>
-   <organizationUrl>https://www.rudderstack.com/</organizationUrl>
-  </developer>
- </developers>
-  <scm>
-  <connection>scm:git:git://github.com/rudderlabs/rudder-sdk-java.git</connection>
-  <developerConnection>scm:git:ssh://github.com:rudderlabs/rudder-sdk-java.git</developerConnection>
-  <url>https://github.com/rudderlabs/rudder-sdk-java/tree/master</url>
- </scm>
+		<license>
+			<name>MIT License</name>
+			<url>https://github.com/rudderlabs/rudder-sdk-android/blob/master/LICENSE</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>Sajal Mohanta</name>
+			<email>sajal@rudderstack.com</email>
+			<organization>rudderstack</organization>
+			<organizationUrl>https://www.rudderstack.com/</organizationUrl>
+		</developer>
+	</developers>
+	<scm>
+		<connection>scm:git:git://github.com/rudderlabs/rudder-sdk-java.git</connection>
+		<developerConnection>scm:git:ssh://github.com:rudderlabs/rudder-sdk-java.git</developerConnection>
+		<url>https://github.com/rudderlabs/rudder-sdk-java/tree/master</url>
+	</scm>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
