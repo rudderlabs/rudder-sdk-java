@@ -20,16 +20,6 @@ RudderStack’s Java SDK allows you to track your customer event data from your 
    <version>1.0.1</version>
 </dependency>
 ```
-and
-```xml
-<repositories>
-       <repository>
-           <id>bintray</id>
-           <name>rudderstack</name>
-           <url>https://dl.bintray.com/rudderstack/rudderstack</url>
-       </repository>
-</repositories>
-```
 
 *or if you're using Gradle:*
 
