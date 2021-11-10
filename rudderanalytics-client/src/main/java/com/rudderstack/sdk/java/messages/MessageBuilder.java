@@ -120,9 +120,6 @@ public abstract class MessageBuilder<T extends Message, V extends MessageBuilder
    *
    */
   public V anonymousId(String anonymousId) {
-    if (isNullOrEmpty(anonymousId)) {
-      throw new IllegalArgumentException("anonymousId cannot be null or empty.");
-    }
     this.anonymousId = anonymousId;
     return self();
   }
@@ -132,9 +129,6 @@ public abstract class MessageBuilder<T extends Message, V extends MessageBuilder
    *
    */
   public V userId(String userId) {
-    if (isNullOrEmpty(userId)) {
-      throw new IllegalArgumentException("userId cannot be null or empty.");
-    }
     this.userId = userId;
     return self();
   }
@@ -160,7 +154,7 @@ public abstract class MessageBuilder<T extends Message, V extends MessageBuilder
    * mark the integration as enabled.
    *
    */
-  public V integrationOptions(String key, Map<String, ? super Object> options) {
+  public V integrationOptions(String key, Map<String, ?> options) {
     if (isNullOrEmpty(key)) {
       throw new IllegalArgumentException("Key cannot be null or empty.");
     }
@@ -188,8 +182,8 @@ public abstract class MessageBuilder<T extends Message, V extends MessageBuilder
    * @throws IllegalStateException if both anonymousId and userId are not provided.
    */
   public T build() {
-    if (anonymousId == null && userId == null) {
-      throw new IllegalStateException("Either anonymousId or userId must be provided.");
+    if (isNullOrEmpty(anonymousId) && isNullOrEmpty(userId)) {
+      throw new IllegalArgumentException("Either anonymousId or userId must be provided.");
     }
 
     Date timestamp = this.timestamp;
