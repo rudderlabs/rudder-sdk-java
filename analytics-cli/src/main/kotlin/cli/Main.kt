@@ -2,10 +2,9 @@ package cli
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.segment.analytics.Analytics
-import com.segment.analytics.Callback
-import com.segment.analytics.Log
-import com.segment.analytics.messages.*
+import com.rudder.analytics.Analytics
+import com.rudder.analytics.Callback
+import com.rudder.analytics.messages.*
 import org.docopt.Docopt
 import java.util.concurrent.Phaser
 

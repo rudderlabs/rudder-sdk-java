@@ -1,7 +1,7 @@
 package sample;
 
-import com.segment.analytics.Analytics;
-import com.segment.analytics.messages.TrackMessage;
+import com.rudder.analytics.Analytics;
+import com.rudder.analytics.messages.TrackMessage;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -13,7 +13,7 @@ public class Main {
   public static void main(String... args) throws Exception {
     final BlockingFlush blockingFlush = BlockingFlush.create();
 
-    // https://segment.com/segment-engineering/sources/test-java/debugger
+    // https://rudder.com/rudder-engineering/sources/test-java/debugger
     final Analytics analytics =
         Analytics.builder("xemyw6oe3n")
             .plugin(blockingFlush.plugin())

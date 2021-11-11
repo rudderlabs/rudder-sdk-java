@@ -6,7 +6,7 @@
 # http://benlimmer.com/2013/12/26/automatically-publish-javadoc-to-gh-pages-with-travis-ci/
 
 REPO="analytics-java"
-USERNAME="segmentio"
+USERNAME="rudderio"
 JDK="oraclejdk8"
 BRANCH="master"
 
