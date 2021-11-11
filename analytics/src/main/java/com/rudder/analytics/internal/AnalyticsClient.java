@@ -26,7 +26,8 @@ import com.rudder.analytics.messages.Message;
 import com.segment.backo.Backo;
 import retrofit2.Call;
 import retrofit2.Response;
-
+import com.rudder.analytics.internal.AnalyticsVersion;
+import com.rudder.analytics.internal.FlushMessage;
 import static com.rudder.analytics.Log.Level.ERROR;
 import static com.rudder.analytics.Log.Level.VERBOSE;
 import static com.rudder.analytics.Log.Level.DEBUG;
@@ -119,6 +120,8 @@ public class AnalyticsClient {
         flushIntervalInMillis,
         flushIntervalInMillis,
         TimeUnit.MILLISECONDS);
+    //log the version
+    log.print(DEBUG, AnalyticsVersion.get());
   }
 
   public int messageSizeInBytes(Message message) {
