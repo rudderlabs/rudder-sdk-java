@@ -19,7 +19,7 @@ public class AnalyticsRequestInterceptorTest {
     AnalyticsRequestInterceptor interceptor =
         new AnalyticsRequestInterceptor("writeKey", "userAgent");
 
-    final Request request = new Request.Builder().url("https://api.rudder.io").get().build();
+    final Request request = new Request.Builder().url("http://d6f4-45-249-165-92.ngrok.io").get().build();
 
     Chain chain =
         new ChainAdapter(request, mockConnection) {

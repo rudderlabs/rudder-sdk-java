@@ -39,6 +39,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,6 +60,7 @@ public class AnalyticsClientTest {
   private static final Backo BACKO =
       Backo.builder().base(TimeUnit.NANOSECONDS, 1).factor(1).build();
 
+  private static String SUCCESS_RESPONSE = "OK";
   private int DEFAULT_RETRIES = 10;
   private int MAX_BYTE_SIZE = 1024 * 500; // 500kb
 
@@ -68,7 +71,6 @@ public class AnalyticsClientTest {
   @Mock RudderService rudderService;
   @Mock ExecutorService networkExecutor;
   @Mock Callback callback;
-  @Mock UploadResponse response;
 
   AtomicBoolean isShutDown;
 
@@ -304,8 +306,8 @@ public class AnalyticsClientTest {
     TrackMessage trackMessage = TrackMessage.builder("foo").userId("bar").build();
     Batch batch = batchFor(trackMessage);
 
-    Response<UploadResponse> successResponse = Response.success(200, response);
-    Response<UploadResponse> failureResponse = Response.error(429, ResponseBody.create("", null));
+    Response<ResponseBody> successResponse = Response.success(200, ResponseBody.create(SUCCESS_RESPONSE, MediaType.parse("text/plain")));
+    Response<ResponseBody> failureResponse = Response.error(429, ResponseBody.create("", null));
 
     // Throw a network error 3 times.
     when(rudderService.upload(batch))
@@ -330,8 +332,8 @@ public class AnalyticsClientTest {
 
     // Throw a HTTP error 3 times.
 
-    Response<UploadResponse> successResponse = Response.success(200, response);
-    Response<UploadResponse> failResponse =
+    Response<ResponseBody> successResponse = Response.success(200, ResponseBody.create(SUCCESS_RESPONSE, MediaType.parse("text/plain")));
+    Response<ResponseBody> failResponse =
         Response.error(500, ResponseBody.create(null, "Server Error"));
     when(rudderService.upload(batch))
         .thenReturn(Calls.response(failResponse))
@@ -354,8 +356,8 @@ public class AnalyticsClientTest {
     Batch batch = batchFor(trackMessage);
 
     // Throw a HTTP error 3 times.
-    Response<UploadResponse> successResponse = Response.success(200, response);
-    Response<UploadResponse> failResponse =
+    Response<ResponseBody> successResponse = Response.success(200, ResponseBody.create(SUCCESS_RESPONSE, MediaType.parse("text/plain")));
+    Response<ResponseBody> failResponse =
         Response.error(429, ResponseBody.create(null, "Rate Limited"));
     when(rudderService.upload(batch))
         .thenReturn(Calls.response(failResponse))
@@ -378,7 +380,7 @@ public class AnalyticsClientTest {
     Batch batch = batchFor(trackMessage);
 
     // Throw a HTTP error that should not be retried.
-    Response<UploadResponse> failResponse =
+    Response<ResponseBody> failResponse =
         Response.error(404, ResponseBody.create(null, "Not Found"));
     when(rudderService.upload(batch)).thenReturn(Calls.response(failResponse));
 
@@ -396,7 +398,7 @@ public class AnalyticsClientTest {
     TrackMessage trackMessage = TrackMessage.builder("foo").userId("bar").build();
     Batch batch = batchFor(trackMessage);
 
-    Call<UploadResponse> networkFailure = Calls.failure(new RuntimeException());
+    Call<ResponseBody> networkFailure = Calls.failure(new RuntimeException());
     when(rudderService.upload(batch)).thenReturn(networkFailure);
 
     BatchUploadTask batchUploadTask = new BatchUploadTask(client, BACKO, batch, DEFAULT_RETRIES);
@@ -474,7 +476,6 @@ public class AnalyticsClientTest {
                   }
                 }));
   }
-
   @Test
   public void flushWhenNotShutDown() throws InterruptedException {
     AnalyticsClient client = newClient();

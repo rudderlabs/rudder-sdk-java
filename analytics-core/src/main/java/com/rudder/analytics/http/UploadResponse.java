@@ -6,5 +6,4 @@ import com.rudder.analytics.gson.AutoGson;
 @AutoValue
 @AutoGson
 public abstract class UploadResponse {
-  public abstract boolean success();
 }

@@ -24,6 +24,7 @@ import com.rudder.analytics.http.UploadResponse;
 import com.rudder.analytics.messages.Batch;
 import com.rudder.analytics.messages.Message;
 import com.segment.backo.Backo;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 import com.rudder.analytics.internal.AnalyticsVersion;
@@ -295,8 +296,8 @@ public class AnalyticsClient {
       client.log.print(VERBOSE, "Uploading batch %s.", batch.sequence());
 
       try {
-        Call<UploadResponse> call = client.service.upload(batch);
-        Response<UploadResponse> response = call.execute();
+        Call<ResponseBody> call = client.service.upload(batch);
+        Response<ResponseBody> response = call.execute();
 
         if (response.isSuccessful()) {
           client.log.print(VERBOSE, "Uploaded batch %s.", batch.sequence());
@@ -322,6 +323,7 @@ public class AnalyticsClient {
         }
 
         client.log.print(DEBUG, "Could not upload batch %s. Giving up.", batch.sequence());
+        assert response.errorBody() != null;
         notifyCallbacksWithException(batch, new IOException(response.errorBody().string()));
 
         return false;

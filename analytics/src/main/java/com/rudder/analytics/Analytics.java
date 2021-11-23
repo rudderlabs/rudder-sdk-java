@@ -124,8 +124,7 @@ public class Analytics {
 
   /** Fluent API for creating {@link Analytics} instances. */
   public static class Builder {
-    private static final String DEFAULT_ENDPOINT = "https://api.rudder.io";
-    private static final String DEFAULT_PATH = "/v1/import/";
+    private static final String DEFAULT_ENDPOINT = "https://hosted.rudderlabs.com/";
     private static final String DEFAULT_USER_AGENT = "analytics-java/" + AnalyticsVersion.get();
     private static final int MESSAGE_QUEUE_MAX_BYTE_SIZE = 1024 * 500;
 
@@ -173,19 +172,19 @@ public class Analytics {
 
     /**
      * Set an endpoint (host only) that this client should upload events to. Uses {@code
-     * https://api.rudder.io} by default.
+     * http://hosted.rudderlabs.com} by default.
      */
     public Builder endpoint(String endpoint) {
       if (endpoint == null || endpoint.trim().length() == 0) {
         throw new NullPointerException("endpoint cannot be null or empty.");
       }
-      this.endpoint = HttpUrl.parse(endpoint + DEFAULT_PATH);
+      this.endpoint = HttpUrl.parse(endpoint );
       return this;
     }
 
     /**
      * Set an endpoint (host and prefix) that this client should upload events to. Uses {@code
-     * https://api.rudder.io/v1} by default.
+     *https://hosted.rudderlabs.com/v1} by default.
      */
     public Builder setUploadURL(String uploadURL) {
       if (uploadURL == null || uploadURL.trim().length() == 0) {
@@ -341,7 +340,7 @@ public class Analytics {
         if (uploadURL != null) {
           endpoint = uploadURL;
         } else {
-          endpoint = HttpUrl.parse(DEFAULT_ENDPOINT + DEFAULT_PATH);
+          endpoint = HttpUrl.parse(DEFAULT_ENDPOINT);
         }
       }
 

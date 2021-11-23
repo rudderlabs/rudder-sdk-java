@@ -266,14 +266,14 @@ public class AnalyticsBuilderTest {
 
   @Test
   public void buildsWithValidEndpoint() {
-    Analytics analytics = builder.endpoint("https://api.rudder.io").build();
+    Analytics analytics = builder.endpoint("https://hosted.rudderlabs.com").build();
     assertThat(analytics).isNotNull();
   }
 
   @Test
   public void buildsCorrectEndpoint() {
-    builder.endpoint("https://api.rudder.io");
-    String expectedURL = "https://api.rudder.io/v1/import/";
+    builder.endpoint("https://hosted.rudderlabs.com");
+    String expectedURL = "https://hosted.rudderlabs.com/v1/import/";
     assertEquals(expectedURL, builder.endpoint.toString());
   }
 
