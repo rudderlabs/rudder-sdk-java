@@ -107,8 +107,8 @@ public class AnalyticsClient {
     this.isShutDown = isShutDown;
 
     this.currentQueueSizeInBytes = 0;
-
-    looperExecutor.submit(new Looper());
+    if(!isShutDown.get())
+      looperExecutor.submit(new Looper());
 
     flushScheduler = Executors.newScheduledThreadPool(1, threadFactory);
     flushScheduler.scheduleAtFixedRate(

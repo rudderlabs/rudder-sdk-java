@@ -62,7 +62,7 @@ public class RudderAnalyticsClientTest {
   Log log = Log.NONE;
 
   ThreadFactory threadFactory;
-  @Spy BlockingQueue<Message> messageQueue /*= new LinkedBlockingQueue<>()*/;
+  @Spy LinkedBlockingQueue<Message> messageQueue /*= new LinkedBlockingQueue<>()*/;
   @Mock RudderService rudderService;
   @Mock ExecutorService networkExecutor;
   @Mock Callback callback;
@@ -71,7 +71,7 @@ public class RudderAnalyticsClientTest {
 
   @Before
   public void setUp() {
-    initMocks(this);
+    openMocks(this);
 
     isShutDown = new AtomicBoolean(false);
 //    messageQueue = spy(new LinkedBlockingQueue<Message>());
@@ -523,8 +523,9 @@ public class RudderAnalyticsClientTest {
 
   @Test
   public void shutdownWhenAlreadyShutDown() throws InterruptedException {
+    isShutDown.set(true); //shutdown already
     AnalyticsClient client = newClient();
-    isShutDown.set(true);
+//    isShutDown.set(true);
 
     client.shutdown();
 
