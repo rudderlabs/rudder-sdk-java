@@ -14,18 +14,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-public class AnalyticsBuilderTest {
-  Analytics.Builder builder;
+public class RudderAnalyticsBuilderTest {
+  RudderAnalytics.Builder builder;
 
   @Before
   public void setUp() {
-    builder = Analytics.builder("foo");
+    builder = RudderAnalytics.builder("foo");
   }
 
   @Test
   public void nullWriteKey() {
     try {
-      builder = Analytics.builder(null);
+      builder = RudderAnalytics.builder(null);
       fail("Should fail for null writeKey");
     } catch (NullPointerException e) {
       assertThat(e).hasMessage("writeKey cannot be null or empty.");
@@ -35,14 +35,14 @@ public class AnalyticsBuilderTest {
   @Test
   public void emptyWriteKey() {
     try {
-      builder = Analytics.builder("");
+      builder = RudderAnalytics.builder("");
       fail("Should fail for empty writeKey");
     } catch (NullPointerException e) {
       assertThat(e).hasMessage("writeKey cannot be null or empty.");
     }
 
     try {
-      builder = Analytics.builder("  ");
+      builder = RudderAnalytics.builder("  ");
       fail("Should fail for empty writeKey");
     } catch (NullPointerException e) {
       assertThat(e).hasMessage("writeKey cannot be null or empty.");
@@ -136,7 +136,7 @@ public class AnalyticsBuilderTest {
 
   @Test
   public void buildsWithValidTransformer() {
-    Analytics analytics = builder.messageTransformer(mock(MessageTransformer.class)).build();
+    RudderAnalytics analytics = builder.messageTransformer(mock(MessageTransformer.class)).build();
     assertThat(analytics).isNotNull();
   }
 
@@ -163,7 +163,7 @@ public class AnalyticsBuilderTest {
 
   @Test
   public void buildsWithValidInterceptor() {
-    Analytics analytics = builder.messageInterceptor(mock(MessageInterceptor.class)).build();
+    RudderAnalytics analytics = builder.messageInterceptor(mock(MessageInterceptor.class)).build();
     assertThat(analytics).isNotNull();
   }
 
@@ -186,7 +186,7 @@ public class AnalyticsBuilderTest {
 
   @Test
   public void buildsWithValidFlushQueueSize() {
-    Analytics analytics = builder.flushQueueSize(1).build();
+    RudderAnalytics analytics = builder.flushQueueSize(1).build();
     assertThat(analytics).isNotNull();
   }
 
@@ -217,7 +217,7 @@ public class AnalyticsBuilderTest {
 
   @Test
   public void buildsWithValidFlushInterval() {
-    Analytics analytics = builder.flushInterval(2, TimeUnit.SECONDS).build();
+    RudderAnalytics analytics = builder.flushInterval(2, TimeUnit.SECONDS).build();
     assertThat(analytics).isNotNull();
   }
 
@@ -233,7 +233,7 @@ public class AnalyticsBuilderTest {
 
   @Test
   public void buildsWithValidNetworkExecutor() {
-    Analytics analytics = builder.networkExecutor(mock(ExecutorService.class)).build();
+    RudderAnalytics analytics = builder.networkExecutor(mock(ExecutorService.class)).build();
     assertThat(analytics).isNotNull();
   }
 
@@ -266,7 +266,7 @@ public class AnalyticsBuilderTest {
 
   @Test
   public void buildsWithValidEndpoint() {
-    Analytics analytics = builder.endpoint("https://hosted.rudderlabs.com").build();
+    RudderAnalytics analytics = builder.endpoint("https://hosted.rudderlabs.com").build();
     assertThat(analytics).isNotNull();
   }
 
@@ -279,7 +279,7 @@ public class AnalyticsBuilderTest {
 
   @Test
   public void buildsWithValidUploadURL() {
-    Analytics analytics = builder.setUploadURL("https://example.com/v2/batch/").build();
+    RudderAnalytics analytics = builder.setUploadURL("https://example.com/v2/batch/").build();
     assertThat(analytics).isNotNull();
   }
 
@@ -348,7 +348,7 @@ public class AnalyticsBuilderTest {
 
   @Test
   public void buildsWithThreadFactory() {
-    Analytics analytics = builder.threadFactory(mock(ThreadFactory.class)).build();
+    RudderAnalytics analytics = builder.threadFactory(mock(ThreadFactory.class)).build();
     assertThat(analytics).isNotNull();
   }
 
@@ -374,13 +374,13 @@ public class AnalyticsBuilderTest {
 
   @Test
   public void buildsWithValidCallback() {
-    Analytics analytics = builder.callback(mock(Callback.class)).build();
+    RudderAnalytics analytics = builder.callback(mock(Callback.class)).build();
     assertThat(analytics).isNotNull();
   }
 
   @Test
   public void multipleCallbacks() {
-    Analytics analytics =
+    RudderAnalytics analytics =
         builder.callback(mock(Callback.class)).callback(mock(Callback.class)).build();
 
     assertThat(analytics).isNotNull();
@@ -422,7 +422,7 @@ public class AnalyticsBuilderTest {
 
   @Test
   public void buildWithQueueCapacity() {
-    Analytics analytics = builder.queueCapacity(10).build();
+    RudderAnalytics analytics = builder.queueCapacity(10).build();
     assertThat(analytics).isNotNull();
   }
 }

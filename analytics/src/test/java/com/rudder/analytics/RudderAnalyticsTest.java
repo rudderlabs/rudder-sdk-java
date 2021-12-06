@@ -18,19 +18,19 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 @RunWith(BurstJUnit4.class)
-public class AnalyticsTest {
+public class RudderAnalyticsTest {
   @Mock AnalyticsClient client;
   @Mock Log log;
   @Mock MessageTransformer messageTransformer;
   @Mock MessageInterceptor messageInterceptor;
-  Analytics analytics;
+  RudderAnalytics analytics;
 
   @Before
   public void setUp() {
     initMocks(this);
 
     analytics =
-        new Analytics(
+        new RudderAnalytics(
             client,
             Collections.singletonList(messageTransformer),
             Collections.singletonList(messageInterceptor),

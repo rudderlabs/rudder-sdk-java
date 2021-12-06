@@ -5,15 +5,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.timeout;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 import com.rudder.analytics.Callback;
 import com.rudder.analytics.Log;
@@ -48,6 +42,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import retrofit2.Call;
@@ -55,7 +50,7 @@ import retrofit2.Response;
 import retrofit2.mock.Calls;
 
 @RunWith(BurstJUnit4.class) //
-public class AnalyticsClientTest {
+public class RudderAnalyticsClientTest {
   // Backo instance for testing which trims down the wait times.
   private static final Backo BACKO =
       Backo.builder().base(TimeUnit.NANOSECONDS, 1).factor(1).build();
@@ -67,7 +62,7 @@ public class AnalyticsClientTest {
   Log log = Log.NONE;
 
   ThreadFactory threadFactory;
-  @Mock BlockingQueue<Message> messageQueue;
+  @Spy BlockingQueue<Message> messageQueue /*= new LinkedBlockingQueue<>()*/;
   @Mock RudderService rudderService;
   @Mock ExecutorService networkExecutor;
   @Mock Callback callback;
@@ -79,7 +74,7 @@ public class AnalyticsClientTest {
     initMocks(this);
 
     isShutDown = new AtomicBoolean(false);
-    messageQueue = spy(new LinkedBlockingQueue<Message>());
+//    messageQueue = spy(new LinkedBlockingQueue<Message>());
     threadFactory = Executors.defaultThreadFactory();
   }
 
@@ -104,7 +99,7 @@ public class AnalyticsClientTest {
   public void enqueueAddsToQueue(MessageBuilderTest builder) throws InterruptedException {
     AnalyticsClient client = newClient();
 
-    Message message = builder.get().userId("prateek").build();
+    Message message = builder.get().userId("Deba").build();
     client.enqueue(message);
 
     verify(messageQueue).put(message);
@@ -534,7 +529,7 @@ public class AnalyticsClientTest {
     client.shutdown();
 
     verify(messageQueue, times(0)).put(any(Message.class));
-    verifyZeroInteractions(networkExecutor, callback, rudderService);
+    verifyNoInteractions(networkExecutor, callback, rudderService);
   }
 
   @Test

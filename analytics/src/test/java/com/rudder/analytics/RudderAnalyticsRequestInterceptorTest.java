@@ -11,7 +11,7 @@ import org.hamcrest.core.Is;
 import org.junit.Test;
 import org.mockito.Mock;
 
-public class AnalyticsRequestInterceptorTest {
+public class RudderAnalyticsRequestInterceptorTest {
   @Mock private Connection mockConnection;
 
   @Test

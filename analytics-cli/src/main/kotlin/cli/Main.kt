@@ -2,7 +2,7 @@ package cli
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.rudder.analytics.Analytics
+import com.rudder.analytics.RudderAnalytics
 import com.rudder.analytics.Callback
 import com.rudder.analytics.messages.*
 import org.docopt.Docopt
@@ -106,7 +106,7 @@ fun main(rawArgs: Array<String>) {
 
     val phaser = Phaser(1)
 
-    val analytics = Analytics.builder(writeKey)
+    val analytics = RudderAnalytics.builder(writeKey)
             .flushQueueSize(1)
             .callback(object : Callback {
                 override fun success(message: Message?) {

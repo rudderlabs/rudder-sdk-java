@@ -1,6 +1,6 @@
 package sample;
 
-import com.rudder.analytics.Analytics;
+import com.rudder.analytics.RudderAnalytics;
 import com.rudder.analytics.Callback;
 import com.rudder.analytics.Log;
 import com.rudder.analytics.Plugin;
@@ -12,7 +12,7 @@ import com.rudder.analytics.messages.Message;
  */
 public class LoggingPlugin implements Plugin {
   @Override
-  public void configure(Analytics.Builder builder) {
+  public void configure(RudderAnalytics.Builder builder) {
     builder.log(
         new Log() {
           @Override

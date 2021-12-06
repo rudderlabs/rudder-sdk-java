@@ -37,13 +37,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
  *
  * @see <a href="https://Rudder/">Rudder</a>
  */
-public class Analytics {
+public class RudderAnalytics {
   private final AnalyticsClient client;
   private final List<MessageTransformer> messageTransformers;
   private final List<MessageInterceptor> messageInterceptors;
   private final Log log;
 
-  Analytics(
+  RudderAnalytics(
       AnalyticsClient client,
       List<MessageTransformer> messageTransformers,
       List<MessageInterceptor> messageInterceptors,
@@ -55,7 +55,7 @@ public class Analytics {
   }
 
   /**
-   * Start building an {@link Analytics} instance.
+   * Start building an {@link RudderAnalytics} instance.
    *
    * @param writeKey Your project write key available on the Rudder dashboard.
    */
@@ -122,7 +122,7 @@ public class Analytics {
     return message;
   }
 
-  /** Fluent API for creating {@link Analytics} instances. */
+  /** Fluent API for creating {@link RudderAnalytics} instances. */
   public static class Builder {
     private static final String DEFAULT_ENDPOINT = "https://hosted.rudderlabs.com/";
     private static final String DEFAULT_USER_AGENT = "analytics-java/" + AnalyticsVersion.get();
@@ -328,8 +328,8 @@ public class Analytics {
       return this;
     }
 
-    /** Create a {@link Analytics} client. */
-    public Analytics build() {
+    /** Create a {@link RudderAnalytics} client. */
+    public RudderAnalytics build() {
       Gson gson =
           new GsonBuilder() //
               .registerTypeAdapterFactory(new AutoValueAdapterFactory()) //
@@ -428,7 +428,7 @@ public class Analytics {
               networkExecutor,
               callbacks);
 
-      return new Analytics(analyticsClient, messageTransformers, messageInterceptors, log);
+      return new RudderAnalytics(analyticsClient, messageTransformers, messageInterceptors, log);
     }
   }
 }

@@ -1,6 +1,6 @@
 package sample;
 
-import com.rudder.analytics.Analytics;
+import com.rudder.analytics.RudderAnalytics;
 import com.rudder.analytics.Callback;
 import com.rudder.analytics.MessageTransformer;
 import com.rudder.analytics.Plugin;
@@ -9,7 +9,7 @@ import com.rudder.analytics.messages.MessageBuilder;
 import java.util.concurrent.Phaser;
 
 /**
- * The {@link Analytics} class doesn't come with a blocking {@link Analytics#flush()} implementation
+ * The {@link RudderAnalytics} class doesn't come with a blocking {@link RudderAnalytics#flush()} implementation
  * out of the box. It's trivial to build one using a {@link Phaser} that monitors requests and is
  * able to block until they're uploaded.
  *
@@ -41,7 +41,7 @@ public class BlockingFlush {
   public Plugin plugin() {
     return new Plugin() {
       @Override
-      public void configure(Analytics.Builder builder) {
+      public void configure(RudderAnalytics.Builder builder) {
         builder.messageTransformer(
             new MessageTransformer() {
               @Override

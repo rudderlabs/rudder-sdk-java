@@ -1,6 +1,6 @@
 package sample;
 
-import com.rudder.analytics.Analytics;
+import com.rudder.analytics.RudderAnalytics;
 import com.rudder.analytics.messages.TrackMessage;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -14,8 +14,8 @@ public class Main {
     final BlockingFlush blockingFlush = BlockingFlush.create();
 
     // https://rudder.com/rudder-engineering/sources/test-java/debugger
-    final Analytics analytics =
-        Analytics.builder("xemyw6oe3n")
+    final RudderAnalytics analytics =
+        RudderAnalytics.builder("xemyw6oe3n")
             .plugin(blockingFlush.plugin())
             .plugin(new LoggingPlugin())
             .client(createClient())
