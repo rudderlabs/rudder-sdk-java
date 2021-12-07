@@ -127,6 +127,7 @@ public class RudderAnalytics {
     private static final String DEFAULT_ENDPOINT = "https://hosted.rudderlabs.com/";
     private static final String DEFAULT_USER_AGENT = "analytics-java/" + AnalyticsVersion.get();
     private static final int MESSAGE_QUEUE_MAX_BYTE_SIZE = 1024 * 500;
+    private static final String DEFAULT_PATH = "v1/import/";
 
     private final String writeKey;
     private OkHttpClient client;
@@ -178,7 +179,14 @@ public class RudderAnalytics {
       if (endpoint == null || endpoint.trim().length() == 0) {
         throw new NullPointerException("endpoint cannot be null or empty.");
       }
-      this.endpoint = HttpUrl.parse(endpoint );
+      if (! endpoint.endsWith("/")){
+        endpoint += "/";
+      }
+      if(endpoint.endsWith(DEFAULT_PATH)) {
+        this.endpoint = HttpUrl.parse(endpoint);
+      }else {
+        this.endpoint = HttpUrl.parse(endpoint + DEFAULT_PATH);
+      }
       return this;
     }
 

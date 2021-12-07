@@ -276,6 +276,12 @@ public class RudderAnalyticsBuilderTest {
     String expectedURL = "https://hosted.rudderlabs.com/v1/import/";
     assertEquals(expectedURL, builder.endpoint.toString());
   }
+  @Test
+  public void buildsCorrectEndpointIfDefaultPathProvided() {
+    builder.endpoint("https://hosted.rudderlabs.com/v1/import/");
+    String expectedURL = "https://hosted.rudderlabs.com/v1/import/";
+    assertEquals(expectedURL, builder.endpoint.toString());
+  }
 
   @Test
   public void buildsWithValidUploadURL() {
