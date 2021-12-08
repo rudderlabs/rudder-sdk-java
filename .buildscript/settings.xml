@@ -1,9 +1,24 @@
 <settings>
   <servers>
     <server>
+      <id>ossrh</id>
+      <username>${ossrhUsername}</username>
+      <password>${ossrhPassword}</password>
+    </server>
+    <server>
       <id>sonatype-nexus-snapshots</id>
       <username>${ossrhUsername}</username>
       <password>${ossrhPassword}</password>
+    </server>
+    <server>
+      <id>nexus-snapshots</id>
+      <username>${ossrhUsername}</username>
+      <password>${ossrhPassword}</password>
+    </server>
+
+    <server>
+      <id>gpg.passphrase</id>
+      <passphrase>${project.signing.password}</passphrase>
     </server>
   </servers>
 </settings>

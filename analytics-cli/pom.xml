@@ -5,11 +5,12 @@
 
   <parent>
     <artifactId>analytics-parent</artifactId>
-    <groupId>com.rudder.analytics.java</groupId>
+    <groupId>com.rudderstack.sdk.java.analytics</groupId>
     <version>3.1.4</version>
   </parent>
 
   <artifactId>analytics-cli</artifactId>
+  <packaging>jar</packaging>
   <name>Analytics Java CLI</name>
 
   <dependencies>
@@ -18,7 +19,7 @@
       <artifactId>kotlin-stdlib</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.rudder.analytics.java</groupId>
+      <groupId>com.rudderstack.sdk.java.analytics</groupId>
       <artifactId>analytics</artifactId>
       <version>${project.version}</version>
     </dependency>

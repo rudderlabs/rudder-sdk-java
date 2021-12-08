@@ -1,13 +1,14 @@
 package sample;
 
-import com.rudder.analytics.RudderAnalytics;
-import com.rudder.analytics.messages.*;
+import com.rudderstack.sdk.java.analytics.RudderAnalytics;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import com.rudderstack.sdk.java.analytics.messages.*;
 import okhttp3.OkHttpClient;
 
 public class Main {
