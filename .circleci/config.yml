@@ -1,5 +1,4 @@
 version: 2
-
 jobs:
   java-base-test: &java-base-test
     working_directory: ~/analytics-java
@@ -14,7 +13,7 @@ jobs:
           name: Test Failed
           when: on_fail
           command: |
-            wget https://raw.githubusercontent.com/segmentio/circleci-notifications/master/slack-notify-branch.sh
+            wget https://raw.githubusercontent.com/rudderio/circleci-notifications/master/slack-notify-branch.sh
             chmod u+x slack-notify-branch.sh
             BUILD_STATUS="Failed" NOTIFY_BRANCH="master" ./slack-notify-branch.sh
       - run: mvn package -B
@@ -31,15 +30,10 @@ jobs:
     docker:
       - image: circleci/openjdk
 
-  test-jdk10:
+  test-jdk11:
     <<: *java-base-test
     docker:
-      - image: circleci/openjdk:10-jdk-browsers
-
-  test-jdk9:
-    <<: *java-base-test
-    docker:
-      - image: circleci/openjdk:9-jdk-browsers
+      - image: circleci/openjdk:11-jdk-browsers
 
   test-jdk8:
     <<: *java-base-test
@@ -49,7 +43,7 @@ jobs:
   test:
     <<: *java-base-test
     docker:
-      - image: circleci/openjdk:8-jdk-browsers
+      - image: circleci/openjdk:11-jdk-browsers
 
   publish:
     <<: *java-base-test
@@ -90,7 +84,7 @@ jobs:
       - attach_workspace: { at: . }
       - run:
           name: Snyk
-          command: curl -sL https://raw.githubusercontent.com/segmentio/snyk_helpers/master/initialization/snyk.sh | sh
+          command: curl -sL https://raw.githubusercontent.com/rudderio/snyk_helpers/master/initialization/snyk.sh | sh
           environment:
             SNYK_FAIL_ON: upgradable
             SNYK_SEVERITY_THRESHOLD: high
@@ -100,8 +94,7 @@ workflows:
   multi-test:
     jobs:
       - test-jdklatest
-      - test-jdk10
-      - test-jdk9
+      - test-jdk11
       - test-jdk8
   static_analysis:
     jobs:
