@@ -182,11 +182,13 @@ public class RudderAnalytics {
       if (! endpoint.endsWith("/")){
         endpoint += "/";
       }
-      if(endpoint.endsWith(DEFAULT_PATH)) {
-        this.endpoint = HttpUrl.parse(endpoint);
-      }else {
-        this.endpoint = HttpUrl.parse(endpoint + DEFAULT_PATH);
-      }
+      this.endpoint = HttpUrl.parse(endpoint);
+      // Don't add /v1/import for RudderStack
+      // if(endpoint.endsWith(DEFAULT_PATH)) {
+      //   this.endpoint = HttpUrl.parse(endpoint);
+      // } else {
+      //   this.endpoint = HttpUrl.parse(endpoint + DEFAULT_PATH);
+      // }
       return this;
     }
 
