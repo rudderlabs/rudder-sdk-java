@@ -15,16 +15,17 @@ RudderStack’s Java SDK allows you to track your customer event data from your 
 
 ```xml
 <dependency>
-   <groupId>com.rudderstack.sdk.java</groupId>
-	 <artifactId>rudderanalytics-client</artifactId>
-   <version>1.0.1</version>
+    <groupId>com.rudderstack.sdk.java.analytics</groupId>
+    <artifactId>analytics</artifactId>
+    <version>2.0.0</version>
 </dependency>
+
 ```
 
 *or if you're using Gradle:*
 
 ```bash
-implementation 'com.rudderstack.sdk.java:rudderanalytics-client:1.0.1'
+implementation 'com.rudderstack.sdk.java.analytics:analytics:2.0.0'
 ```
 
 ## Initialize ```RudderClient```
