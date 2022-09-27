@@ -1,4 +1,4 @@
-# Version 2.0.1 (September 26, 2022)
+# Version 2.0.2 (September 26, 2022)
 
 - [Fix] Removed "v1/import" endpoint
 # Version 2.0.0 (December 8, 2021)
