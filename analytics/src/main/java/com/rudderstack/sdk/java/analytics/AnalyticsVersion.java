@@ -1,4 +1,4 @@
-package com.rudderstack.sdk.java.analytics.internal;
+package com.rudderstack.sdk.java.analytics;
 
 public final class AnalyticsVersion {
   private AnalyticsVersion() {
@@ -6,6 +6,6 @@ public final class AnalyticsVersion {
   }
 
   public static String get() {
-    return "${project.version}";
+    return "2.0.2";
   }
 }
