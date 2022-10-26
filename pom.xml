@@ -15,7 +15,7 @@
   <packaging>pom</packaging>
   <name>Analytics for Java (Parent)</name>
   <description>The hassle-free way to add analytics to your Android app.</description>
-  <url>https://github.com/rudderio/analytics-java</url>
+  <url>https://github.com/rudderlabs/rudder-sdk-java</url>
   <distributionManagement>
     <snapshotRepository>
       <id>ossrh</id>
@@ -68,7 +68,7 @@
 
   <issueManagement>
     <system>GitHub Issues</system>
-    <url>https://github.com/rudderio/analytics-java/issues</url>
+    <url>https://github.com/rudderlabs/rudder-sdk-java/issues</url>
   </issueManagement>
 
   <licenses>

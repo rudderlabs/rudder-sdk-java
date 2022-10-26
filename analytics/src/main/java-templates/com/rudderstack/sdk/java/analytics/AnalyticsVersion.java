@@ -1,4 +1,4 @@
-package com.rudderstack.sdk.java.analytics.internal;
+package com.rudderstack.sdk.java.analytics;
 
 public final class AnalyticsVersion {
   private AnalyticsVersion() {
