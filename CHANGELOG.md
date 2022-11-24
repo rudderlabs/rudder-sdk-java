@@ -1,3 +1,15 @@
+# Version 3.3.1 (Aug 11, 2022)
+- [Chore] Dependency upgrades
+- [New](https://github.com/segmentio/analytics-java/pull/345) Add option to sentAt field to be null
+- [New](https://github.com/segmentio/analytics-java/pull/349) Add throw interrupted exception when event exceeds 32kb to stop Thread
+
+# Version 3.2.0 (Apr 4, 2022)
+- [Chore] Dependency upgrades
+- [Fix](https://github.com/segmentio/analytics-java/pull/264) Batching queue to regard to api limits
+- [Fix](https://github.com/segmentio/analytics-java/pull/298) Correctly measure the size of message queue
+- [Fix](https://github.com/segmentio/analytics-java/pull/304) Bugfix for TLS version error (protocol not supported error)
+- [Fix](https://github.com/segmentio/analytics-java/pull/305) AnalyticsClient Looper won't start if isShutdown is true
+
 # Version 3.1.3 (July 9, 2021)
 
 - [Fix] Set the default retries to 3

@@ -385,6 +385,12 @@ public class RudderAnalyticsBuilderTest {
   }
 
   @Test
+  public void buildsWithForceTlsV1() {
+    Analytics analytics = builder.forceTlsVersion1().build();
+    assertThat(analytics).isNotNull();
+  }
+
+  @Test
   public void multipleCallbacks() {
     RudderAnalytics analytics =
         builder.callback(mock(Callback.class)).callback(mock(Callback.class)).build();

@@ -2,11 +2,17 @@ package com.rudder.analytics.internal;
 
 import static com.rudder.analytics.internal.StopMessage.STOP;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 import com.rudder.analytics.Callback;
@@ -21,12 +27,13 @@ import com.rudder.analytics.messages.TrackMessage;
 import com.segment.backo.Backo;
 import com.squareup.burst.BurstJUnit4;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
-import java.util.concurrent.BlockingQueue;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -57,12 +64,17 @@ public class RudderAnalyticsClientTest {
 
   private static String SUCCESS_RESPONSE = "OK";
   private int DEFAULT_RETRIES = 10;
-  private int MAX_BYTE_SIZE = 1024 * 500; // 500kb
+  private int MAX_BATCH_SIZE = 1024 * 500; // 500kb
+  private int MAX_MSG_SIZE = 1024 * 32; // 32kb //This is the limit for a message object
+  private int MSG_MAX_CREATE_SIZE =
+      MAX_MSG_SIZE
+          - 200; // Once we create msg object with this size it barely below 32 threshold so good
+  // for tests
 
   Log log = Log.NONE;
 
   ThreadFactory threadFactory;
-  @Spy LinkedBlockingQueue<Message> messageQueue /*= new LinkedBlockingQueue<>()*/;
+  @Spy LinkedBlockingQueue<Message> messageQueue;
   @Mock RudderService rudderService;
   @Mock ExecutorService networkExecutor;
   @Mock Callback callback;
@@ -74,7 +86,6 @@ public class RudderAnalyticsClientTest {
     openMocks(this);
 
     isShutDown = new AtomicBoolean(false);
-//    messageQueue = spy(new LinkedBlockingQueue<Message>());
     threadFactory = Executors.defaultThreadFactory();
   }
 
@@ -83,11 +94,12 @@ public class RudderAnalyticsClientTest {
   AnalyticsClient newClient() {
     return new AnalyticsClient(
         messageQueue,
+        null,
         rudderService,
         50,
         TimeUnit.HOURS.toMillis(1),
         0,
-        MAX_BYTE_SIZE,
+        MAX_BATCH_SIZE,
         log,
         threadFactory,
         networkExecutor,
@@ -142,11 +154,45 @@ public class RudderAnalyticsClientTest {
     return task.batch;
   }
 
-  private static String generateMassDataOfSize(int msgSize) {
+  private static String generateDataOfSize(int msgSize) {
     char[] chars = new char[msgSize];
     Arrays.fill(chars, 'a');
 
     return new String(chars);
+  }
+
+  private static String generateDataOfSizeSpecialChars(
+      int sizeInBytes, boolean slightlyBelowLimit) {
+    StringBuilder builder = new StringBuilder();
+    Character[] specialChars = new Character[] {'$', '¢', 'ह', '€', '한', '©', '¶'};
+    int currentSize = 0;
+    String smileyFace = "\uD83D\uDE01";
+    // 😁 = '\uD83D\uDE01';
+    Random rand = new Random();
+    int loopCount = 1;
+    while (currentSize < sizeInBytes) {
+      int randomNum;
+      // decide if regular/special character
+      if (loopCount > 3 && loopCount % 4 == 0) {
+        randomNum = rand.nextInt(((specialChars.length - 1) - 0) + 1) + 0;
+        builder.append(specialChars[randomNum]);
+      } else if (loopCount > 9 && loopCount % 10 == 0) {
+        builder.append(smileyFace);
+      } else {
+        // random letter from a - z
+        randomNum = rand.nextInt(('z' - 'a') + 1) + 'a';
+        builder.append((char) randomNum);
+      }
+
+      // check size so far
+      String temp = builder.toString();
+      currentSize = temp.getBytes(StandardCharsets.UTF_8).length;
+      if (slightlyBelowLimit && ((sizeInBytes - currentSize) < 500)) {
+        break;
+      }
+      loopCount++;
+    }
+    return builder.toString();
   }
 
   @Test
@@ -184,7 +230,7 @@ public class RudderAnalyticsClientTest {
     AnalyticsClient client = newClient();
     Map<String, String> properties = new HashMap<String, String>();
 
-    properties.put("property1", generateMassDataOfSize(1024 * 33));
+    properties.put("property1", generateDataOfSize(1024 * 33));
 
     TrackMessage bigMessage =
         TrackMessage.builder("Big Event").userId("bar").properties(properties).build();
@@ -199,7 +245,7 @@ public class RudderAnalyticsClientTest {
     AnalyticsClient client = newClient();
     Map<String, String> properties = new HashMap<String, String>();
 
-    properties.put("property2", generateMassDataOfSize(MAX_BYTE_SIZE - 200));
+    properties.put("property2", generateDataOfSize(MAX_BATCH_SIZE - 200));
 
     TrackMessage bigMessage =
         TrackMessage.builder("Big Event").userId("bar").properties(properties).build();
@@ -210,34 +256,29 @@ public class RudderAnalyticsClientTest {
     verify(networkExecutor, never()).submit(any(Runnable.class));
   }
 
-  @Test
-  public void flushWhenReachesMaxSize() throws InterruptedException {
-    AnalyticsClient client = newClient();
-    Map<String, String> properties = new HashMap<String, String>();
-
-    properties.put("property3", generateMassDataOfSize(MAX_BYTE_SIZE));
-
-    for (int i = 0; i < 10; i++) {
-      TrackMessage bigMessage =
-          TrackMessage.builder("Big Event").userId("bar").properties(properties).build();
-      client.enqueue(bigMessage);
-    }
-
-    wait(messageQueue);
-
-    verify(networkExecutor, times(10)).submit(any(Runnable.class));
-  }
-
+  /**
+   * Modified this test case since we are changing logic to NOT allow messages bigger than 32 kbs
+   * individually to be enqueued, hence had to lower the size of the generated msg here. chose
+   * MSG_MAX_CREATE_SIZE because it will generate a message just below the limit of 32 kb after it
+   * creates a Message object modified the number of events that will be created since the batch
+   * creation logic was also changed to not allow batches larger than 500 kb meaning every 15/16
+   * events the queue will be backPressured and poisoned/flushed (3 times) (purpose of test) AND
+   * there will be 4 batches submitted (15 msgs, 1 msg, 15 msg, 15 msg) so purpose of test case
+   * stands
+   *
+   * @throws InterruptedException
+   */
   @Test
   public void flushHowManyTimesNecessaryToStayWithinLimit() throws InterruptedException {
     AnalyticsClient client =
         new AnalyticsClient(
             messageQueue,
+            null,
             rudderService,
             50,
             TimeUnit.HOURS.toMillis(1),
             0,
-            MAX_BYTE_SIZE * 4,
+            MAX_BATCH_SIZE * 4,
             log,
             threadFactory,
             networkExecutor,
@@ -246,34 +287,51 @@ public class RudderAnalyticsClientTest {
 
     Map<String, String> properties = new HashMap<String, String>();
 
-    properties.put("property3", generateMassDataOfSize(MAX_BYTE_SIZE));
+    properties.put("property3", generateDataOfSize(MSG_MAX_CREATE_SIZE));
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 46; i++) {
       TrackMessage bigMessage =
           TrackMessage.builder("Big Event").userId("bar").properties(properties).build();
       client.enqueue(bigMessage);
+      verify(messageQueue).put(bigMessage);
     }
 
     wait(messageQueue);
-
-    verify(networkExecutor, times(4)).submit(any(Runnable.class));
+    /**
+     * modified from expected 4 to expected 3 times, since we removed the inner loop. The inner loop
+     * was forcing to message list created from the queue to keep making batches even if its a 1
+     * message batch until the message list is empty, that was forcing the code to make one last
+     * batch of 1 msg in size bumping the number of times a batch would be submitted from 3 to 4
+     */
+    verify(networkExecutor, times(3)).submit(any(Runnable.class));
   }
 
+  /**
+   * Had to slightly change test case since we are now modifying the logic to NOT allow messages
+   * above 32 KB in size So needed to change size of generated msg to MSG_MAX_CREATE_SIZE to keep
+   * purpose of test case intact which is to test the scenario for several messages eventually
+   * filling up the queue and flushing. Batches submitted will change from 1 to 2 because the queue
+   * will be backpressured at 16 (at this point queue is over the 500KB batch limit so its flushed
+   * and when batch is created 16 will be above 500kbs limit so it creates one batch for 15 msg and
+   * another one for the remaining single message so 500kb limit per batch is not violated
+   *
+   * @throws InterruptedException
+   */
   @Test
   public void flushWhenMultipleMessagesReachesMaxSize() throws InterruptedException {
     AnalyticsClient client = newClient();
     Map<String, String> properties = new HashMap<String, String>();
-    properties.put("property3", generateMassDataOfSize(MAX_BYTE_SIZE / 9));
+    properties.put("property3", generateDataOfSize(MSG_MAX_CREATE_SIZE));
 
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 16; i++) {
       TrackMessage bigMessage =
           TrackMessage.builder("Big Event").userId("bar").properties(properties).build();
       client.enqueue(bigMessage);
     }
-
     wait(messageQueue);
-
-    verify(networkExecutor, times(1)).submit(any(Runnable.class));
+    client.shutdown();
+    while (!isShutDown.get()) {}
+    verify(networkExecutor, times(2)).submit(any(Runnable.class));
   }
 
   @Test
@@ -305,7 +363,7 @@ public class RudderAnalyticsClientTest {
     Response<ResponseBody> failureResponse = Response.error(429, ResponseBody.create("", null));
 
     // Throw a network error 3 times.
-    when(rudderService.upload(batch))
+    when(rudderService.upload(null, batch))
         .thenReturn(Calls.response(failureResponse))
         .thenReturn(Calls.response(failureResponse))
         .thenReturn(Calls.response(failureResponse))
@@ -315,7 +373,7 @@ public class RudderAnalyticsClientTest {
     batchUploadTask.run();
 
     // Verify that we tried to upload 4 times, 3 failed and 1 succeeded.
-    verify(rudderService, times(4)).upload(batch);
+    verify(rudderService, times(4)).upload(null, batch);
     verify(callback).success(trackMessage);
   }
 
@@ -330,7 +388,7 @@ public class RudderAnalyticsClientTest {
     Response<ResponseBody> successResponse = Response.success(200, ResponseBody.create(SUCCESS_RESPONSE, MediaType.parse("text/plain")));
     Response<ResponseBody> failResponse =
         Response.error(500, ResponseBody.create(null, "Server Error"));
-    when(rudderService.upload(batch))
+    when(rudderService.upload(null, batch))
         .thenReturn(Calls.response(failResponse))
         .thenReturn(Calls.response(failResponse))
         .thenReturn(Calls.response(failResponse))
@@ -340,7 +398,7 @@ public class RudderAnalyticsClientTest {
     batchUploadTask.run();
 
     // Verify that we tried to upload 4 times, 3 failed and 1 succeeded.
-    verify(rudderService, times(4)).upload(batch);
+    verify(rudderService, times(4)).upload(null, batch);
     verify(callback).success(trackMessage);
   }
 
@@ -354,7 +412,7 @@ public class RudderAnalyticsClientTest {
     Response<ResponseBody> successResponse = Response.success(200, ResponseBody.create(SUCCESS_RESPONSE, MediaType.parse("text/plain")));
     Response<ResponseBody> failResponse =
         Response.error(429, ResponseBody.create(null, "Rate Limited"));
-    when(rudderService.upload(batch))
+    when(rudderService.upload(null, batch))
         .thenReturn(Calls.response(failResponse))
         .thenReturn(Calls.response(failResponse))
         .thenReturn(Calls.response(failResponse))
@@ -364,7 +422,7 @@ public class RudderAnalyticsClientTest {
     batchUploadTask.run();
 
     // Verify that we tried to upload 4 times, 3 failed and 1 succeeded.
-    verify(rudderService, times(4)).upload(batch);
+    verify(rudderService, times(4)).upload(null, batch);
     verify(callback).success(trackMessage);
   }
 
@@ -377,13 +435,13 @@ public class RudderAnalyticsClientTest {
     // Throw a HTTP error that should not be retried.
     Response<ResponseBody> failResponse =
         Response.error(404, ResponseBody.create(null, "Not Found"));
-    when(rudderService.upload(batch)).thenReturn(Calls.response(failResponse));
+    when(rudderService.upload(null, batch)).thenReturn(Calls.response(failResponse));
 
     BatchUploadTask batchUploadTask = new BatchUploadTask(client, BACKO, batch, DEFAULT_RETRIES);
     batchUploadTask.run();
 
     // Verify we only tried to upload once.
-    verify(rudderService).upload(batch);
+    verify(rudderService).upload(null, batch);
     verify(callback).failure(eq(trackMessage), any(IOException.class));
   }
 
@@ -393,14 +451,14 @@ public class RudderAnalyticsClientTest {
     TrackMessage trackMessage = TrackMessage.builder("foo").userId("bar").build();
     Batch batch = batchFor(trackMessage);
 
-    Call<ResponseBody> networkFailure = Calls.failure(new RuntimeException());
-    when(rudderService.upload(batch)).thenReturn(networkFailure);
+    Call<UploadResponse> networkFailure = Calls.failure(new RuntimeException());
+    when(rudderService.upload(null, batch)).thenReturn(networkFailure);
 
     BatchUploadTask batchUploadTask = new BatchUploadTask(client, BACKO, batch, DEFAULT_RETRIES);
     batchUploadTask.run();
 
     // Verify we only tried to upload once.
-    verify(rudderService).upload(batch);
+    verify(rudderService).upload(null, batch);
     verify(callback).failure(eq(trackMessage), any(RuntimeException.class));
   }
 
@@ -410,7 +468,7 @@ public class RudderAnalyticsClientTest {
     TrackMessage trackMessage = TrackMessage.builder("foo").userId("bar").build();
     Batch batch = batchFor(trackMessage);
 
-    when(rudderService.upload(batch))
+    when(rudderService.upload(null, batch))
         .thenAnswer(
             new Answer<Call<UploadResponse>>() {
               public Call<UploadResponse> answer(InvocationOnMock invocation) {
@@ -425,7 +483,7 @@ public class RudderAnalyticsClientTest {
 
     // DEFAULT_RETRIES == maxRetries
     // tries 11(one normal run + 10 retries) even though default is 50 in AnalyticsClient.java
-    verify(rudderService, times(11)).upload(batch);
+    verify(rudderService, times(11)).upload(null, batch);
     verify(callback)
         .failure(
             eq(trackMessage),
@@ -444,7 +502,7 @@ public class RudderAnalyticsClientTest {
     TrackMessage trackMessage = TrackMessage.builder("foo").userId("bar").build();
     Batch batch = batchFor(trackMessage);
 
-    when(rudderService.upload(batch))
+    when(rudderService.upload(null, batch))
         .thenAnswer(
             new Answer<Call<UploadResponse>>() {
               public Call<UploadResponse> answer(InvocationOnMock invocation) {
@@ -459,7 +517,7 @@ public class RudderAnalyticsClientTest {
 
     // DEFAULT_RETRIES == maxRetries
     // tries 11(one normal run + 10 retries)
-    verify(rudderService, times(4)).upload(batch);
+    verify(rudderService, times(4)).upload(null, batch);
     verify(callback)
         .failure(
             eq(trackMessage),
@@ -564,7 +622,7 @@ public class RudderAnalyticsClientTest {
     TrackMessage trackMessage = TrackMessage.builder("foo").userId("bar").build();
     Batch batch = batchFor(trackMessage);
 
-    when(rudderService.upload(batch))
+    when(rudderService.upload(null, batch))
         .thenAnswer(
             new Answer<Call<UploadResponse>>() {
               public Call<UploadResponse> answer(InvocationOnMock invocation) {
@@ -578,7 +636,7 @@ public class RudderAnalyticsClientTest {
     batchUploadTask.run();
 
     // runs once but never retries
-    verify(rudderService, times(1)).upload(batch);
+    verify(rudderService, times(1)).upload(null, batch);
     verify(callback)
         .failure(
             eq(trackMessage),
@@ -589,5 +647,296 @@ public class RudderAnalyticsClientTest {
                     return exception.getMessage().equals("1 retries exhausted");
                   }
                 }));
+  }
+
+  /**
+   * **********************************************************************************************
+   * Test cases for Size check
+   * *********************************************************************************************
+   */
+
+  /** Individual Size check happy path regular chars */
+  @Test
+  public void checkForIndividualMessageSizeLessThanLimit() {
+    AnalyticsClient client = newClient();
+    int msgSize = 1024 * 31; // 31KB
+    int sizeLimit = MAX_MSG_SIZE; // 32KB = 32768
+    Map<String, String> properties = new HashMap<String, String>();
+
+    properties.put("property1", generateDataOfSize(msgSize));
+
+    TrackMessage bigMessage =
+        TrackMessage.builder("Event").userId("jorgen25").properties(properties).build();
+    client.enqueue(bigMessage);
+
+    int msgActualSize = client.messageSizeInBytes(bigMessage);
+    assertThat(msgActualSize).isLessThanOrEqualTo(sizeLimit);
+  }
+
+  /** Individual Size check sad path regular chars (over the limit) */
+  @Test
+  public void checkForIndividualMessageSizeOverLimit() {
+    AnalyticsClient client = newClient();
+    int msgSize = MAX_MSG_SIZE + 1; // BARELY over the limit
+    int sizeLimit = MAX_MSG_SIZE; // 32KB = 32768
+    Map<String, String> properties = new HashMap<String, String>();
+
+    properties.put("property1", generateDataOfSize(msgSize));
+
+    TrackMessage bigMessage =
+        TrackMessage.builder("Event").userId("jorgen25").properties(properties).build();
+    client.enqueue(bigMessage);
+
+    int msgActualSize = client.messageSizeInBytes(bigMessage);
+    assertThat(msgActualSize).isGreaterThan(sizeLimit);
+  }
+
+  /** Individual Size check happy path special chars */
+  @Test
+  public void checkForIndividualMessageSizeSpecialCharsLessThanLimit() {
+    AnalyticsClient client = newClient();
+    int msgSize = MAX_MSG_SIZE; // 32KB
+    int sizeLimit = MAX_MSG_SIZE; // 32KB = 32768
+
+    Map<String, String> properties = new HashMap<String, String>();
+    properties.put("property1", generateDataOfSizeSpecialChars(msgSize, true));
+
+    TrackMessage bigMessage =
+        TrackMessage.builder("Event").userId("jorgen25").properties(properties).build();
+    client.enqueue(bigMessage);
+
+    int msgActualSize = client.messageSizeInBytes(bigMessage);
+    assertThat(msgActualSize).isLessThanOrEqualTo(sizeLimit);
+  }
+
+  /** Individual Size check sad path special chars (over the limit) */
+  @Test
+  public void checkForIndividualMessageSizeSpecialCharsAboveLimit() {
+    AnalyticsClient client = newClient();
+    int msgSize = MAX_MSG_SIZE; // 32KB
+    int sizeLimit = MAX_MSG_SIZE; // 32KB = 32768
+    Map<String, String> properties = new HashMap<String, String>();
+
+    properties.put("property1", generateDataOfSizeSpecialChars(msgSize, false));
+
+    TrackMessage bigMessage =
+        TrackMessage.builder("Event").userId("jorgen25").properties(properties).build();
+    client.enqueue(bigMessage);
+
+    int msgActualSize = client.messageSizeInBytes(bigMessage);
+    assertThat(msgActualSize).isGreaterThan(sizeLimit);
+  }
+
+  /**
+   * *****************************************************************************************************************
+   * Test cases for enqueue modified logic
+   * ***************************************************************************************************************
+   */
+  @Test
+  public void enqueueVerifyPoisonIsNotCheckedForSize() throws InterruptedException {
+    AnalyticsClient clientSpy = spy(newClient());
+
+    clientSpy.enqueue(POISON);
+    verify(messageQueue).put(POISON);
+    verify(clientSpy, never()).messageSizeInBytes(POISON);
+  }
+
+  @Test
+  public void enqueueVerifyStopIsNotCheckedForSize() throws InterruptedException {
+    AnalyticsClient clientSpy = spy(newClient());
+
+    clientSpy.enqueue(STOP);
+    verify(messageQueue).put(STOP);
+    verify(clientSpy, never()).messageSizeInBytes(STOP);
+  }
+
+  @Test
+  public void enqueueVerifyRegularMessageIsEnqueuedAndCheckedForSize(MessageBuilderTest builder)
+      throws InterruptedException {
+    AnalyticsClient clientSpy = spy(newClient());
+
+    Message message = builder.get().userId("jorgen25").build();
+    clientSpy.enqueue(message);
+    verify(messageQueue).put(message);
+    verify(clientSpy, times(1)).messageSizeInBytes(message);
+  }
+
+  /**
+   * This test case was to prove the limit in batch is not being respected so will probably delete
+   * it later NOTE: Used to be a test case created to prove huge messages above the limit are still
+   * being submitted in batch modified it to prove they are not anymore after changing logic in
+   * analyticsClient
+   *
+   * @param builder
+   * @throws InterruptedException
+   */
+  @Test
+  public void enqueueSingleMessageAboveLimitWhenNotShutdown(MessageBuilderTest builder)
+      throws InterruptedException {
+    AnalyticsClient client = newClient();
+
+    // Message is above batch limit
+    final String massData = generateDataOfSizeSpecialChars(MAX_MSG_SIZE, false);
+    Map<String, String> integrationOpts = new HashMap<>();
+    integrationOpts.put("massData", massData);
+    Message message =
+        builder.get().userId("foo").integrationOptions("someKey", integrationOpts).build();
+
+    client.enqueue(message);
+
+    wait(messageQueue);
+
+    // Message is above MSG/BATCH size limit so it should not be put in queue
+    verify(messageQueue, never()).put(message);
+    // And since it was never in the queue, it was never submitted in batch
+    verify(networkExecutor, never()).submit(any(AnalyticsClient.BatchUploadTask.class));
+  }
+
+  @Test
+  public void enqueueVerifyRegularMessagesSpecialCharactersBelowLimit(MessageBuilderTest builder)
+      throws InterruptedException {
+    AnalyticsClient client = newClient();
+    int msgSize = 1024 * 18; // 18KB
+
+    for (int i = 0; i < 2; i++) {
+      final String data = generateDataOfSizeSpecialChars(msgSize, true);
+      Map<String, String> integrationOpts = new HashMap<>();
+      integrationOpts.put("data", data);
+      Message message =
+          builder.get().userId("jorgen25").integrationOptions("someKey", integrationOpts).build();
+      client.enqueue(message);
+      verify(messageQueue).put(message);
+    }
+    client.enqueue(POISON);
+    verify(messageQueue).put(POISON);
+
+    wait(messageQueue);
+    client.shutdown();
+    while (!isShutDown.get()) {}
+
+    verify(networkExecutor, times(1)).submit(any(AnalyticsClient.BatchUploadTask.class));
+  }
+
+  /**
+   * ******************************************************************************************************************
+   * Test cases for Batch creation logic
+   * ****************************************************************************************************************
+   */
+
+  /**
+   * Several messages are enqueued and then submitted in a batch
+   *
+   * @throws InterruptedException
+   */
+  @Test
+  public void submitBatchBelowThreshold() throws InterruptedException {
+    AnalyticsClient client =
+        new AnalyticsClient(
+            messageQueue,
+            null,
+            rudderService,
+            50,
+            TimeUnit.HOURS.toMillis(1),
+            0,
+            MAX_BATCH_SIZE * 4,
+            log,
+            threadFactory,
+            networkExecutor,
+            Collections.singletonList(callback),
+            isShutDown);
+
+    Map<String, String> properties = new HashMap<String, String>();
+    properties.put("property3", generateDataOfSizeSpecialChars(MAX_MSG_SIZE, true));
+
+    for (int i = 0; i < 15; i++) {
+      TrackMessage bigMessage =
+          TrackMessage.builder("Big Event").userId("jorgen25").properties(properties).build();
+      client.enqueue(bigMessage);
+      verify(messageQueue).put(bigMessage);
+    }
+    client.enqueue(POISON);
+    wait(messageQueue);
+
+    client.shutdown();
+    while (!isShutDown.get()) {}
+    verify(networkExecutor, times(1)).submit(any(Runnable.class));
+  }
+
+  /**
+   * Enqueued several messages above threshold of 500Kbs so queue gets backpressured at some point
+   * and several batches have to be created to not violate threshold
+   *
+   * @throws InterruptedException
+   */
+  @Test
+  public void submitBatchAboveThreshold() throws InterruptedException {
+    AnalyticsClient client =
+        new AnalyticsClient(
+            messageQueue,
+            null,
+            rudderService,
+            50,
+            TimeUnit.HOURS.toMillis(1),
+            0,
+            MAX_BATCH_SIZE * 4,
+            log,
+            threadFactory,
+            networkExecutor,
+            Collections.singletonList(callback),
+            isShutDown);
+
+    Map<String, String> properties = new HashMap<String, String>();
+    properties.put("property3", generateDataOfSizeSpecialChars(MAX_MSG_SIZE, true));
+
+    for (int i = 0; i < 100; i++) {
+      TrackMessage message =
+          TrackMessage.builder("Big Event").userId("jorgen25").properties(properties).build();
+      client.enqueue(message);
+      verify(messageQueue).put(message);
+    }
+    wait(messageQueue);
+    client.shutdown();
+    while (!isShutDown.get()) {}
+
+    /**
+     * modified from expected 8 to expected 7 times, since we removed the inner loop. The inner loop
+     * was forcing to message list created from the queue to keep making batches even if its a 1
+     * message batch until the message list is empty, that was forcing the code to make one last
+     * batch of 1 msg in size bumping the number of times a batch would be submitted from 7 to 8
+     */
+    verify(networkExecutor, times(7)).submit(any(Runnable.class));
+  }
+
+  @Test
+  public void submitManySmallMessagesBatchAboveThreshold() throws InterruptedException {
+    AnalyticsClient client =
+        new AnalyticsClient(
+            messageQueue,
+            null,
+            rudderService,
+            50,
+            TimeUnit.HOURS.toMillis(1),
+            0,
+            MAX_BATCH_SIZE * 4,
+            log,
+            threadFactory,
+            networkExecutor,
+            Collections.singletonList(callback),
+            isShutDown);
+
+    Map<String, String> properties = new HashMap<String, String>();
+    properties.put("property3", generateDataOfSizeSpecialChars(1024 * 8, true));
+
+    for (int i = 0; i < 600; i++) {
+      TrackMessage message =
+          TrackMessage.builder("Event").userId("jorgen25").properties(properties).build();
+      client.enqueue(message);
+      verify(messageQueue).put(message);
+    }
+    wait(messageQueue);
+    client.shutdown();
+    while (!isShutDown.get()) {}
+
+    verify(networkExecutor, times(19)).submit(any(Runnable.class));
   }
 }
