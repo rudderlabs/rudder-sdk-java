@@ -1,11 +1,26 @@
 package com.rudderstack.sdk.java.analytics.internal;
 
+import static com.rudderstack.sdk.java.analytics.Log.Level.DEBUG;
+import static com.rudderstack.sdk.java.analytics.Log.Level.ERROR;
+import static com.rudderstack.sdk.java.analytics.Log.Level.VERBOSE;
 
 import com.google.gson.Gson;
+
+import com.rudderstack.sdk.java.analytics.AnalyticsVersion;
+import com.rudderstack.sdk.java.analytics.Callback;
+import com.rudderstack.sdk.java.analytics.Log;
+import com.rudderstack.sdk.java.analytics.http.RudderService;
+import com.rudderstack.sdk.java.analytics.http.UploadResponse;
+import com.rudderstack.sdk.java.analytics.messages.Batch;
+import com.rudderstack.sdk.java.analytics.messages.Message;
+import com.segment.backo.Backo;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -16,25 +31,17 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import com.rudderstack.sdk.java.analytics.AnalyticsVersion;
-import com.rudderstack.sdk.java.analytics.Callback;
-import com.rudderstack.sdk.java.analytics.Log;
-import com.rudderstack.sdk.java.analytics.http.RudderService;
-import com.rudderstack.sdk.java.analytics.http.UploadResponse;
-import com.rudderstack.sdk.java.analytics.messages.Batch;
-import com.rudderstack.sdk.java.analytics.messages.Message;
-import com.segment.backo.Backo;
-import okhttp3.ResponseBody;
+import java.util.concurrent.atomic.AtomicInteger;
+import okhttp3.HttpUrl;
 import retrofit2.Call;
 import retrofit2.Response;
 
-import static com.rudderstack.sdk.java.analytics.Log.Level.ERROR;
-import static com.rudderstack.sdk.java.analytics.Log.Level.VERBOSE;
-import static com.rudderstack.sdk.java.analytics.Log.Level.DEBUG;
-
 public class AnalyticsClient {
   private static final Map<String, ?> CONTEXT;
+  private static final int BATCH_MAX_SIZE = 1024 * 500;
+  private static final int MSG_MAX_SIZE = 1024 * 32;
+  private static final Charset ENCODING = StandardCharsets.UTF_8;
+  private static Gson gsonInstance;
 
   static {
     Map<String, String> library = new LinkedHashMap<>();
@@ -46,6 +53,7 @@ public class AnalyticsClient {
   }
 
   private final BlockingQueue<Message> messageQueue;
+  private final HttpUrl uploadUrl;
   private final RudderService service;
   private final int size;
   private final int maximumRetries;
@@ -59,6 +67,7 @@ public class AnalyticsClient {
   private final AtomicBoolean isShutDown;
 
   public static AnalyticsClient create(
+      HttpUrl uploadUrl,
       RudderService rudderService,
       int queueCapacity,
       int flushQueueSize,
@@ -71,6 +80,7 @@ public class AnalyticsClient {
       List<Callback> callbacks) {
     return new AnalyticsClient(
         new LinkedBlockingQueue<Message>(queueCapacity),
+        uploadUrl,
         rudderService,
         flushQueueSize,
         flushIntervalInMillis,
@@ -83,19 +93,21 @@ public class AnalyticsClient {
         new AtomicBoolean(false));
   }
 
-  public AnalyticsClient(
-          BlockingQueue<Message> messageQueue,
-          RudderService service,
-          int maxQueueSize,
-          long flushIntervalInMillis,
-          int maximumRetries,
-          int maximumQueueSizeInBytes,
-          Log log,
-          ThreadFactory threadFactory,
-          ExecutorService networkExecutor,
-          List<Callback> callbacks,
-          AtomicBoolean isShutDown) {
+  AnalyticsClient(
+      BlockingQueue<Message> messageQueue,
+      HttpUrl uploadUrl,
+      RudderService service,
+      int maxQueueSize,
+      long flushIntervalInMillis,
+      int maximumRetries,
+      int maximumQueueSizeInBytes,
+      Log log,
+      ThreadFactory threadFactory,
+      ExecutorService networkExecutor,
+      List<Callback> callbacks,
+      AtomicBoolean isShutDown) {
     this.messageQueue = messageQueue;
+    this.uploadUrl = uploadUrl;
     this.service = service;
     this.size = maxQueueSize;
     this.maximumRetries = maximumRetries;
@@ -107,8 +119,8 @@ public class AnalyticsClient {
     this.isShutDown = isShutDown;
 
     this.currentQueueSizeInBytes = 0;
-    if(!isShutDown.get())
-      looperExecutor.submit(new Looper());
+
+    if (!isShutDown.get()) looperExecutor.submit(new Looper());
 
     flushScheduler = Executors.newScheduledThreadPool(1, threadFactory);
     flushScheduler.scheduleAtFixedRate(
@@ -125,16 +137,30 @@ public class AnalyticsClient {
     log.print(DEBUG, AnalyticsVersion.get());
   }
 
+  /**
+   * Creating GSON object everytime we check the size seems costly, create one static instance
+   *
+   * @return static gson instance
+   */
+  public static Gson getGsonInstance() {
+    if (gsonInstance == null) {
+      gsonInstance = new Gson();
+    }
+    return gsonInstance;
+  }
+
   public int messageSizeInBytes(Message message) {
-    Gson gson = new Gson();
+    Gson gson = getGsonInstance();
     String stringifiedMessage = gson.toJson(message);
-    return stringifiedMessage.length();
+
+    int sizeInBytes = stringifiedMessage.getBytes(ENCODING).length;
+    return sizeInBytes;
   }
 
   private Boolean isBackPressuredAfterSize(int incomingSize) {
     int POISON_BYTE_SIZE = messageSizeInBytes(FlushMessage.POISON);
     int sizeAfterAdd = this.currentQueueSizeInBytes + incomingSize + POISON_BYTE_SIZE;
-    return sizeAfterAdd >= Math.min(this.maximumQueueByteSize, 1024 * 500);
+    return sizeAfterAdd >= Math.min(this.maximumQueueByteSize, BATCH_MAX_SIZE);
   }
 
   public boolean offer(Message message) {
@@ -148,18 +174,34 @@ public class AnalyticsClient {
     }
 
     try {
-      messageQueue.put(message);
+      // @jorgen25 message here could be regular msg, POISON or STOP. Only do regular logic if its
+      // valid message
+      if (message != StopMessage.STOP && message != FlushMessage.POISON) {
+        int messageByteSize = messageSizeInBytes(message);
 
-      int tempSize = this.currentQueueSizeInBytes;
-      int messageByteSize = messageSizeInBytes(message);
+        // @jorgen25 check if message is below 32kb limit for individual messages, no need to check
+        // for extra characters
+        if (messageByteSize <= MSG_MAX_SIZE) {
+          //          messageQueue.put(message);
 
-      if (isBackPressuredAfterSize(messageByteSize)) {
-        this.currentQueueSizeInBytes = messageByteSize;
-        messageQueue.put(FlushMessage.POISON);
+          if (isBackPressuredAfterSize(messageByteSize)) {
+            this.currentQueueSizeInBytes = messageByteSize;
+            messageQueue.put(FlushMessage.POISON);
+            messageQueue.put(message);
 
-        log.print(VERBOSE, "Maximum storage size has been hit Flushing...");
+            log.print(VERBOSE, "Maximum storage size has been hit Flushing...");
+          } else {
+            messageQueue.put(message);
+            this.currentQueueSizeInBytes += messageByteSize;
+          }
+        } else {
+          log.print(
+              ERROR, "Message was above individual limit. MessageId: %s", message.messageId());
+          throw new InterruptedException(
+              "Message was above individual limit. MessageId: " + message.messageId());
+        }
       } else {
-        this.currentQueueSizeInBytes += messageByteSize;
+        messageQueue.put(message);
       }
     } catch (InterruptedException e) {
       log.print(ERROR, e, "Interrupted while adding message %s.", message);
@@ -220,7 +262,10 @@ public class AnalyticsClient {
 
     @Override
     public void run() {
-      List<Message> messages = new ArrayList<>();
+      LinkedList<Message> messages = new LinkedList<>();
+      AtomicInteger currentBatchSize = new AtomicInteger();
+      boolean batchSizeLimitReached = false;
+      int contextSize = getGsonInstance().toJson(CONTEXT).getBytes(ENCODING).length;
       try {
         while (!stop) {
           Message message = messageQueue.take();
@@ -233,22 +278,46 @@ public class AnalyticsClient {
               log.print(VERBOSE, "Flushing messages.");
             }
           } else {
-            messages.add(message);
+            // we do  +1 because we are accounting for this new message we just took from the queue
+            // which is not in list yet
+            // need to check if this message is going to make us go over the limit considering
+            // default batch size as well
+            int defaultBatchSize =
+                BatchUtility.getBatchDefaultSize(contextSize, messages.size() + 1);
+            int msgSize = messageSizeInBytes(message);
+            if (currentBatchSize.get() + msgSize + defaultBatchSize <= BATCH_MAX_SIZE) {
+              messages.add(message);
+              currentBatchSize.addAndGet(msgSize);
+            } else {
+              // put message that did not make the cut this time back on the queue, we already took
+              // this message if we dont put it back its lost
+              // we take care of that after submitting the batch
+              batchSizeLimitReached = true;
+            }
           }
 
           Boolean isBlockingSignal = message == FlushMessage.POISON || message == StopMessage.STOP;
           Boolean isOverflow = messages.size() >= size;
 
-          if (!messages.isEmpty() && (isOverflow || isBlockingSignal)) {
-            Batch batch = Batch.create(CONTEXT, messages);
+          if (!messages.isEmpty() && (isOverflow || isBlockingSignal || batchSizeLimitReached)) {
+            Batch batch = Batch.create(CONTEXT, new ArrayList<>(messages));
             log.print(
                 VERBOSE,
                 "Batching %s message(s) into batch %s.",
-                messages.size(),
+                batch.batch().size(),
                 batch.sequence());
             networkExecutor.submit(
                 BatchUploadTask.create(AnalyticsClient.this, batch, maximumRetries));
-            messages = new ArrayList<>();
+
+            currentBatchSize.set(0);
+            messages.clear();
+            if (batchSizeLimitReached) {
+              // If this is true that means the last message that would make us go over the limit
+              // was not added,
+              // add it to the now cleared messages list so its not lost
+              messages.add(message);
+            }
+            batchSizeLimitReached = false;
           }
         }
       } catch (InterruptedException e) {
@@ -296,8 +365,8 @@ public class AnalyticsClient {
       client.log.print(VERBOSE, "Uploading batch %s.", batch.sequence());
 
       try {
-        Call<ResponseBody> call = client.service.upload(batch);
-        Response<ResponseBody> response = call.execute();
+        Call<UploadResponse> call = client.service.upload(client.uploadUrl, batch);
+        Response<UploadResponse> response = call.execute();
 
         if (response.isSuccessful()) {
           client.log.print(VERBOSE, "Uploaded batch %s.", batch.sequence());
@@ -329,7 +398,6 @@ public class AnalyticsClient {
         return false;
       } catch (IOException error) {
         client.log.print(DEBUG, error, "Could not upload batch %s. Retrying.", batch.sequence());
-        notifyCallbacksWithException(batch, error);
 
         return true;
       } catch (Exception exception) {
@@ -363,6 +431,57 @@ public class AnalyticsClient {
 
     private static boolean is5xx(int status) {
       return status >= 500 && status < 600;
+    }
+  }
+
+  public static class BatchUtility {
+
+    /**
+     * Method to determine what is the expected default size of the batch regardless of messages
+     *
+     * <p>Sample batch:
+     * {"batch":[{"type":"alias","messageId":"fc9198f9-d827-47fb-96c8-095bd3405d93","timestamp":"Nov
+     * 18, 2021, 2:45:07
+     * PM","userId":"jorgen25","integrations":{"someKey":{"data":"aaaaa"}},"previousId":"foo"},{"type":"alias",
+     * "messageId":"3ce6f88c-36cb-4991-83f8-157e10261a89","timestamp":"Nov 18, 2021, 2:45:07
+     * PM","userId":"jorgen25",
+     * "integrations":{"someKey":{"data":"aaaaa"}},"previousId":"foo"},{"type":"alias",
+     * "messageId":"a328d339-899a-4a14-9835-ec91e303ac4d","timestamp":"Nov 18, 2021, 2:45:07 PM",
+     * "userId":"jorgen25","integrations":{"someKey":{"data":"aaaaa"}},"previousId":"foo"},{"type":"alias",
+     * "messageId":"57b0ceb4-a1cf-4599-9fba-0a44c7041004","timestamp":"Nov 18, 2021, 2:45:07 PM",
+     * "userId":"jorgen25","integrations":{"someKey":{"data":"aaaaa"}},"previousId":"foo"}],
+     * "sentAt":"Nov 18, 2021, 2:45:07
+     * PM","context":{"library":{"name":"analytics-java","version":"3.1.3"}},"sequence":1}
+     *
+     * <p>total size of batch : 886
+     *
+     * <p>BREAKDOWN: {"batch":[MESSAGE1,MESSAGE2,MESSAGE3,MESSAGE4],"sentAt":"MMM dd, yyyy, HH:mm:ss
+     * tt","context":CONTEXT,"sequence":1}
+     *
+     * <p>so we need to account for: 1 -message size: 189 * 4 = 756 2 -context object size = 55 in
+     * this sample -> 756 + 55 = 811 3 -Metadata (This has the sent data/sequence characters) +
+     * extra chars (these are chars like "batch":[] or "context": etc and will be pretty much the
+     * same length in every batch -> size is 73 --> 811 + 73 = 884 (well 72 actually, char 73 is the
+     * sequence digit which we account for in point 5) 4 -Commas between each message, the total
+     * number of commas is number_of_msgs - 1 = 3 -> 884 + 3 = 887 (sample is 886 because the hour
+     * in sentData this time happens to be 2:45 but it could be 12:45 5 -Sequence Number increments
+     * with every batch created
+     *
+     * <p>so formulae to determine the expected default size of the batch is
+     *
+     * @return: defaultSize = messages size + context size + metadata size + comma number + sequence
+     *     digits
+     * @return
+     */
+    private static int getBatchDefaultSize(int contextSize, int currentMessageNumber) {
+      // sample data: {"batch":[],"sentAt":"MMM dd, yyyy, HH:mm:ss tt","context":,"sequence":1} - 73
+      int metadataExtraCharsSize = 73;
+      int commaNumber = currentMessageNumber - 1;
+
+      return contextSize
+          + metadataExtraCharsSize
+          + commaNumber
+          + String.valueOf(Integer.MAX_VALUE).length();
     }
   }
 }

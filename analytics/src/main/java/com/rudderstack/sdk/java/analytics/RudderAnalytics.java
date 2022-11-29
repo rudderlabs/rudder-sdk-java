@@ -9,14 +9,17 @@ import com.rudderstack.sdk.java.analytics.internal.AnalyticsClient;
 import com.rudderstack.sdk.java.analytics.messages.Message;
 import com.rudderstack.sdk.java.analytics.messages.MessageBuilder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import okhttp3.ConnectionSpec;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
+import okhttp3.TlsVersion;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -124,9 +127,9 @@ public class RudderAnalytics {
   /** Fluent API for creating {@link RudderAnalytics} instances. */
   public static class Builder {
     private static final String DEFAULT_ENDPOINT = "https://hosted.rudderlabs.com/";
+    private static final String DEFAULT_PATH = "v1/import/";
     private static final String DEFAULT_USER_AGENT = "analytics-java/" + AnalyticsVersion.get();
     private static final int MESSAGE_QUEUE_MAX_BYTE_SIZE = 1024 * 500;
-    private static final String DEFAULT_PATH = "v1/import/";
 
     private final String writeKey;
     private OkHttpClient client;
@@ -144,6 +147,7 @@ public class RudderAnalytics {
     private long flushIntervalInMillis;
     private List<Callback> callbacks;
     private int queueCapacity;
+    private boolean forceTlsV1 = false;
 
     Builder(String writeKey) {
       if (writeKey == null || writeKey.trim().length() == 0) {
@@ -337,6 +341,12 @@ public class RudderAnalytics {
       return this;
     }
 
+    /** Specify if need TlsV1 */
+    public Builder forceTlsVersion1() {
+      forceTlsV1 = true;
+      return this;
+    }
+
     /** Create a {@link RudderAnalytics} client. */
     public RudderAnalytics build() {
       Gson gson =
@@ -408,17 +418,28 @@ public class RudderAnalytics {
 
       interceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
 
-      client =
+      OkHttpClient.Builder builder =
           client
               .newBuilder()
               .addInterceptor(new AnalyticsRequestInterceptor(writeKey, userAgent))
-              .addInterceptor(interceptor)
-              .build();
+              .addInterceptor(interceptor);
+
+      if (forceTlsV1) {
+        ConnectionSpec connectionSpec =
+            new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
+                .tlsVersions(
+                    TlsVersion.TLS_1_0, TlsVersion.TLS_1_1, TlsVersion.TLS_1_2, TlsVersion.TLS_1_3)
+                .build();
+
+        builder = builder.connectionSpecs(Arrays.asList(connectionSpec));
+      }
+
+      client = builder.build();
 
       Retrofit restAdapter =
           new Retrofit.Builder()
               .addConverterFactory(GsonConverterFactory.create(gson))
-              .baseUrl(endpoint)
+              .baseUrl(DEFAULT_ENDPOINT)
               .client(client)
               .build();
 
@@ -426,6 +447,7 @@ public class RudderAnalytics {
 
       AnalyticsClient analyticsClient =
           AnalyticsClient.create(
+              endpoint,
               rudderService,
               queueCapacity,
               flushQueueSize,

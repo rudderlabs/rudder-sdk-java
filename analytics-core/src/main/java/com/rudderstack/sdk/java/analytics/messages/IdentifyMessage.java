@@ -61,6 +61,7 @@ public abstract class IdentifyMessage implements Message {
     protected IdentifyMessage realBuild(
         Type type,
         String messageId,
+        Date sentAt,
         Date timestamp,
         Map<String, ?> context,
         String anonymousId,
@@ -71,7 +72,7 @@ public abstract class IdentifyMessage implements Message {
       }
 
       return new AutoValue_IdentifyMessage(
-          type, messageId, timestamp, context, anonymousId, userId, integrations, traits);
+          type, messageId, sentAt, timestamp, context, anonymousId, userId, integrations, traits);
     }
 
     @Override

@@ -80,6 +80,7 @@ public abstract class TrackMessage implements Message {
     protected TrackMessage realBuild(
         Type type,
         String messageId,
+        Date sentAt,
         Date timestamp,
         Map<String, ?> context,
         String anonymousId,
@@ -88,6 +89,7 @@ public abstract class TrackMessage implements Message {
       return new AutoValue_TrackMessage(
           type,
           messageId,
+          sentAt,
           timestamp,
           context,
           anonymousId,

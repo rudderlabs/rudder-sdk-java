@@ -42,7 +42,6 @@
       <groupId>com.segment.backo</groupId>
       <artifactId>backo</artifactId>
     </dependency>
-
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -89,5 +88,4 @@
       </plugin>
     </plugins>
   </build>
-
 </project>
