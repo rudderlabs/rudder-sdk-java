@@ -1,5 +1,6 @@
 package com.rudderstack.sdk.java.analytics.internal;
 
+import static com.rudderstack.sdk.java.analytics.internal.FlushMessage.POISON;
 import static com.rudderstack.sdk.java.analytics.internal.StopMessage.STOP;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -20,9 +21,7 @@ import com.rudderstack.sdk.java.analytics.Log;
 import com.rudderstack.sdk.java.analytics.TestUtils.MessageBuilderTest;
 import com.rudderstack.sdk.java.analytics.http.RudderService;
 import com.rudderstack.sdk.java.analytics.http.UploadResponse;
-import com.rudderstack.sdk.java.analytics.internal.AnalyticsClient;
 import com.rudderstack.sdk.java.analytics.internal.AnalyticsClient.BatchUploadTask;
-import com.rudderstack.sdk.java.analytics.internal.FlushMessage;
 import com.rudderstack.sdk.java.analytics.messages.Batch;
 import com.rudderstack.sdk.java.analytics.messages.Message;
 import com.rudderstack.sdk.java.analytics.messages.TrackMessage;
@@ -42,10 +41,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import okhttp3.MediaType;
 import okhttp3.ResponseBody;
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -65,23 +61,36 @@ public class RudderAnalyticsClientTest {
   private static final Backo BACKO =
       Backo.builder().base(TimeUnit.NANOSECONDS, 1).factor(1).build();
 
-  private static String SUCCESS_RESPONSE = "OK";
   private int DEFAULT_RETRIES = 10;
   private int MAX_BATCH_SIZE = 1024 * 500; // 500kb
   private int MAX_MSG_SIZE = 1024 * 32; // 32kb //This is the limit for a message object
   private int MSG_MAX_CREATE_SIZE =
-      MAX_MSG_SIZE
-          - 200; // Once we create msg object with this size it barely below 32 threshold so good
+          MAX_MSG_SIZE
+                  - 200; // Once we create msg object with this size it barely below 32 threshold so good
   // for tests
 
+  @Test
+  public void shouldBeAbleToCalculateMessageSize() {
+    AnalyticsClient client = newClient();
+    Map<String, String> properties = new HashMap<String, String>();
+
+    properties.put("property1", generateDataOfSize(1024 * 33));
+
+    TrackMessage bigMessage =
+            TrackMessage.builder("Big Event").userId("bar").properties(properties).build();
+    client.enqueue(bigMessage);
+
+    // can't test for exact size cause other attributes come in play
+    assertThat(client.messageSizeInBytes(bigMessage)).isGreaterThan(1024 * 33);
+  }
   Log log = Log.NONE;
 
   ThreadFactory threadFactory;
   @Spy LinkedBlockingQueue<Message> messageQueue;
   @Mock RudderService rudderService;
   @Mock ExecutorService networkExecutor;
-  @Mock
-  Callback callback;
+  @Mock Callback callback;
+  @Mock UploadResponse response;
 
   AtomicBoolean isShutDown;
 
@@ -97,28 +106,28 @@ public class RudderAnalyticsClientTest {
   // dependencies.
   AnalyticsClient newClient() {
     return new AnalyticsClient(
-        messageQueue,
-        null,
-        rudderService,
-        50,
-        TimeUnit.HOURS.toMillis(1),
-        0,
-        MAX_BATCH_SIZE,
-        log,
-        threadFactory,
-        networkExecutor,
-        Collections.singletonList(callback),
-        isShutDown);
+            messageQueue,
+            null,
+            rudderService,
+            50,
+            TimeUnit.HOURS.toMillis(1),
+            0,
+            MAX_BATCH_SIZE,
+            log,
+            threadFactory,
+            networkExecutor,
+            Collections.singletonList(callback),
+            isShutDown);
   }
 
   @Test
   public void enqueueAddsToQueue(MessageBuilderTest builder) throws InterruptedException {
     AnalyticsClient client = newClient();
 
-    Message message = builder.get().userId("Deba").build();
+    Message message = builder.get().userId("prateek").build();
     client.enqueue(message);
 
-    Mockito.verify(messageQueue).put(message);
+    verify(messageQueue).put(message);
   }
 
   @Test
@@ -128,8 +137,8 @@ public class RudderAnalyticsClientTest {
 
     client.shutdown();
 
-    Mockito.verify(networkExecutor).shutdown();
-    Mockito.verify(networkExecutor).awaitTermination(1, TimeUnit.SECONDS);
+    verify(networkExecutor).shutdown();
+    verify(networkExecutor).awaitTermination(1, TimeUnit.SECONDS);
   }
 
   @Test
@@ -138,7 +147,7 @@ public class RudderAnalyticsClientTest {
 
     client.flush();
 
-    Mockito.verify(messageQueue).put(FlushMessage.POISON);
+    verify(messageQueue).put(FlushMessage.POISON);
   }
 
   /** Wait until the queue is drained. */
@@ -153,7 +162,7 @@ public class RudderAnalyticsClientTest {
    */
   static Batch captureBatch(ExecutorService executor) {
     final ArgumentCaptor<Runnable> runnableArgumentCaptor = ArgumentCaptor.forClass(Runnable.class);
-    Mockito.verify(executor, Mockito.timeout(1000)).submit(runnableArgumentCaptor.capture());
+    verify(executor, timeout(1000)).submit(runnableArgumentCaptor.capture());
     final BatchUploadTask task = (BatchUploadTask) runnableArgumentCaptor.getValue();
     return task.batch;
   }
@@ -230,21 +239,6 @@ public class RudderAnalyticsClientTest {
   }
 
   @Test
-  public void shouldBeAbleToCalculateMessageSize() {
-    AnalyticsClient client = newClient();
-    Map<String, String> properties = new HashMap<String, String>();
-
-    properties.put("property1", generateDataOfSize(1024 * 33));
-
-    TrackMessage bigMessage =
-        TrackMessage.builder("Big Event").userId("bar").properties(properties).build();
-    client.enqueue(bigMessage);
-
-    // can't test for exact size cause other attributes come in play
-    Assertions.assertThat(client.messageSizeInBytes(bigMessage)).isGreaterThan(1024 * 33);
-  }
-
-  @Test
   public void dontFlushUntilReachesMaxSize() throws InterruptedException {
     AnalyticsClient client = newClient();
     Map<String, String> properties = new HashMap<String, String>();
@@ -257,7 +251,7 @@ public class RudderAnalyticsClientTest {
 
     wait(messageQueue);
 
-    Mockito.verify(networkExecutor, Mockito.never()).submit(ArgumentMatchers.any(Runnable.class));
+    verify(networkExecutor, never()).submit(any(Runnable.class));
   }
 
   /**
@@ -275,19 +269,19 @@ public class RudderAnalyticsClientTest {
   @Test
   public void flushHowManyTimesNecessaryToStayWithinLimit() throws InterruptedException {
     AnalyticsClient client =
-        new AnalyticsClient(
-            messageQueue,
-            null,
-            rudderService,
-            50,
-            TimeUnit.HOURS.toMillis(1),
-            0,
-            MAX_BATCH_SIZE * 4,
-            log,
-            threadFactory,
-            networkExecutor,
-            Collections.singletonList(callback),
-            isShutDown);
+            new AnalyticsClient(
+                    messageQueue,
+                    null,
+                    rudderService,
+                    50,
+                    TimeUnit.HOURS.toMillis(1),
+                    0,
+                    MAX_BATCH_SIZE * 4,
+                    log,
+                    threadFactory,
+                    networkExecutor,
+                    Collections.singletonList(callback),
+                    isShutDown);
 
     Map<String, String> properties = new HashMap<String, String>();
 
@@ -350,7 +344,7 @@ public class RudderAnalyticsClientTest {
     wait(messageQueue);
 
     // Verify that the executor didn't see anything.
-    Mockito.verify(networkExecutor, Mockito.never()).submit(ArgumentMatchers.any(Runnable.class));
+    verify(networkExecutor, never()).submit(any(Runnable.class));
   }
 
   static Batch batchFor(Message message) {
@@ -363,21 +357,21 @@ public class RudderAnalyticsClientTest {
     TrackMessage trackMessage = TrackMessage.builder("foo").userId("bar").build();
     Batch batch = batchFor(trackMessage);
 
-    Response<ResponseBody> successResponse = Response.success(200, ResponseBody.create(SUCCESS_RESPONSE, MediaType.parse("text/plain")));
-    Response<ResponseBody> failureResponse = Response.error(429, ResponseBody.create("", null));
+    Response<UploadResponse> successResponse = Response.success(200, response);
+    Response<UploadResponse> failureResponse = Response.error(429, ResponseBody.create(null, ""));
 
     // Throw a network error 3 times.
     when(rudderService.upload(null, batch))
-        .thenReturn(Calls.response(failureResponse))
-        .thenReturn(Calls.response(failureResponse))
-        .thenReturn(Calls.response(failureResponse))
-        .thenReturn(Calls.response(successResponse));
+            .thenReturn(Calls.response(failureResponse))
+            .thenReturn(Calls.response(failureResponse))
+            .thenReturn(Calls.response(failureResponse))
+            .thenReturn(Calls.response(successResponse));
 
     BatchUploadTask batchUploadTask = new BatchUploadTask(client, BACKO, batch, DEFAULT_RETRIES);
     batchUploadTask.run();
 
     // Verify that we tried to upload 4 times, 3 failed and 1 succeeded.
-    verify(rudderService,, times(4)).upload(null, batch);
+    verify(rudderService, times(4)).upload(null, batch);
     verify(callback).success(trackMessage);
   }
 
@@ -389,20 +383,20 @@ public class RudderAnalyticsClientTest {
 
     // Throw a HTTP error 3 times.
 
-    Response<ResponseBody> successResponse = Response.success(200, ResponseBody.create(SUCCESS_RESPONSE, MediaType.parse("text/plain")));
-    Response<ResponseBody> failResponse =
-        Response.error(500, ResponseBody.create(null, "Server Error"));
-    when(rudderService,.upload(null, batch))
-        .thenReturn(Calls.response(failResponse))
-        .thenReturn(Calls.response(failResponse))
-        .thenReturn(Calls.response(failResponse))
-        .thenReturn(Calls.response(successResponse));
+    Response<UploadResponse> successResponse = Response.success(200, response);
+    Response<UploadResponse> failResponse =
+            Response.error(500, ResponseBody.create(null, "Server Error"));
+    when(rudderService.upload(null, batch))
+            .thenReturn(Calls.response(failResponse))
+            .thenReturn(Calls.response(failResponse))
+            .thenReturn(Calls.response(failResponse))
+            .thenReturn(Calls.response(successResponse));
 
     BatchUploadTask batchUploadTask = new BatchUploadTask(client, BACKO, batch, DEFAULT_RETRIES);
     batchUploadTask.run();
 
     // Verify that we tried to upload 4 times, 3 failed and 1 succeeded.
-    verify(rudderService,, times(4)).upload(null, batch);
+    verify(rudderService, times(4)).upload(null, batch);
     verify(callback).success(trackMessage);
   }
 
@@ -413,14 +407,14 @@ public class RudderAnalyticsClientTest {
     Batch batch = batchFor(trackMessage);
 
     // Throw a HTTP error 3 times.
-    Response<ResponseBody> successResponse = Response.success(200, ResponseBody.create(SUCCESS_RESPONSE, MediaType.parse("text/plain")));
-    Response<ResponseBody> failResponse =
-        Response.error(429, ResponseBody.create(null, "Rate Limited"));
-    when(segmentService.upload(null, batch))
-        .thenReturn(Calls.response(failResponse))
-        .thenReturn(Calls.response(failResponse))
-        .thenReturn(Calls.response(failResponse))
-        .thenReturn(Calls.response(successResponse));
+    Response<UploadResponse> successResponse = Response.success(200, response);
+    Response<UploadResponse> failResponse =
+            Response.error(429, ResponseBody.create(null, "Rate Limited"));
+    when(rudderService.upload(null, batch))
+            .thenReturn(Calls.response(failResponse))
+            .thenReturn(Calls.response(failResponse))
+            .thenReturn(Calls.response(failResponse))
+            .thenReturn(Calls.response(successResponse));
 
     BatchUploadTask batchUploadTask = new BatchUploadTask(client, BACKO, batch, DEFAULT_RETRIES);
     batchUploadTask.run();
@@ -437,15 +431,15 @@ public class RudderAnalyticsClientTest {
     Batch batch = batchFor(trackMessage);
 
     // Throw a HTTP error that should not be retried.
-    Response<ResponseBody> failResponse =
-        Response.error(404, ResponseBody.create(null, "Not Found"));
-    when(segmentService.upload(null, batch)).thenReturn(Calls.response(failResponse));
+    Response<UploadResponse> failResponse =
+            Response.error(404, ResponseBody.create(null, "Not Found"));
+    when(rudderService.upload(null, batch)).thenReturn(Calls.response(failResponse));
 
     BatchUploadTask batchUploadTask = new BatchUploadTask(client, BACKO, batch, DEFAULT_RETRIES);
     batchUploadTask.run();
 
     // Verify we only tried to upload once.
-    verify(segmentService).upload(null, batch);
+    verify(rudderService).upload(null, batch);
     verify(callback).failure(eq(trackMessage), any(IOException.class));
   }
 
@@ -456,13 +450,13 @@ public class RudderAnalyticsClientTest {
     Batch batch = batchFor(trackMessage);
 
     Call<UploadResponse> networkFailure = Calls.failure(new RuntimeException());
-    when(segmentService.upload(null, batch)).thenReturn(networkFailure);
+    when(rudderService.upload(null, batch)).thenReturn(networkFailure);
 
     BatchUploadTask batchUploadTask = new BatchUploadTask(client, BACKO, batch, DEFAULT_RETRIES);
     batchUploadTask.run();
 
     // Verify we only tried to upload once.
-    verify(segmentService).upload(null, batch);
+    verify(rudderService).upload(null, batch);
     verify(callback).failure(eq(trackMessage), any(RuntimeException.class));
   }
 
@@ -472,15 +466,15 @@ public class RudderAnalyticsClientTest {
     TrackMessage trackMessage = TrackMessage.builder("foo").userId("bar").build();
     Batch batch = batchFor(trackMessage);
 
-    when(segmentService.upload(null, batch))
-        .thenAnswer(
-            new Answer<Call<UploadResponse>>() {
-              public Call<UploadResponse> answer(InvocationOnMock invocation) {
-                Response<UploadResponse> failResponse =
-                    Response.error(429, ResponseBody.create(null, "Not Found"));
-                return Calls.response(failResponse);
-              }
-            });
+    when(rudderService.upload(null, batch))
+            .thenAnswer(
+                    new Answer<Call<UploadResponse>>() {
+                      public Call<UploadResponse> answer(InvocationOnMock invocation) {
+                        Response<UploadResponse> failResponse =
+                                Response.error(429, ResponseBody.create(null, "Not Found"));
+                        return Calls.response(failResponse);
+                      }
+                    });
 
     BatchUploadTask batchUploadTask = new BatchUploadTask(client, BACKO, batch, 10);
     batchUploadTask.run();
@@ -489,15 +483,15 @@ public class RudderAnalyticsClientTest {
     // tries 11(one normal run + 10 retries) even though default is 50 in AnalyticsClient.java
     verify(rudderService, times(11)).upload(null, batch);
     verify(callback)
-        .failure(
-            ArgumentMatchers.eq(trackMessage),
-            ArgumentMatchers.argThat(
-                new ArgumentMatcher<IOException>() {
-                  @Override
-                  public boolean matches(IOException exception) {
-                    return exception.getMessage().equals("11 retries exhausted");
-                  }
-                }));
+            .failure(
+                    eq(trackMessage),
+                    argThat(
+                            new ArgumentMatcher<IOException>() {
+                              @Override
+                              public boolean matches(IOException exception) {
+                                return exception.getMessage().equals("11 retries exhausted");
+                              }
+                            }));
   }
 
   @Test
@@ -506,15 +500,15 @@ public class RudderAnalyticsClientTest {
     TrackMessage trackMessage = TrackMessage.builder("foo").userId("bar").build();
     Batch batch = batchFor(trackMessage);
 
-    when(segmentService.upload(null, batch))
-        .thenAnswer(
-            new Answer<Call<UploadResponse>>() {
-              public Call<UploadResponse> answer(InvocationOnMock invocation) {
-                Response<UploadResponse> failResponse =
-                    Response.error(429, ResponseBody.create(null, "Not Found"));
-                return Calls.response(failResponse);
-              }
-            });
+    when(rudderService.upload(null, batch))
+            .thenAnswer(
+                    new Answer<Call<UploadResponse>>() {
+                      public Call<UploadResponse> answer(InvocationOnMock invocation) {
+                        Response<UploadResponse> failResponse =
+                                Response.error(429, ResponseBody.create(null, "Not Found"));
+                        return Calls.response(failResponse);
+                      }
+                    });
 
     BatchUploadTask batchUploadTask = new BatchUploadTask(client, BACKO, batch, 3);
     batchUploadTask.run();
@@ -523,22 +517,23 @@ public class RudderAnalyticsClientTest {
     // tries 11(one normal run + 10 retries)
     verify(rudderService, times(4)).upload(null, batch);
     verify(callback)
-        .failure(
-            ArgumentMatchers.eq(trackMessage),
-            ArgumentMatchers.argThat(
-                new ArgumentMatcher<IOException>() {
-                  @Override
-                  public boolean matches(IOException exception) {
-                    return exception.getMessage().equals("4 retries exhausted");
-                  }
-                }));
+            .failure(
+                    eq(trackMessage),
+                    argThat(
+                            new ArgumentMatcher<IOException>() {
+                              @Override
+                              public boolean matches(IOException exception) {
+                                return exception.getMessage().equals("4 retries exhausted");
+                              }
+                            }));
   }
+
   @Test
   public void flushWhenNotShutDown() throws InterruptedException {
     AnalyticsClient client = newClient();
 
     client.flush();
-    Mockito.verify(messageQueue).put(FlushMessage.POISON);
+    verify(messageQueue).put(POISON);
   }
 
   @Test
@@ -548,29 +543,29 @@ public class RudderAnalyticsClientTest {
 
     client.flush();
 
-    Mockito.verify(messageQueue, Mockito.times(0)).put(ArgumentMatchers.any(Message.class));
+    verify(messageQueue, times(0)).put(any(Message.class));
   }
 
   @Test
   public void enqueueWithRegularMessageWhenNotShutdown(MessageBuilderTest builder)
-      throws InterruptedException {
+          throws InterruptedException {
     AnalyticsClient client = newClient();
 
     final Message message = builder.get().userId("foo").build();
     client.enqueue(message);
 
-    Mockito.verify(messageQueue).put(message);
+    verify(messageQueue).put(message);
   }
 
   @Test
   public void enqueueWithRegularMessageWhenShutdown(MessageBuilderTest builder)
-      throws InterruptedException {
+          throws InterruptedException {
     AnalyticsClient client = newClient();
     isShutDown.set(true);
 
     client.enqueue(builder.get().userId("foo").build());
 
-    Mockito.verify(messageQueue, Mockito.times(0)).put(ArgumentMatchers.any(Message.class));
+    verify(messageQueue, times(0)).put(any(Message.class));
   }
 
   @Test
@@ -580,19 +575,18 @@ public class RudderAnalyticsClientTest {
 
     client.enqueue(STOP);
 
-    Mockito.verify(messageQueue).put(STOP);
+    verify(messageQueue).put(STOP);
   }
 
   @Test
   public void shutdownWhenAlreadyShutDown() throws InterruptedException {
-    isShutDown.set(true); //shutdown already
     AnalyticsClient client = newClient();
-//    isShutDown.set(true);
+    isShutDown.set(true);
 
     client.shutdown();
 
     verify(messageQueue, times(0)).put(any(Message.class));
-    verifyNoInteractions(networkExecutor, callback, segmentService);
+    verifyNoInteractions(networkExecutor, callback, rudderService);
   }
 
   @Test
@@ -600,24 +594,24 @@ public class RudderAnalyticsClientTest {
     AnalyticsClient client = newClient();
     client.shutdown();
 
-    Mockito.verify(messageQueue).put(STOP);
-    Mockito.verify(networkExecutor).shutdown();
-    Mockito.verify(networkExecutor).awaitTermination(1, TimeUnit.SECONDS);
-    Mockito.verifyNoMoreInteractions(networkExecutor);
+    verify(messageQueue).put(STOP);
+    verify(networkExecutor).shutdown();
+    verify(networkExecutor).awaitTermination(1, TimeUnit.SECONDS);
+    verifyNoMoreInteractions(networkExecutor);
   }
 
   @Test
   public void shutdownWithMessagesInTheQueue(MessageBuilderTest builder)
-      throws InterruptedException {
+          throws InterruptedException {
     AnalyticsClient client = newClient();
 
     client.enqueue(builder.get().userId("foo").build());
     client.shutdown();
 
-    Mockito.verify(messageQueue).put(STOP);
-    Mockito.verify(networkExecutor).shutdown();
-    Mockito.verify(networkExecutor).awaitTermination(1, TimeUnit.SECONDS);
-    Mockito.verify(networkExecutor).submit(ArgumentMatchers.any(AnalyticsClient.BatchUploadTask.class));
+    verify(messageQueue).put(STOP);
+    verify(networkExecutor).shutdown();
+    verify(networkExecutor).awaitTermination(1, TimeUnit.SECONDS);
+    verify(networkExecutor).submit(any(AnalyticsClient.BatchUploadTask.class));
   }
 
   @Test
@@ -626,15 +620,15 @@ public class RudderAnalyticsClientTest {
     TrackMessage trackMessage = TrackMessage.builder("foo").userId("bar").build();
     Batch batch = batchFor(trackMessage);
 
-    when(segmentService.upload(null, batch))
-        .thenAnswer(
-            new Answer<Call<UploadResponse>>() {
-              public Call<UploadResponse> answer(InvocationOnMock invocation) {
-                Response<UploadResponse> failResponse =
-                    Response.error(429, ResponseBody.create(null, "Not Found"));
-                return Calls.response(failResponse);
-              }
-            });
+    when(rudderService.upload(null, batch))
+            .thenAnswer(
+                    new Answer<Call<UploadResponse>>() {
+                      public Call<UploadResponse> answer(InvocationOnMock invocation) {
+                        Response<UploadResponse> failResponse =
+                                Response.error(429, ResponseBody.create(null, "Not Found"));
+                        return Calls.response(failResponse);
+                      }
+                    });
 
     BatchUploadTask batchUploadTask = new BatchUploadTask(client, BACKO, batch, 0);
     batchUploadTask.run();
@@ -642,15 +636,15 @@ public class RudderAnalyticsClientTest {
     // runs once but never retries
     verify(rudderService, times(1)).upload(null, batch);
     verify(callback)
-        .failure(
-            ArgumentMatchers.eq(trackMessage),
-            ArgumentMatchers.argThat(
-                new ArgumentMatcher<IOException>() {
-                  @Override
-                  public boolean matches(IOException exception) {
-                    return exception.getMessage().equals("1 retries exhausted");
-                  }
-                }));
+            .failure(
+                    eq(trackMessage),
+                    argThat(
+                            new ArgumentMatcher<IOException>() {
+                              @Override
+                              public boolean matches(IOException exception) {
+                                return exception.getMessage().equals("1 retries exhausted");
+                              }
+                            }));
   }
 
   /**
@@ -670,7 +664,7 @@ public class RudderAnalyticsClientTest {
     properties.put("property1", generateDataOfSize(msgSize));
 
     TrackMessage bigMessage =
-        TrackMessage.builder("Event").userId("jorgen25").properties(properties).build();
+            TrackMessage.builder("Event").userId("jorgen25").properties(properties).build();
     client.enqueue(bigMessage);
 
     int msgActualSize = client.messageSizeInBytes(bigMessage);
@@ -688,7 +682,7 @@ public class RudderAnalyticsClientTest {
     properties.put("property1", generateDataOfSize(msgSize));
 
     TrackMessage bigMessage =
-        TrackMessage.builder("Event").userId("jorgen25").properties(properties).build();
+            TrackMessage.builder("Event").userId("jorgen25").properties(properties).build();
     client.enqueue(bigMessage);
 
     int msgActualSize = client.messageSizeInBytes(bigMessage);
@@ -706,7 +700,7 @@ public class RudderAnalyticsClientTest {
     properties.put("property1", generateDataOfSizeSpecialChars(msgSize, true));
 
     TrackMessage bigMessage =
-        TrackMessage.builder("Event").userId("jorgen25").properties(properties).build();
+            TrackMessage.builder("Event").userId("jorgen25").properties(properties).build();
     client.enqueue(bigMessage);
 
     int msgActualSize = client.messageSizeInBytes(bigMessage);
@@ -724,7 +718,7 @@ public class RudderAnalyticsClientTest {
     properties.put("property1", generateDataOfSizeSpecialChars(msgSize, false));
 
     TrackMessage bigMessage =
-        TrackMessage.builder("Event").userId("jorgen25").properties(properties).build();
+            TrackMessage.builder("Event").userId("jorgen25").properties(properties).build();
     client.enqueue(bigMessage);
 
     int msgActualSize = client.messageSizeInBytes(bigMessage);
@@ -756,7 +750,7 @@ public class RudderAnalyticsClientTest {
 
   @Test
   public void enqueueVerifyRegularMessageIsEnqueuedAndCheckedForSize(MessageBuilderTest builder)
-      throws InterruptedException {
+          throws InterruptedException {
     AnalyticsClient clientSpy = spy(newClient());
 
     Message message = builder.get().userId("jorgen25").build();
@@ -776,7 +770,7 @@ public class RudderAnalyticsClientTest {
    */
   @Test
   public void enqueueSingleMessageAboveLimitWhenNotShutdown(MessageBuilderTest builder)
-      throws InterruptedException {
+          throws InterruptedException {
     AnalyticsClient client = newClient();
 
     // Message is above batch limit
@@ -784,7 +778,7 @@ public class RudderAnalyticsClientTest {
     Map<String, String> integrationOpts = new HashMap<>();
     integrationOpts.put("massData", massData);
     Message message =
-        builder.get().userId("foo").integrationOptions("someKey", integrationOpts).build();
+            builder.get().userId("foo").integrationOptions("someKey", integrationOpts).build();
 
     client.enqueue(message);
 
@@ -798,7 +792,7 @@ public class RudderAnalyticsClientTest {
 
   @Test
   public void enqueueVerifyRegularMessagesSpecialCharactersBelowLimit(MessageBuilderTest builder)
-      throws InterruptedException {
+          throws InterruptedException {
     AnalyticsClient client = newClient();
     int msgSize = 1024 * 18; // 18KB
 
@@ -807,7 +801,7 @@ public class RudderAnalyticsClientTest {
       Map<String, String> integrationOpts = new HashMap<>();
       integrationOpts.put("data", data);
       Message message =
-          builder.get().userId("jorgen25").integrationOptions("someKey", integrationOpts).build();
+              builder.get().userId("jorgen25").integrationOptions("someKey", integrationOpts).build();
       client.enqueue(message);
       verify(messageQueue).put(message);
     }
@@ -835,26 +829,26 @@ public class RudderAnalyticsClientTest {
   @Test
   public void submitBatchBelowThreshold() throws InterruptedException {
     AnalyticsClient client =
-        new AnalyticsClient(
-            messageQueue,
-            null,
-            rudderService,
-            50,
-            TimeUnit.HOURS.toMillis(1),
-            0,
-            MAX_BATCH_SIZE * 4,
-            log,
-            threadFactory,
-            networkExecutor,
-            Collections.singletonList(callback),
-            isShutDown);
+            new AnalyticsClient(
+                    messageQueue,
+                    null,
+                    rudderService,
+                    50,
+                    TimeUnit.HOURS.toMillis(1),
+                    0,
+                    MAX_BATCH_SIZE * 4,
+                    log,
+                    threadFactory,
+                    networkExecutor,
+                    Collections.singletonList(callback),
+                    isShutDown);
 
     Map<String, String> properties = new HashMap<String, String>();
     properties.put("property3", generateDataOfSizeSpecialChars(MAX_MSG_SIZE, true));
 
     for (int i = 0; i < 15; i++) {
       TrackMessage bigMessage =
-          TrackMessage.builder("Big Event").userId("jorgen25").properties(properties).build();
+              TrackMessage.builder("Big Event").userId("jorgen25").properties(properties).build();
       client.enqueue(bigMessage);
       verify(messageQueue).put(bigMessage);
     }
@@ -875,26 +869,26 @@ public class RudderAnalyticsClientTest {
   @Test
   public void submitBatchAboveThreshold() throws InterruptedException {
     AnalyticsClient client =
-        new AnalyticsClient(
-            messageQueue,
-            null,
-            rudderService,
-            50,
-            TimeUnit.HOURS.toMillis(1),
-            0,
-            MAX_BATCH_SIZE * 4,
-            log,
-            threadFactory,
-            networkExecutor,
-            Collections.singletonList(callback),
-            isShutDown);
+            new AnalyticsClient(
+                    messageQueue,
+                    null,
+                    rudderService,
+                    50,
+                    TimeUnit.HOURS.toMillis(1),
+                    0,
+                    MAX_BATCH_SIZE * 4,
+                    log,
+                    threadFactory,
+                    networkExecutor,
+                    Collections.singletonList(callback),
+                    isShutDown);
 
     Map<String, String> properties = new HashMap<String, String>();
     properties.put("property3", generateDataOfSizeSpecialChars(MAX_MSG_SIZE, true));
 
     for (int i = 0; i < 100; i++) {
       TrackMessage message =
-          TrackMessage.builder("Big Event").userId("jorgen25").properties(properties).build();
+              TrackMessage.builder("Big Event").userId("jorgen25").properties(properties).build();
       client.enqueue(message);
       verify(messageQueue).put(message);
     }
@@ -914,26 +908,26 @@ public class RudderAnalyticsClientTest {
   @Test
   public void submitManySmallMessagesBatchAboveThreshold() throws InterruptedException {
     AnalyticsClient client =
-        new AnalyticsClient(
-            messageQueue,
-            null,
-            rudderService,
-            50,
-            TimeUnit.HOURS.toMillis(1),
-            0,
-            MAX_BATCH_SIZE * 4,
-            log,
-            threadFactory,
-            networkExecutor,
-            Collections.singletonList(callback),
-            isShutDown);
+            new AnalyticsClient(
+                    messageQueue,
+                    null,
+                    rudderService,
+                    50,
+                    TimeUnit.HOURS.toMillis(1),
+                    0,
+                    MAX_BATCH_SIZE * 4,
+                    log,
+                    threadFactory,
+                    networkExecutor,
+                    Collections.singletonList(callback),
+                    isShutDown);
 
     Map<String, String> properties = new HashMap<String, String>();
     properties.put("property3", generateDataOfSizeSpecialChars(1024 * 8, true));
 
     for (int i = 0; i < 600; i++) {
       TrackMessage message =
-          TrackMessage.builder("Event").userId("jorgen25").properties(properties).build();
+              TrackMessage.builder("Event").userId("jorgen25").properties(properties).build();
       client.enqueue(message);
       verify(messageQueue).put(message);
     }

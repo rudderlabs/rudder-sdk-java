@@ -380,8 +380,8 @@ public class RudderAnalyticsBuilderTest {
 
   @Test
   public void buildsWithForceTlsV1() {
-    Analytics analytics = builder.forceTlsVersion1().build();
-    assertThat(analytics).isNotNull();
+    RudderAnalytics rudderAnalytics = builder.forceTlsVersion1().build();
+    assertThat(rudderAnalytics).isNotNull();
   }
 
   @Test

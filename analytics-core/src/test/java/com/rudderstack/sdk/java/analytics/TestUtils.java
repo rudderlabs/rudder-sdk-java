@@ -1,7 +1,6 @@
 package com.rudderstack.sdk.java.analytics;
 
 import com.rudderstack.sdk.java.analytics.messages.*;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;

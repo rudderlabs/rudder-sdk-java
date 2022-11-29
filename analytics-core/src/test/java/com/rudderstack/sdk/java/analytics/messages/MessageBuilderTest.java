@@ -1,5 +1,6 @@
 package com.rudderstack.sdk.java.analytics.messages;
 
+import static com.rudderstack.sdk.java.analytics.TestUtils.newDate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
@@ -120,7 +121,7 @@ public class MessageBuilderTest {
 
   @Test
   public void timestamp(TestUtils.MessageBuilderFactory builder) {
-    Date date = TestUtils.newDate(1985, 4, 12, 23, 20, 50, 520, 0);
+    Date date = newDate(1985, 4, 12, 23, 20, 50, 520, 0);
     Message message = builder.get().userId("userId").timestamp(date).build();
     assertThat(message.timestamp()).isEqualTo(date);
   }

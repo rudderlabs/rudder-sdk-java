@@ -8,7 +8,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import com.rudderstack.sdk.java.analytics.internal.*;
+import com.rudderstack.sdk.java.analytics.TestUtils.MessageBuilderTest;
+import com.rudderstack.sdk.java.analytics.internal.AnalyticsClient;
 import com.rudderstack.sdk.java.analytics.messages.Message;
 import com.rudderstack.sdk.java.analytics.messages.MessageBuilder;
 import com.squareup.burst.BurstJUnit4;
@@ -27,12 +28,9 @@ import org.mockito.Mock;
 @RunWith(BurstJUnit4.class)
 public class RudderAnalyticsTest {
   @Mock AnalyticsClient client;
-  @Mock
-  Log log;
-  @Mock
-  MessageTransformer messageTransformer;
-  @Mock
-  MessageInterceptor messageInterceptor;
+  @Mock Log log;
+  @Mock MessageTransformer messageTransformer;
+  @Mock MessageInterceptor messageInterceptor;
   RudderAnalytics analytics;
 
   @Before
@@ -100,7 +98,7 @@ public class RudderAnalyticsTest {
   }
 
   @Test
-  public void offerIsDispatched(TestUtils.MessageBuilderTest builder) {
+  public void offerIsDispatched(MessageBuilderTest builder) {
     MessageBuilder messageBuilder = builder.get().userId("dummy");
     Message message = messageBuilder.build();
     when(messageTransformer.transform(messageBuilder)).thenReturn(true);
@@ -117,7 +115,7 @@ public class RudderAnalyticsTest {
   public void threadSafeTest(MessageBuilderTest builder)
       throws NoSuchFieldException, IllegalAccessException, InterruptedException {
     // we want to test if msgs get lost during a multithreaded env
-    Analytics analytics = Analytics.builder("testWriteKeyForIssue321").build();
+    RudderAnalytics analytics = RudderAnalytics.builder("testWriteKeyForIssue321").build();
     // So we just want to spy on the client of an Analytics  object created normally
     Field clientField = analytics.getClass().getDeclaredField("client");
     clientField.setAccessible(true);

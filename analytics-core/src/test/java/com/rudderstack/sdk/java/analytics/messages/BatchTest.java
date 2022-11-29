@@ -1,5 +1,7 @@
 package com.rudderstack.sdk.java.analytics.messages;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.rudderstack.sdk.java.analytics.TestUtils;
@@ -11,11 +13,6 @@ import java.util.List;
 import java.util.Map;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.List;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(BurstJUnit4.class)
 public class BatchTest {
