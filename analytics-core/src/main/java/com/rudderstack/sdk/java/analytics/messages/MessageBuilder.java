@@ -77,7 +77,7 @@ public abstract class MessageBuilder<T extends Message, V extends MessageBuilder
    * Set a sentAt for the event. By default, the current sentAt is used, but you may override it for
    * historical import.
    *
-   * @see <a href="https://segment.com/docs/spec/common/#-sentAt-">SentAt</a>
+   * @see <a href="https://rudder.com/docs/spec/common/#-sentAt-">SentAt</a>
    */
   public V sentAt(Date sentAt) {
     this.sentAt = sentAt;
