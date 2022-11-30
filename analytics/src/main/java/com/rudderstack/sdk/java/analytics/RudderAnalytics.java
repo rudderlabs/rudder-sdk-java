@@ -127,6 +127,7 @@ public class RudderAnalytics {
   /** Fluent API for creating {@link RudderAnalytics} instances. */
   public static class Builder {
     private static final String DEFAULT_ENDPOINT = "https://hosted.rudderlabs.com/";
+    private static final String DEFAULT_PATH = "v1/batch";
     private static final String DEFAULT_USER_AGENT = "analytics-java/" + AnalyticsVersion.get();
     private static final int MESSAGE_QUEUE_MAX_BYTE_SIZE = 1024 * 500;
 
@@ -184,13 +185,7 @@ public class RudderAnalytics {
       if (! endpoint.endsWith("/")){
         endpoint += "/";
       }
-      this.endpoint = HttpUrl.parse(endpoint);
-      // Don't add /v1/import for RudderStack
-      // if(endpoint.endsWith(DEFAULT_PATH)) {
-      //   this.endpoint = HttpUrl.parse(endpoint);
-      // } else {
-      //   this.endpoint = HttpUrl.parse(endpoint + DEFAULT_PATH);
-      // }
+      this.endpoint = HttpUrl.parse(endpoint + DEFAULT_PATH);
       return this;
     }
 
@@ -358,7 +353,7 @@ public class RudderAnalytics {
         if (uploadURL != null) {
           endpoint = uploadURL;
         } else {
-          endpoint = HttpUrl.parse(DEFAULT_ENDPOINT);
+          endpoint = HttpUrl.parse(DEFAULT_ENDPOINT + DEFAULT_PATH);
         }
       }
 

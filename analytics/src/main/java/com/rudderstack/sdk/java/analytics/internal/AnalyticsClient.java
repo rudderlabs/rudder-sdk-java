@@ -10,7 +10,7 @@ import com.rudderstack.sdk.java.analytics.AnalyticsVersion;
 import com.rudderstack.sdk.java.analytics.Callback;
 import com.rudderstack.sdk.java.analytics.Log;
 import com.rudderstack.sdk.java.analytics.http.RudderService;
-import com.rudderstack.sdk.java.analytics.http.UploadResponse;
+import okhttp3.ResponseBody;
 import com.rudderstack.sdk.java.analytics.messages.Batch;
 import com.rudderstack.sdk.java.analytics.messages.Message;
 import com.segment.backo.Backo;
@@ -365,8 +365,8 @@ public class AnalyticsClient {
       client.log.print(VERBOSE, "Uploading batch %s.", batch.sequence());
 
       try {
-        Call<UploadResponse> call = client.service.upload(client.uploadUrl, batch);
-        Response<UploadResponse> response = call.execute();
+        Call<ResponseBody> call = client.service.upload(client.uploadUrl, batch);
+        Response<ResponseBody> response = call.execute();
 
         if (response.isSuccessful()) {
           client.log.print(VERBOSE, "Uploaded batch %s.", batch.sequence());

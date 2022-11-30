@@ -20,7 +20,6 @@ import com.rudderstack.sdk.java.analytics.Callback;
 import com.rudderstack.sdk.java.analytics.Log;
 import com.rudderstack.sdk.java.analytics.TestUtils.MessageBuilderTest;
 import com.rudderstack.sdk.java.analytics.http.RudderService;
-import com.rudderstack.sdk.java.analytics.http.UploadResponse;
 import com.rudderstack.sdk.java.analytics.internal.AnalyticsClient.BatchUploadTask;
 import com.rudderstack.sdk.java.analytics.messages.Batch;
 import com.rudderstack.sdk.java.analytics.messages.Message;
@@ -90,7 +89,7 @@ public class RudderAnalyticsClientTest {
   @Mock RudderService rudderService;
   @Mock ExecutorService networkExecutor;
   @Mock Callback callback;
-  @Mock UploadResponse response;
+  @Mock ResponseBody response;
 
   AtomicBoolean isShutDown;
 
@@ -357,8 +356,8 @@ public class RudderAnalyticsClientTest {
     TrackMessage trackMessage = TrackMessage.builder("foo").userId("bar").build();
     Batch batch = batchFor(trackMessage);
 
-    Response<UploadResponse> successResponse = Response.success(200, response);
-    Response<UploadResponse> failureResponse = Response.error(429, ResponseBody.create(null, ""));
+    Response<ResponseBody> successResponse = Response.success(200, response);
+    Response<ResponseBody> failureResponse = Response.error(429, ResponseBody.create(null, ""));
 
     // Throw a network error 3 times.
     when(rudderService.upload(null, batch))
@@ -383,8 +382,8 @@ public class RudderAnalyticsClientTest {
 
     // Throw a HTTP error 3 times.
 
-    Response<UploadResponse> successResponse = Response.success(200, response);
-    Response<UploadResponse> failResponse =
+    Response<ResponseBody> successResponse = Response.success(200, response);
+    Response<ResponseBody> failResponse =
             Response.error(500, ResponseBody.create(null, "Server Error"));
     when(rudderService.upload(null, batch))
             .thenReturn(Calls.response(failResponse))
@@ -407,8 +406,8 @@ public class RudderAnalyticsClientTest {
     Batch batch = batchFor(trackMessage);
 
     // Throw a HTTP error 3 times.
-    Response<UploadResponse> successResponse = Response.success(200, response);
-    Response<UploadResponse> failResponse =
+    Response<ResponseBody> successResponse = Response.success(200, response);
+    Response<ResponseBody> failResponse =
             Response.error(429, ResponseBody.create(null, "Rate Limited"));
     when(rudderService.upload(null, batch))
             .thenReturn(Calls.response(failResponse))
@@ -431,7 +430,7 @@ public class RudderAnalyticsClientTest {
     Batch batch = batchFor(trackMessage);
 
     // Throw a HTTP error that should not be retried.
-    Response<UploadResponse> failResponse =
+    Response<ResponseBody> failResponse =
             Response.error(404, ResponseBody.create(null, "Not Found"));
     when(rudderService.upload(null, batch)).thenReturn(Calls.response(failResponse));
 
@@ -449,7 +448,7 @@ public class RudderAnalyticsClientTest {
     TrackMessage trackMessage = TrackMessage.builder("foo").userId("bar").build();
     Batch batch = batchFor(trackMessage);
 
-    Call<UploadResponse> networkFailure = Calls.failure(new RuntimeException());
+    Call<ResponseBody> networkFailure = Calls.failure(new RuntimeException());
     when(rudderService.upload(null, batch)).thenReturn(networkFailure);
 
     BatchUploadTask batchUploadTask = new BatchUploadTask(client, BACKO, batch, DEFAULT_RETRIES);
@@ -468,9 +467,9 @@ public class RudderAnalyticsClientTest {
 
     when(rudderService.upload(null, batch))
             .thenAnswer(
-                    new Answer<Call<UploadResponse>>() {
-                      public Call<UploadResponse> answer(InvocationOnMock invocation) {
-                        Response<UploadResponse> failResponse =
+                    new Answer<Call<ResponseBody>>() {
+                      public Call<ResponseBody> answer(InvocationOnMock invocation) {
+                        Response<ResponseBody> failResponse =
                                 Response.error(429, ResponseBody.create(null, "Not Found"));
                         return Calls.response(failResponse);
                       }
@@ -502,9 +501,9 @@ public class RudderAnalyticsClientTest {
 
     when(rudderService.upload(null, batch))
             .thenAnswer(
-                    new Answer<Call<UploadResponse>>() {
-                      public Call<UploadResponse> answer(InvocationOnMock invocation) {
-                        Response<UploadResponse> failResponse =
+                    new Answer<Call<ResponseBody>>() {
+                      public Call<ResponseBody> answer(InvocationOnMock invocation) {
+                        Response<ResponseBody> failResponse =
                                 Response.error(429, ResponseBody.create(null, "Not Found"));
                         return Calls.response(failResponse);
                       }
@@ -622,9 +621,9 @@ public class RudderAnalyticsClientTest {
 
     when(rudderService.upload(null, batch))
             .thenAnswer(
-                    new Answer<Call<UploadResponse>>() {
-                      public Call<UploadResponse> answer(InvocationOnMock invocation) {
-                        Response<UploadResponse> failResponse =
+                    new Answer<Call<ResponseBody>>() {
+                      public Call<ResponseBody> answer(InvocationOnMock invocation) {
+                        Response<ResponseBody> failResponse =
                                 Response.error(429, ResponseBody.create(null, "Not Found"));
                         return Calls.response(failResponse);
                       }

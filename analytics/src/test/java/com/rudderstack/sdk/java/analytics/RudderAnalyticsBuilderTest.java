@@ -273,7 +273,7 @@ public class RudderAnalyticsBuilderTest {
   @Test
   public void buildsCorrectEndpoint() {
     builder.endpoint("https://hosted.rudderlabs.com");
-    String expectedURL = "https://hosted.rudderlabs.com/";
+    String expectedURL = "https://hosted.rudderlabs.com/v1/batch";
     assertEquals(expectedURL, builder.endpoint.toString());
   }
 
