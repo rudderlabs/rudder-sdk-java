@@ -23,10 +23,10 @@ public abstract class MessageBuilder<T extends Message, V extends MessageBuilder
   private static final Map<String, ?> LIBRARY_CONTEXT;
 
   static {
-    Map<String, String> library = new LinkedHashMap<>();
+    Map<String, String> library = new HashMap<>();
     library.put("name", "analytics-java");
     library.put("version", AnalyticsVersion.get());
-    Map<String, Object> context = new LinkedHashMap<>();
+    Map<String, Object> context = new HashMap<>();
     context.put("library", Collections.unmodifiableMap(library));
     LIBRARY_CONTEXT = Collections.unmodifiableMap(context);
   }
