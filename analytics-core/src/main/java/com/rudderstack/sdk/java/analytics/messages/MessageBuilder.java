@@ -1,10 +1,8 @@
 package com.rudderstack.sdk.java.analytics.messages;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+
+import com.rudderstack.sdk.java.analytics.AnalyticsVersion;
 
 /**
  * Fluent API to construct instances of a {@link Message}.
@@ -22,6 +20,16 @@ public abstract class MessageBuilder<T extends Message, V extends MessageBuilder
   private String anonymousId;
   private String userId;
   private Map<String, Object> integrations;
+  private static final Map<String, ?> LIBRARY_CONTEXT;
+
+  static {
+    Map<String, String> library = new LinkedHashMap<>();
+    library.put("name", "analytics-java");
+    library.put("version", AnalyticsVersion.get());
+    Map<String, Object> context = new LinkedHashMap<>();
+    context.put("library", Collections.unmodifiableMap(library));
+    LIBRARY_CONTEXT = Collections.unmodifiableMap(context);
+  }
 
   // Hidden from Public API.
   MessageBuilder(Message.Type type) {
@@ -228,6 +236,14 @@ public abstract class MessageBuilder<T extends Message, V extends MessageBuilder
       integrations = Collections.emptyMap();
     } else {
       integrations = ImmutableMap.copyOf(this.integrations);
+    }
+
+    if (this.context != null) {
+      Map<String, Object> mergeContext = new HashMap<>(this.context);
+      mergeContext.putAll(LIBRARY_CONTEXT);
+      this.context = ImmutableMap.copyOf(mergeContext);
+    } else {
+      this.context = ImmutableMap.copyOf(LIBRARY_CONTEXT);
     }
 
     return realBuild(
