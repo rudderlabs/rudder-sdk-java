@@ -5,11 +5,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
 import com.google.common.collect.ImmutableMap;
+import com.rudderstack.sdk.java.analytics.AnalyticsVersion;
 import com.rudderstack.sdk.java.analytics.TestUtils;
 import com.squareup.burst.BurstJUnit4;
-import java.util.Date;
-import java.util.Map;
-import java.util.UUID;
+
+import java.util.*;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -209,8 +210,13 @@ public class MessageBuilderTest {
 
   @Test
   public void context(TestUtils.MessageBuilderFactory builder) {
-    Map<String, String> context = ImmutableMap.of("foo", "bar");
+    Map<String, String> library = new HashMap<>();
+    library.put("name", "analytics-java");
+    library.put("version", AnalyticsVersion.get());
+    Map<String, Object> context = ImmutableMap.of("foo", "bar", "library", library);
+
     Message message = builder.get().userId("foo").context(context).build();
+
     assertThat(message.context()).isEqualTo(context);
   }
 }
