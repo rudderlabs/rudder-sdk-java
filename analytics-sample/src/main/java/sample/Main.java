@@ -1,7 +1,7 @@
 package sample;
 
-import com.rudder.analytics.RudderAnalytics;
-import com.rudder.analytics.messages.*;
+import com.rudderstack.sdk.java.analytics.RudderAnalytics;
+import com.rudderstack.sdk.java.analytics.messages.*;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -16,8 +16,8 @@ public class Main {
 
     // https://rudder.com/rudder-engineering/sources/test-java/debugger
     final RudderAnalytics analytics =
-            RudderAnalytics.builder("21x5I7SYAW3JWmUEnuQar1pfbs1")
-                    .endpoint("https://863c-14-97-100-194.ngrok.io")
+            RudderAnalytics.builder("write_key")
+                    .endpoint("data_plane_url")
                     .plugin(blockingFlush.plugin())
                     .plugin(new LoggingPlugin())
                     .client(createClient())
