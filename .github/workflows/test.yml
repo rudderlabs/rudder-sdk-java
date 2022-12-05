@@ -29,12 +29,12 @@ jobs:
         uses: cicirello/jacoco-badge-generator@v2
         with:
           generate-branches-badge: true
-          jacoco-csv-file: analytics-core/target/site/jacoco/jacoco.csv
+          jacoco-csv-file: analytics-core/target/site/jacoco/jacoco.csv, analytic/target/site/jacoco
       - name: Build
         run:  mvn install -DskipTests=true
-      - name: Upload Test report
-        uses: actions/upload-artifact@v3
-        with:
-          name: index.html
-          path: analytics-core/target/site/jacoco, analytic/target/site/jacoco
+#      - name: Upload Test report
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: index.html
+#          path: analytics-core/target/site/jacoco, analytic/target/site/jacoco
 
