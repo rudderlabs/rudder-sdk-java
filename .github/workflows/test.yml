@@ -31,5 +31,5 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: index.html
-          path: rudder-sdk-java/target/CoverageReport
+          path: rudder-sdk-java/analytics/target/CoverageReport
 
