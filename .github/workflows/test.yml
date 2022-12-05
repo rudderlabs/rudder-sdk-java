@@ -15,5 +15,11 @@ jobs:
           distribution: 'adopt'
       - name: Setup
         run: mvn clean && mvn templating:filter-sources
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
       - name: Build with Maven
         run: mvn test
