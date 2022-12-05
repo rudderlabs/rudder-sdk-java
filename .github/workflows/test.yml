@@ -25,3 +25,5 @@ jobs:
         run: mvn clean && mvn templating:filter-sources
       - name: Unit Test
         run: mvn test
+      - name: Build
+        run: mvn install
