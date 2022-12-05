@@ -25,11 +25,15 @@ jobs:
         run: mvn clean && mvn templating:filter-sources
       - name: Unit Test
         run: mvn test
+      - name: Generate JaCoCo Badge
+        uses: cicirello/jacoco-badge-generator@v2
+        with:
+          generate-branches-badge: true
       - name: Build
         run:  mvn install -DskipTests=true
-      - name: Upload Test report
-        uses: actions/upload-artifact@v3
-        with:
-          name: index.html
-          path: rudder-sdk-java/analytics/target/CoverageReport
+#      - name: Upload Test report
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: index.html
+#          path: rudder-sdk-java/analytics/target/CoverageReport
 
