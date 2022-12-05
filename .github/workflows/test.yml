@@ -32,9 +32,9 @@ jobs:
           jacoco-csv-file: analytics-core/target/site/jacoco/jacoco.csv
       - name: Build
         run:  mvn install -DskipTests=true
-#      - name: Upload Test report
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: index.html
-#          path: rudder-sdk-java/analytics/target/CoverageReport
+      - name: Upload Test report
+        uses: actions/upload-artifact@v3
+        with:
+          name: index.html
+          path: analytics-core/target/site/jacoco
 
