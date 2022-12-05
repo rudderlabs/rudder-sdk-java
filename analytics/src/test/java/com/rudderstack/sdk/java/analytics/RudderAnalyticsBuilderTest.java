@@ -2,8 +2,7 @@ package com.rudderstack.sdk.java.analytics;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -430,5 +429,8 @@ public class RudderAnalyticsBuilderTest {
   public void buildWithQueueCapacity() {
     RudderAnalytics analytics = builder.queueCapacity(10).build();
     assertThat(analytics).isNotNull();
+
+    // Intentionally, asserting false condition to verify CI unit test detects it or not
+    assertTrue(false);
   }
 }
