@@ -31,7 +31,7 @@ jobs:
           generate-branches-badge: true
           jacoco-csv-file: >
             analytics-core/target/site/jacoco/jacoco.csv
-            analytic/target/site/jacoco/jacoco.csv
+            analytics/target/site/jacoco/jacoco.csv
 #      - name: Build
 #        run:  mvn install -DskipTests=true
 #      - name: Upload Test report
