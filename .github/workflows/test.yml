@@ -36,5 +36,5 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: index.html
-          path: analytics-core/target/site/jacoco
+          path: analytics-core/target/site/jacoco, analytic/target/site/jacoco
 
