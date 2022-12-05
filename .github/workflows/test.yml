@@ -29,6 +29,7 @@ jobs:
         uses: cicirello/jacoco-badge-generator@v2
         with:
           generate-branches-badge: true
+          jacoco-csv-file: analytics-core/target/site/jacoco/jacoco.csv
       - name: Build
         run:  mvn install -DskipTests=true
 #      - name: Upload Test report
