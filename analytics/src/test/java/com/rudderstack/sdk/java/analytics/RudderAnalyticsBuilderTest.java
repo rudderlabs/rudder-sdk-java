@@ -429,8 +429,5 @@ public class RudderAnalyticsBuilderTest {
   public void buildWithQueueCapacity() {
     RudderAnalytics analytics = builder.queueCapacity(10).build();
     assertThat(analytics).isNotNull();
-
-    // Intentionally, asserting false condition to verify CI unit test detects it or not
-    assertTrue(false);
   }
 }
