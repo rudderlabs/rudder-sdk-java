@@ -43,7 +43,7 @@ jobs:
       - name: Upload JaCoCo coverage report
         uses: actions/upload-artifact@v3
         with:
-          name: jacoco-report
+          name: index.html
           path: |
             analytics-core/target/site/jacoco/
             analytics/target/site/jacoco/
