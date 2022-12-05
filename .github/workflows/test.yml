@@ -26,4 +26,5 @@ jobs:
       - name: Unit Test
         run: mvn test
       - name: Build
-        run: mvn install -Dskip.test.skip=true
+        run:  mvn install -DskipTests=true
+
