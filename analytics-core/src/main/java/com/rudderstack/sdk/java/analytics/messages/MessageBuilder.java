@@ -201,6 +201,7 @@ public abstract class MessageBuilder<T extends Message, V extends MessageBuilder
       Message.Type type,
       String messageId,
       Date sentAt,
+      String channel,
       Date timestamp,
       Map<String, ?> context,
       String anonymousId,
@@ -231,6 +232,8 @@ public abstract class MessageBuilder<T extends Message, V extends MessageBuilder
       messageId = UUID.randomUUID().toString();
     }
 
+    String channel = "server";
+
     Map<String, Object> integrations;
     if (this.integrations == null) {
       integrations = Collections.emptyMap();
@@ -247,7 +250,7 @@ public abstract class MessageBuilder<T extends Message, V extends MessageBuilder
     }
 
     return realBuild(
-        type, messageId, sentAt, timestamp, context, anonymousId, userId, integrations);
+        type, messageId, sentAt, channel, timestamp, context, anonymousId, userId, integrations);
   }
 
   /** Returns the {@link Message.Type} of the message this builder is constructing. */

@@ -31,6 +31,12 @@ class StopMessage implements Message {
 
     @Nonnull
     @Override
+    public String channel() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Nonnull
+    @Override
     public Date timestamp() {
         throw new UnsupportedOperationException();
     }
