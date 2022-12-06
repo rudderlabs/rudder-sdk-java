@@ -34,7 +34,7 @@ jobs:
             analytics-core/target/site/jacoco/jacoco.csv
             analytics/target/site/jacoco/jacoco.csv
 #      - name: Build
-#        run:  mvn install -DskipTests=true
+#        run:  mvn install -DskipTests=true - #-Dpmd.skip
 #      - name: Upload Test report
 #        uses: actions/upload-artifact@v3
 #        with:

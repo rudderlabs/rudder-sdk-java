@@ -229,7 +229,7 @@ public class AnalyticsClient {
       shutdownAndWait(networkExecutor, "network");
 
       log.print(
-          VERBOSE, "Analytics client shut down in %s ms", (System.currentTimeMillis() - start));
+          VERBOSE, "Analytics client shut down in %s ms", (System.currentTimeMillis() - start)); // NOPMD - Ignore parentheses check
     }
   }
 
