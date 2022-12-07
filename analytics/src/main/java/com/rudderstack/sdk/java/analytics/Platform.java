@@ -21,13 +21,17 @@ class Platform {
     return new Platform();
   }
 
-  OkHttpClient defaultClient() {
-    OkHttpClient client =
+  OkHttpClient defaultClient(boolean enableGZIP) {
+    OkHttpClient.Builder builder =
         new OkHttpClient.Builder()
             .connectTimeout(15, TimeUnit.SECONDS)
             .readTimeout(15, TimeUnit.SECONDS)
-            .writeTimeout(15, TimeUnit.SECONDS)
-            .build();
+            .writeTimeout(15, TimeUnit.SECONDS);
+
+    if (enableGZIP) {
+      builder.addInterceptor(new GzipRequestInterceptor());
+    }
+    OkHttpClient client = builder.build();
     return client;
   }
 
