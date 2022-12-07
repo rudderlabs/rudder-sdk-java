@@ -56,8 +56,11 @@ jobs:
       - name: Upload PMD lint report
         uses: actions/upload-artifact@v3
         with:
+          name: |
+            cpd.html
+            pmd.html
           path: |
-            analytics-core/target/site/cpd.html
-            analytics-core/target/site/pmd.html
-            analytics/target/site/cpd.html
-            analytics/target/site/pmd.html
+            analytics-core/target/site
+            analytics-core/target/site
+            analytics/target/site
+            analytics/target/site
