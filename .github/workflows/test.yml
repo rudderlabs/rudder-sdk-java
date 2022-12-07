@@ -48,8 +48,7 @@ jobs:
 #            analytics-core/target/site/jacoco/
 #            analytics/target/site/jacoco/
       - name: PMD Report
-        run: mvn pmd:pmd
-#        |
-#            mvn pmd:pmd
-#            mvn pmd:cpd
+        run: |
+            mvn pmd:pmd
+            mvn pmd:cpd
 
