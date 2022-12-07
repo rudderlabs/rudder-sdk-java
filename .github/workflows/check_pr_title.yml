@@ -1,8 +1,9 @@
 name: Check PR title
-on:
-  pull_request:
-  branches: ['master', 'develop', 'master-mpx', 'develop-mpx']
-  types: ['opened', 'reopened', 'edited', 'synchronize']
+on: [push]
+#on:
+#  pull_request:
+#  branches: ['master', 'develop', 'master-mpx', 'develop-mpx']
+#  types: ['opened', 'reopened', 'edited', 'synchronize']
 
 jobs:
   check_pr_title:
