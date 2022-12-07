@@ -3,7 +3,7 @@ name: Build & Code Quality Checks
 on: [push]
 
 jobs:
-  unit test and build:
+  unit_test_and_build:
     runs-on: ubuntu-latest
 
     steps:
