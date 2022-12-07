@@ -23,16 +23,16 @@ jobs:
             ${{ runner.os }}-maven-
       - name: Setup
         run: mvn clean && mvn templating:filter-sources
-#      - name: Unit Test
-#        run: mvn test
-#      - name: Generate JaCoCo Badge
-#        uses: cicirello/jacoco-badge-generator@v2
-#        with:
-#          generate-branches-badge: true
-#          generate-summary: true
-#          jacoco-csv-file: >
-#            analytics-core/target/site/jacoco/jacoco.csv
-#            analytics/target/site/jacoco/jacoco.csv
+      - name: Unit Test
+        run: mvn test
+      - name: Generate JaCoCo Badge
+        uses: cicirello/jacoco-badge-generator@v2
+        with:
+          generate-branches-badge: true
+          generate-summary: true
+          jacoco-csv-file: >
+            analytics-core/target/site/jacoco/jacoco.csv
+            analytics/target/site/jacoco/jacoco.csv
       - name: Build
         run:  mvn install -DskipTests=true - #-Dpmd.skip
 #      - name: Upload Test report
@@ -47,8 +47,8 @@ jobs:
 #          path: |
 #            analytics-core/target/site/jacoco/
 #            analytics/target/site/jacoco/
-      - name: PMD Report
-        run: mvn pmd:pmd
+#      - name: PMD Report
+#        run: mvn pmd:pmd
 #        |
 #            mvn pmd:pmd
 #            mvn pmd:cpd
