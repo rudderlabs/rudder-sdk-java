@@ -387,31 +387,31 @@
     </plugins>
   </build>
 
-<!--  <reporting>-->
-<!--    <plugins>-->
-<!--      <plugin>-->
-<!--        <groupId>org.apache.maven.plugins</groupId>-->
-<!--        <artifactId>maven-checkstyle-plugin</artifactId>-->
-<!--        <version>3.2.0</version>-->
-<!--        <configuration>-->
-<!--          <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>-->
-<!--          <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>-->
-<!--        </configuration>-->
-<!--        <reportSets>-->
-<!--          <reportSet>-->
-<!--            <reports>-->
-<!--              <report>checkstyle</report>-->
-<!--            </reports>-->
-<!--          </reportSet>-->
-<!--        </reportSets>-->
-<!--      </plugin>-->
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>3.2.0</version>
+        <configuration>
+          <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
+          <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>checkstyle</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
 
 <!--      <plugin>-->
 <!--        <groupId>org.apache.maven.plugins</groupId>-->
 <!--        <artifactId>maven-pmd-plugin</artifactId>-->
 <!--        <version>3.19.0</version>-->
 <!--      </plugin>-->
-<!--    </plugins>-->
-<!--  </reporting>-->
+    </plugins>
+  </reporting>
 
 </project>
