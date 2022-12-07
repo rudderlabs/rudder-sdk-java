@@ -48,15 +48,29 @@ jobs:
 #            analytics-core/target/site/jacoco/
 #            analytics/target/site/jacoco/
 
-      - name: PMD Lint checking
+      - name: PMD lint checking
         run: |
-            mvn pmd:pmd
-            mvn pmd:cpd
+          mvn clean
+          mvn pmd:pmd
+          mvn pmd:cpd
 
       - name: Upload PMD lint report
         uses: actions/upload-artifact@v3
         with:
           name: PMD lint report
+          path: |
+            analytics-core/target/site
+            analytics/target/site
+
+      - name: Checklist lint checking
+        run: |
+          mvn clean
+          mvn site
+
+      - name: Upload Checklist lint report
+        uses: actions/upload-artifact@v3
+        with:
+          name: Checklist lint report
           path: |
             analytics-core/target/site
             analytics/target/site
