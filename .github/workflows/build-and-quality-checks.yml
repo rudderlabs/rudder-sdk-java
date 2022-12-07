@@ -13,7 +13,6 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
-#          cache: 'maven'
       - name: Cache local Maven repository
         uses: actions/cache@v3
         with:
@@ -25,20 +24,20 @@ jobs:
       - name: Setup
         run: mvn clean && mvn templating:filter-sources
 
-#      - name: Unit Test
-#        run: mvn test
+      - name: Unit Test
+        run: mvn test
 #
 #      - name: Build
 #        run: mvn install -DskipTests=true #Skipt Unit test as it has been executed previously
 #
-#      - name: Generate coverage report
-#        uses: cicirello/jacoco-badge-generator@v2
-#        with:
-#          generate-branches-badge: true
-#          generate-summary: true
-#          jacoco-csv-file: >
-#            analytics-core/target/site/jacoco/jacoco.csv
-#            analytics/target/site/jacoco/jacoco.csv
+      - name: Generate coverage report
+        uses: cicirello/jacoco-badge-generator@v2
+        with:
+          generate-branches-badge: true
+          generate-summary: true
+          jacoco-csv-file: >
+            analytics-core/target/site/jacoco/jacoco.csv
+            analytics/target/site/jacoco/jacoco.csv
 #
 #      - name: Upload coverage report
 #        uses: actions/upload-artifact@v3
@@ -48,29 +47,29 @@ jobs:
 #            analytics-core/target/site/jacoco/
 #            analytics/target/site/jacoco/
 
-      - name: PMD lint checking
-        run: |
-          mvn clean
-          mvn pmd:pmd
-          mvn pmd:cpd
-
-      - name: Upload PMD lint report
-        uses: actions/upload-artifact@v3
-        with:
-          name: PMD lint report
-          path: |
-            analytics-core/target/site
-            analytics/target/site
-
-      - name: Checklist lint checking
-        run: |
-          mvn clean
-          mvn checkstyle:checkstyle
-
-      - name: Upload Checklist lint report
-        uses: actions/upload-artifact@v3
-        with:
-          name: Checklist lint report
-          path: |
-            analytics-core/target/site
-            analytics/target/site
+#      - name: PMD lint checking
+#        run: |
+#          mvn clean
+#          mvn pmd:pmd
+#          mvn pmd:cpd
+#
+#      - name: Upload PMD lint report
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: PMD lint report
+#          path: |
+#            analytics-core/target/site
+#            analytics/target/site
+#
+#      - name: Checklist lint checking
+#        run: |
+#          mvn clean
+#          mvn checkstyle:checkstyle
+#
+#      - name: Upload Checklist lint report
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: Checklist lint report
+#          path: |
+#            analytics-core/target/site
+#            analytics/target/site
