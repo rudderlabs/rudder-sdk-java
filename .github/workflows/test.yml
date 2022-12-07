@@ -33,8 +33,8 @@ jobs:
 #          jacoco-csv-file: >
 #            analytics-core/target/site/jacoco/jacoco.csv
 #            analytics/target/site/jacoco/jacoco.csv
-#      - name: Build
-#        run:  mvn install -DskipTests=true - #-Dpmd.skip
+      - name: Build
+        run:  mvn install -DskipTests=true - #-Dpmd.skip
 #      - name: Upload Test report
 #        uses: actions/upload-artifact@v3
 #        with:
@@ -48,7 +48,8 @@ jobs:
 #            analytics-core/target/site/jacoco/
 #            analytics/target/site/jacoco/
       - name: PMD Report
-        run: |
-            mvn pmd:pmd
-            mvn pmd:cpd
+        run: mvn pmd:pmd
+#        |
+#            mvn pmd:pmd
+#            mvn pmd:cpd
 
