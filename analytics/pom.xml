@@ -86,51 +86,79 @@
           </execution>
         </executions>
       </plugin>
-      <!--To generate the Coverage report-->
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.8</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>generate-code-coverage-report</id>
-            <phase>test</phase>
-            <goals>
-              <goal>report</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+
+
+
+<!--      &lt;!&ndash;To generate the Coverage report&ndash;&gt;-->
+<!--      <plugin>-->
+<!--        <groupId>org.jacoco</groupId>-->
+<!--        <artifactId>jacoco-maven-plugin</artifactId>-->
+<!--        <version>0.8.8</version>-->
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <goals>-->
+<!--              <goal>prepare-agent</goal>-->
+<!--            </goals>-->
+<!--          </execution>-->
+<!--          <execution>-->
+<!--            <id>generate-code-coverage-report</id>-->
+<!--            <phase>test</phase>-->
+<!--            <goals>-->
+<!--              <goal>report</goal>-->
+<!--            </goals>-->
+<!--          </execution>-->
+<!--        </executions>-->
+<!--      </plugin>-->
+<!--&lt;!&ndash;      <plugin>&ndash;&gt;-->
+<!--&lt;!&ndash;        <groupId>org.apache.maven.plugins</groupId>&ndash;&gt;-->
+<!--&lt;!&ndash;        <artifactId>maven-site-plugin</artifactId>&ndash;&gt;-->
+<!--&lt;!&ndash;        <version>3.7.1</version>&ndash;&gt;-->
+<!--&lt;!&ndash;      </plugin>&ndash;&gt;-->
+<!--&lt;!&ndash;      <plugin>&ndash;&gt;-->
+<!--&lt;!&ndash;        <groupId>org.apache.maven.plugins</groupId>&ndash;&gt;-->
+<!--&lt;!&ndash;        <artifactId>maven-project-info-reports-plugin</artifactId>&ndash;&gt;-->
+<!--&lt;!&ndash;        <version>3.4.1</version>&ndash;&gt;-->
+<!--&lt;!&ndash;      </plugin>&ndash;&gt;-->
+<!--      &lt;!&ndash;Code linting&ndash;&gt;-->
 <!--      <plugin>-->
 <!--        <groupId>org.apache.maven.plugins</groupId>-->
-<!--        <artifactId>maven-site-plugin</artifactId>-->
-<!--        <version>3.7.1</version>-->
+<!--        <artifactId>maven-pmd-plugin</artifactId>-->
+<!--        <version>3.19.0</version>-->
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <id>pmd-scan</id>-->
+<!--            <phase>verify</phase>-->
+<!--            <goals>-->
+<!--              <goal>check</goal>-->
+<!--            </goals>-->
+<!--          </execution>-->
+<!--        </executions>-->
 <!--      </plugin>-->
-<!--      <plugin>-->
-<!--        <groupId>org.apache.maven.plugins</groupId>-->
-<!--        <artifactId>maven-project-info-reports-plugin</artifactId>-->
-<!--        <version>3.4.1</version>-->
-<!--      </plugin>-->
-      <!--Code linting-->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-pmd-plugin</artifactId>
-        <version>3.19.0</version>
-        <executions>
-          <execution>
-            <id>pmd-scan</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+
+
+
     </plugins>
   </build>
+
+<!--  <reporting>-->
+<!--    <plugins>-->
+<!--      <plugin>-->
+<!--        <groupId>org.apache.maven.plugins</groupId>-->
+<!--        <artifactId>maven-checkstyle-plugin</artifactId>-->
+<!--        <version>3.2.0</version>-->
+<!--        <reportSets>-->
+<!--          <reportSet>-->
+<!--            <reports>-->
+<!--              <report>checkstyle</report>-->
+<!--            </reports>-->
+<!--          </reportSet>-->
+<!--        </reportSets>-->
+<!--      </plugin>-->
+<!--    </plugins>-->
+<!--  </reporting>-->
+
+
+
+
+
 </project>
