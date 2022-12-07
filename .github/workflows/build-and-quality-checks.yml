@@ -59,6 +59,4 @@ jobs:
           name: PMD lint report
           path: |
             analytics-core/target/site
-            analytics-core/target/site
-            analytics/target/site
             analytics/target/site
