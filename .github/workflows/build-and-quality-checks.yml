@@ -25,35 +25,39 @@ jobs:
       - name: Setup
         run: mvn clean && mvn templating:filter-sources
 
-      - name: Unit Test
-        run: mvn test
+#      - name: Unit Test
+#        run: mvn test
+#
+#      - name: Build
+#        run: mvn install -DskipTests=true #Skipt Unit test as it has been executed previously
+#
+#      - name: Generate coverage report
+#        uses: cicirello/jacoco-badge-generator@v2
+#        with:
+#          generate-branches-badge: true
+#          generate-summary: true
+#          jacoco-csv-file: >
+#            analytics-core/target/site/jacoco/jacoco.csv
+#            analytics/target/site/jacoco/jacoco.csv
+#
+#      - name: Upload coverage report
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: index.html
+#          path: |
+#            analytics-core/target/site/jacoco/
+#            analytics/target/site/jacoco/
 
-      - name: Build
-        run: mvn install -DskipTests=true #Skipt Unit test as it has been executed previously
-
-      - name: Generate coverage report
-        uses: cicirello/jacoco-badge-generator@v2
-        with:
-          generate-branches-badge: true
-          generate-summary: true
-          jacoco-csv-file: >
-            analytics-core/target/site/jacoco/jacoco.csv
-            analytics/target/site/jacoco/jacoco.csv
-
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v3
-        with:
-          name: index.html
-          path: |
-            analytics-core/target/site/jacoco/
-            analytics/target/site/jacoco/
-
-      - name: Lint checking
+      - name: PMD Lint checking
         run: |
             mvn pmd:pmd
             mvn pmd:cpd
-          
-      
 
-      
-
+      - name: Upload PMD lint report
+        uses: actions/upload-artifact@v3
+        with:
+          path: |
+            analytics-core/target/site/cpd.html
+            analytics-core/target/site/pmd.html
+            analytics/target/site/cpd.html
+            analytics/target/site/pmd.html
