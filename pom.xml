@@ -387,40 +387,31 @@
     </plugins>
   </build>
 
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>3.2.0</version>
-        <configuration>
-          <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
-          <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
-        </configuration>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>checkstyle</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
+<!--  <reporting>-->
+<!--    <plugins>-->
+<!--      <plugin>-->
+<!--        <groupId>org.apache.maven.plugins</groupId>-->
+<!--        <artifactId>maven-checkstyle-plugin</artifactId>-->
+<!--        <version>3.2.0</version>-->
+<!--        <configuration>-->
+<!--          <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>-->
+<!--          <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>-->
+<!--        </configuration>-->
+<!--        <reportSets>-->
+<!--          <reportSet>-->
+<!--            <reports>-->
+<!--              <report>checkstyle</report>-->
+<!--            </reports>-->
+<!--          </reportSet>-->
+<!--        </reportSets>-->
+<!--      </plugin>-->
 
 <!--      <plugin>-->
 <!--        <groupId>org.apache.maven.plugins</groupId>-->
 <!--        <artifactId>maven-pmd-plugin</artifactId>-->
 <!--        <version>3.19.0</version>-->
-<!--&lt;!&ndash;        <reportSets>&ndash;&gt;-->
-<!--&lt;!&ndash;          <reportSet>&ndash;&gt;-->
-<!--&lt;!&ndash;            <reports>&ndash;&gt;-->
-<!--&lt;!&ndash;&lt;!&ndash;              <report>check</report>&ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;              <report>pmd</report>&ndash;&gt;-->
-<!--&lt;!&ndash;              <report>cpd</report>&ndash;&gt;-->
-<!--&lt;!&ndash;            </reports>&ndash;&gt;-->
-<!--&lt;!&ndash;          </reportSet>&ndash;&gt;-->
-<!--&lt;!&ndash;        </reportSets>&ndash;&gt;-->
 <!--      </plugin>-->
-    </plugins>
-  </reporting>
+<!--    </plugins>-->
+<!--  </reporting>-->
 
 </project>

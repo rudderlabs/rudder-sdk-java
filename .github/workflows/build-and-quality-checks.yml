@@ -65,7 +65,7 @@ jobs:
       - name: Checklist lint checking
         run: |
           mvn clean
-          mvn site
+          mvn checkstyle:checkstyle
 
       - name: Upload Checklist lint report
         uses: actions/upload-artifact@v3
