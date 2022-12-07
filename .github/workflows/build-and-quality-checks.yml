@@ -44,7 +44,7 @@ jobs:
       - name: Upload coverage report
         uses: actions/upload-artifact@v3
         with:
-          name: index.html
+          name: Coverage report
           path: |
             analytics-core/target/site/jacoco/
             analytics/target/site/jacoco/
