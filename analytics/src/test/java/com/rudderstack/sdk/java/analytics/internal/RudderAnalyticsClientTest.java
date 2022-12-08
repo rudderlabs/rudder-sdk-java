@@ -3,6 +3,7 @@ package com.rudderstack.sdk.java.analytics.internal;
 import static com.rudderstack.sdk.java.analytics.internal.FlushMessage.POISON;
 import static com.rudderstack.sdk.java.analytics.internal.StopMessage.STOP;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
@@ -936,5 +937,7 @@ public class RudderAnalyticsClientTest {
     while (!isShutDown.get()) {}
 
     verify(networkExecutor, times(19)).submit(any(Runnable.class));
+    // Intentionally, asserting false condition to verify CI unit test detects it or not
+    assertTrue(false);
   }
 }
