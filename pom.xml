@@ -73,8 +73,8 @@
     <sonar.links.scm>https://github.com/rudderlabs/rudder-sdk-java</sonar.links.scm>
     <sonar.links.issue>https://github.com/rudderlabs/rudder-sdk-java/issues</sonar.links.issue>
 
-    <sonar.coverage.jacoco.xmlReportPaths>analytics-core/target/site/jacoco/jacoco.xml,analytics/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
-    <sonar.junit.reportPaths>analytics-core/target/surefire-reports/,analytics/target/site/surefire-reports/</sonar.junit.reportPaths>
+    <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    <sonar.junit.reportPaths>target/surefire-reports</sonar.junit.reportPaths>
 
     <sonar.sources>src</sonar.sources>
     <sonar.inclusions>**/*.java</sonar.inclusions>
