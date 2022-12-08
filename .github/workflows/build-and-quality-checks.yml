@@ -33,8 +33,8 @@ jobs:
       - name: Setup
         run: mvn clean && mvn templating:filter-sources
 
-      - name: Unit Test
-        run: mvn test
+#      - name: Unit Test
+#        run: mvn test
 
       - name: Build
         run: mvn install -DskipTests=true #Skip Unit test as it has been executed previously
