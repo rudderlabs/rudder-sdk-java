@@ -1,3 +1,4 @@
+[![Build & Code Quality Checks](https://github.com/rudderlabs/rudder-sdk-java/actions/workflows/build-and-quality-checks.yml/badge.svg)](https://github.com/rudderlabs/rudder-sdk-java/actions/workflows/build-and-quality-checks.yml)
 
 # What is RudderStack?
 
