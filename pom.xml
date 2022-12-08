@@ -57,6 +57,35 @@
     <burst.version>1.2.0</burst.version>
     <mockito.version>4.8.1</mockito.version>
     <assertj.version>3.23.1</assertj.version>
+
+    <!--  SonarQube  -->
+    <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
+    <sonar.organization>rudderlabs</sonar.organization>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    <sonar.log.level>INFO</sonar.log.level>
+    <sonar.verbose>false</sonar.verbose>
+    <sonar.qualitygate.wait>false</sonar.qualitygate.wait>
+
+    <sonar.projectKey>rudderlabs_rudder-sdk-java</sonar.projectKey>
+    <sonar.organization>rudderlabs</sonar.organization>
+    <sonar.projectName>rudder-sdk-java</sonar.projectName>
+    <sonar.projectVersion>2.1.0</sonar.projectVersion>
+    <sonar.links.scm>https://github.com/rudderlabs/rudder-sdk-java</sonar.links.scm>
+    <sonar.links.issue>https://github.com/rudderlabs/rudder-sdk-java/issues</sonar.links.issue>
+
+    <sonar.coverage.jacoco.xmlReportPaths>analytics-core/target/site/jacoco/jacoco.xml,analytics/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    <sonar.junit.reportPaths>analytics-core/target/surefire-reports/,analytics/target/site/surefire-reports/</sonar.junit.reportPaths>
+
+    <sonar.sources>src</sonar.sources>
+    <sonar.inclusions>**/*.java</sonar.inclusions>
+
+    <sonar.tests>src/test</sonar.tests>
+    <sonar.test.inclusions>**/*.java</sonar.test.inclusions>
+    <sonar.test.exclusions>analytics-sample/**/*</sonar.test.exclusions>
+
+    <sonar.sourceEncoding>UTF-8</sonar.sourceEncoding>
+
+    <sonar.cpd.exclusions>test/**/*,__tests__/**/*</sonar.cpd.exclusions>
   </properties>
 
   <scm>

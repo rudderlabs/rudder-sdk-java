@@ -14,6 +14,7 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
+          #action setup-maven
 
       - name: Cache local Maven repository
         uses: actions/cache@v3
@@ -23,6 +24,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+
       - name: Setup
         run: mvn clean && mvn templating:filter-sources
 
@@ -30,7 +37,7 @@ jobs:
         run: mvn test
 
       - name: Build
-        run: mvn install -DskipTests=true #Skipt Unit test as it has been executed previously
+        run: mvn install -DskipTests=true #Skip Unit test as it has been executed previously
 
       - name: Generate coverage report
         uses: cicirello/jacoco-badge-generator@v2
@@ -48,6 +55,9 @@ jobs:
           path: |
             analytics-core/target/site/jacoco/
             analytics/target/site/jacoco/
+
+      - name: Sonar analysis
+        run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
 
   lint:
     runs-on: ubuntu-latest
@@ -81,7 +91,7 @@ jobs:
             analytics-core/target/site
             analytics/target/site
 
-      - name: Checklist lint checking
+      - name: Checkstyle lint checking
         run: |
           mvn clean
           mvn checkstyle:checkstyle
