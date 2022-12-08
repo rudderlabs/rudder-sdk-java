@@ -43,33 +43,56 @@ jobs:
       - name: Build
         run: mvn install -DskipTests=true #Skip Unit test as it has been executed previously
 
-      - name: Generate coverage report
+#      - name: Generate coverage report
+#        uses: cicirello/jacoco-badge-generator@v2
+#        with:
+#          badges-directory: .github/badges
+#          generate-coverage-badge: true
+#          coverage-badge-filename: jacoco.svg
+#          branches-badge-filename: branches.svg
+#          generate-coverage-endpoint: true
+#          coverage-endpoint-filename: jacoco.json
+#          generate-branches-endpoint: true
+#          branches-endpoint-filename: branches.json
+#          summary-filename: coverage-summary.json
+#          coverage-label: coverage
+#          branches-label: branches
+#          colors: '#4c1 #97ca00 #a4a61d #dfb317 #fe7d37 #e05d44'
+#          intervals: 100 90 80 70 60 0
+#          on-missing-report: fail
+#          fail-if-coverage-less-than: 0
+#          fail-if-branches-less-than: 0
+#          fail-on-coverage-decrease: false
+#          fail-on-branches-decrease: false
+#
+#          generate-branches-badge: true
+#          generate-summary: true
+#          jacoco-csv-file: >
+#            analytics-core/target/site/jacoco/jacoco.csv
+#            analytics/target/site/jacoco/jacoco.csv
+
+      - name: Generate JaCoCo Badges for Module 1
+        id: jacocoMod1
         uses: cicirello/jacoco-badge-generator@v2
         with:
-          badges-directory: .github/badges
-          generate-coverage-badge: true
-          coverage-badge-filename: jacoco.svg
-          branches-badge-filename: branches.svg
-          generate-coverage-endpoint: true
-          coverage-endpoint-filename: jacoco.json
-          generate-branches-endpoint: true
-          branches-endpoint-filename: branches.json
-          summary-filename: coverage-summary.json
-          coverage-label: coverage
-          branches-label: branches
-          colors: '#4c1 #97ca00 #a4a61d #dfb317 #fe7d37 #e05d44'
-          intervals: 100 90 80 70 60 0
-          on-missing-report: fail
-          fail-if-coverage-less-than: 0
-          fail-if-branches-less-than: 0
-          fail-on-coverage-decrease: false
-          fail-on-branches-decrease: false
-
           generate-branches-badge: true
-          generate-summary: true
-          jacoco-csv-file: >
-            analytics-core/target/site/jacoco/jacoco.csv
-            analytics/target/site/jacoco/jacoco.csv
+          jacoco-csv-file: analytics-core/target/site/jacoco/jacoco.csv
+          coverage-badge-filename: jacoco1.svg
+          branches-badge-filename: branches1.svg
+          coverage-label: coverage (module 1)
+          branches-label: branches (module 1)
+
+      - name: Generate JaCoCo Badges for Module 2
+        id: jacocoMod2
+        uses: cicirello/jacoco-badge-generator@v2
+        with:
+          generate-branches-badge: true
+          jacoco-csv-file: analytics/target/site/jacoco/jacoco.csv
+          coverage-badge-filename: jacoco2.svg
+          branches-badge-filename: branches2.svg
+          coverage-label: coverage (module 2)
+          branches-label: branches (module 2)
+
 
       - name: Commit and push the badge (if it changed)
         uses: EndBug/add-and-commit@v7
