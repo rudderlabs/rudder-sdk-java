@@ -3,7 +3,7 @@
 
 [//]: # ([![Coverage]&#40;.github/badges/jacoco.svg&#41;]&#40;https://github.com/rudderlabs/rudder-sdk-java/actions/workflows/build.yml&#41;)
 ![Coverage](.github/badges/jacoco.svg)
-![Coverage](.github/badges/jacoco.svg)
+![Branches](.github/badges/branches.svg)
 
 # What is RudderStack?
 
