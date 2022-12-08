@@ -1,7 +1,8 @@
 [![Check PR title](https://github.com/rudderlabs/rudder-sdk-java/actions/workflows/check-pr-title.yml/badge.svg?branch=ci%2FaddCIFeatures)](https://github.com/rudderlabs/rudder-sdk-java/actions/workflows/check-pr-title.yml)
 [![Build & Code Quality Checks](https://github.com/rudderlabs/rudder-sdk-java/actions/workflows/build-and-quality-checks.yml/badge.svg?branch=ci%2FaddCIFeatures)](https://github.com/rudderlabs/rudder-sdk-java/actions/workflows/build-and-quality-checks.yml)
-![Coverage](.github/badges/jacoco.svg)
-![Branches](.github/badges/branches.svg)
+[![Coverage](.github/badges/jacoco.svg)](https://github.com/rudderlabs/rudder-sdk-java/actions/workflows/build.yml)
+
+[//]: # (![Branches]&#40;.github/badges/branches.svg&#41;)
 
 # What is RudderStack?
 
