@@ -27,10 +27,14 @@ import org.mockito.Mock;
 
 @RunWith(BurstJUnit4.class)
 public class RudderAnalyticsTest {
-  @Mock AnalyticsClient client;
-  @Mock Log log;
-  @Mock MessageTransformer messageTransformer;
-  @Mock MessageInterceptor messageInterceptor;
+  @Mock
+  AnalyticsClient client;
+  @Mock
+  Log log;
+  @Mock
+  MessageTransformer messageTransformer;
+  @Mock
+  MessageInterceptor messageInterceptor;
   RudderAnalytics analytics;
 
   @Before
@@ -38,11 +42,11 @@ public class RudderAnalyticsTest {
     initMocks(this);
 
     analytics =
-        new RudderAnalytics(
-            client,
-            Collections.singletonList(messageTransformer),
-            Collections.singletonList(messageInterceptor),
-            log);
+            new RudderAnalytics(
+                    client,
+                    Collections.singletonList(messageTransformer),
+                    Collections.singletonList(messageInterceptor),
+                    log);
   }
 
   @Test
@@ -113,7 +117,7 @@ public class RudderAnalyticsTest {
 
   @Test
   public void threadSafeTest(MessageBuilderTest builder)
-      throws NoSuchFieldException, IllegalAccessException, InterruptedException {
+          throws NoSuchFieldException, IllegalAccessException, InterruptedException {
     // we want to test if msgs get lost during a multithreaded env
     RudderAnalytics analytics = RudderAnalytics.builder("testWriteKeyForIssue321").build();
     // So we just want to spy on the client of an Analytics  object created normally
@@ -135,16 +139,18 @@ public class RudderAnalyticsTest {
 
     do {
       service.submit(
-          () -> {
-            analytics.enqueue(messageBuilder);
-            counter.incrementAndGet();
-          });
+              () -> {
+                analytics.enqueue(messageBuilder);
+                counter.incrementAndGet();
+              });
       now = LocalDateTime.now();
     } while (initialTime.until(now, ChronoUnit.MILLIS) < millisRunning);
 
     service.shutdown();
-    while (!service.isShutdown() || !service.isTerminated()) {}
+    while (!service.isShutdown() || !service.isTerminated()) {
+    }
 
     verify(spy, times(counter.get())).enqueue(any(Message.class));
   }
+}
 }
