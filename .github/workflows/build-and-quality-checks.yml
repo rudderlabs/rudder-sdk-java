@@ -24,11 +24,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v1
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
+#      - name: Cache SonarCloud packages
+#        uses: actions/cache@v1
+#        with:
+#          path: ~/.sonar/cache
+#          key: ${{ runner.os }}-sonar
 
       - name: Setup
         run: mvn clean && mvn templating:filter-sources
@@ -48,16 +48,19 @@ jobs:
             analytics-core/target/site/jacoco/jacoco.csv
             analytics/target/site/jacoco/jacoco.csv
 
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v3
-        with:
-          name: Coverage report
-          path: |
-            analytics-core/target/site/jacoco/
-            analytics/target/site/jacoco/
+#      - name: Upload coverage report
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: Coverage report
+#          path: |
+#            analytics-core/target/site/jacoco/
+#            analytics/target/site/jacoco/
 
-      - name: Sonar analysis
-        run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+#      - name: Sonar analysis
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#        run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
 
   lint:
     runs-on: ubuntu-latest
