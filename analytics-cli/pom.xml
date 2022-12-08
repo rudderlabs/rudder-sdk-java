@@ -28,6 +28,17 @@
       <groupId>com.offbytwo</groupId>
       <artifactId>docopt</artifactId>
     </dependency>
+    <!-- For aggregate Jacoco Coverage report generation -->
+    <dependency>
+      <groupId>com.rudderstack.sdk.java.analytics</groupId>
+      <artifactId>analytics-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.rudderstack.sdk.java.analytics</groupId>
+      <artifactId>analytics</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -74,6 +85,21 @@
             <phase>package</phase>
             <goals>
               <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!--To generate the aggregate Jacoco coverage report-->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.8</version>
+        <executions>
+          <execution>
+            <id>generate-aggregate-report</id>
+            <phase>install</phase>
+            <goals>
+              <goal>report-aggregate</goal>
             </goals>
           </execution>
         </executions>

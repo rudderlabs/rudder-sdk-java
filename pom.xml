@@ -355,13 +355,14 @@
         <version>0.8.8</version>
         <executions>
           <execution>
+            <id>jacobo-prepare-agent</id>
             <goals>
               <goal>prepare-agent</goal>
             </goals>
           </execution>
           <execution>
             <id>generate-code-coverage-report</id>
-            <phase>test</phase>
+            <phase>install</phase>
             <goals>
               <goal>report</goal>
             </goals>
