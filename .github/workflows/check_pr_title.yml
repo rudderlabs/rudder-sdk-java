@@ -13,5 +13,11 @@ jobs:
       - name: Checkout source branch
         uses: actions/checkout@v3
 
+      - name: Print Title of PR
+        run: echo The Title of your PR is ${{ github.event.pull_request.title }}
+
+      - name: Print Title of PR
+        run: echo The Title of your PR is ${{ github.context.payload.pull_request.title }}
+
       - name: Check PR title
         uses: rudderlabs/github-action-check-pr-title@v1.0.7
