@@ -12,6 +12,8 @@
   <artifactId>analytics-sample</artifactId>
   <name>Analytics Sample</name>
 
+  <properties><sonar.skip>true</sonar.skip></properties>
+
   <dependencies>
     <dependency>
       <groupId>com.rudderstack.sdk.java.analytics</groupId>

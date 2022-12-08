@@ -12,6 +12,8 @@
   <artifactId>analytics-cli</artifactId>
   <name>Analytics Java CLI</name>
 
+  <properties><sonar.skip>true</sonar.skip></properties>
+
   <dependencies>
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
