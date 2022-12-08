@@ -153,4 +153,3 @@ public class RudderAnalyticsTest {
     verify(spy, times(counter.get())).enqueue(any(Message.class));
   }
 }
-}
