@@ -63,7 +63,7 @@ jobs:
         with:
           name: Coverage report
           path: |
-            analytics-cli/target/site/jacoco/
+            analytics-cli/target/site/jacoco-aggregate/
 
 #      - name: Sonar analysis
 #        env:
