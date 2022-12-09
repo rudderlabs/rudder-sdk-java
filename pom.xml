@@ -65,26 +65,34 @@
     <sonar.log.level>INFO</sonar.log.level>
     <sonar.verbose>false</sonar.verbose>
     <sonar.qualitygate.wait>false</sonar.qualitygate.wait>
-
+    <!--Project details-->
     <sonar.projectKey>rudderlabs_rudder-sdk-java</sonar.projectKey>
     <sonar.organization>rudderlabs</sonar.organization>
     <sonar.projectName>rudder-sdk-java</sonar.projectName>
     <sonar.projectVersion>2.1.0</sonar.projectVersion>
+    <!--Meta-data for the project-->
     <sonar.links.scm>https://github.com/rudderlabs/rudder-sdk-java</sonar.links.scm>
     <sonar.links.issue>https://github.com/rudderlabs/rudder-sdk-java/issues</sonar.links.issue>
 
-    <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    <sonar.module>analytics-cli</sonar.module>
+<!--    <properties>-->
+      <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../analytics-cli/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+<!--    </properties>-->
+    <!--Path to reports-->
+<!--    <sonar.coverage.jacoco.xmlReportPaths>analytics-cli/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>-->
+<!--    <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>-->
+    <sonar.coverage.jacoco.xmlReportPaths>../analytics-cli/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     <sonar.junit.reportPaths>target/surefire-reports</sonar.junit.reportPaths>
-
+    <!--Path to sources-->
     <sonar.sources>src</sonar.sources>
     <sonar.inclusions>**/*.java</sonar.inclusions>
-
+    <!--Path to tests-->
     <sonar.tests>src/test</sonar.tests>
     <sonar.test.inclusions>**/*.java</sonar.test.inclusions>
     <sonar.test.exclusions>analytics-sample/**/*</sonar.test.exclusions>
-
+    <!--Source encoding-->
     <sonar.sourceEncoding>UTF-8</sonar.sourceEncoding>
-
+    <!--Exclusions for copy-paste detection-->
     <sonar.cpd.exclusions>test/**/*,__tests__/**/*</sonar.cpd.exclusions>
   </properties>
 

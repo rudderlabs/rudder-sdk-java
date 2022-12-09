@@ -12,7 +12,16 @@
   <artifactId>analytics-cli</artifactId>
   <name>Analytics Java CLI</name>
 
-  <properties><sonar.skip>true</sonar.skip></properties>
+  <properties>
+    <sonar.coverage.jacoco.xmlReportPaths>../analytics-cli/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+  </properties>
+
+<!--  <properties>-->
+<!--    <sonar.coverage.jacoco.xmlReportPaths>-->
+<!--      analytics-cli/target/site/jacoco-aggregate/jacoco.xml-->
+<!--    </sonar.coverage.jacoco.xmlReportPaths>-->
+<!--  </properties>-->
+<!--  <properties><sonar.skip>true</sonar.skip></properties>-->
 
   <dependencies>
     <dependency>
