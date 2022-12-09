@@ -70,7 +70,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          git symbolic-ref HEAD refs/heads/main
+          script:
+          - git fetch origin master:master
+          - gradlew \
+          -Dsonar.host.url=$URL \
+          -Dsonar.pullrequest.key=$NUMBER \
+          -Dsonar.pullrequest.branch=branch_name \
+          -Dsonar.pullrequest.base=main \
+          -Dsonar.qualitygate.wait=true \
+          sonarqube
           mvn sonar:sonar #org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
 
   lint:
