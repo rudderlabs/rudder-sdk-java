@@ -28,11 +28,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-#      - name: Cache SonarCloud packages
-#        uses: actions/cache@v1
-#        with:
-#          path: ~/.sonar/cache
-#          key: ${{ runner.os }}-sonar
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
 
       - name: Setup
         run: mvn clean && mvn templating:filter-sources
@@ -65,11 +65,11 @@ jobs:
           path: |
             analytics-cli/target/site/jacoco-aggregate/
 
-#      - name: Sonar analysis
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-#        run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+      - name: Sonar analysis
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
 
   lint:
     runs-on: ubuntu-latest
