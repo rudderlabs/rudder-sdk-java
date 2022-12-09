@@ -73,27 +73,20 @@
     <!--Meta-data for the project-->
     <sonar.links.scm>https://github.com/rudderlabs/rudder-sdk-java</sonar.links.scm>
     <sonar.links.issue>https://github.com/rudderlabs/rudder-sdk-java/issues</sonar.links.issue>
-
-    <sonar.module>analytics-cli</sonar.module>
-<!--    <properties>-->
-      <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../analytics-cli/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
-<!--    </properties>-->
-    <!--Path to reports-->
-<!--    <sonar.coverage.jacoco.xmlReportPaths>analytics-cli/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>-->
-<!--    <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>-->
-    <sonar.coverage.jacoco.xmlReportPaths>../analytics-cli/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    <sonar.coverage.jacoco.xmlReportPaths>${maven.multiModuleProjectDirectory}/analytics-cli/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     <sonar.junit.reportPaths>target/surefire-reports</sonar.junit.reportPaths>
     <!--Path to sources-->
-    <sonar.sources>src</sonar.sources>
-    <sonar.inclusions>**/*.java</sonar.inclusions>
+<!--    <sonar.sources>src</sonar.sources>-->
+<!--    <sonar.inclusions>**/*.java</sonar.inclusions>-->
+<!--    <sonar.exlusions>analytics-sample/**/*</sonar.exlusions>-->
     <!--Path to tests-->
-    <sonar.tests>src/test</sonar.tests>
-    <sonar.test.inclusions>**/*.java</sonar.test.inclusions>
-    <sonar.test.exclusions>analytics-sample/**/*</sonar.test.exclusions>
+<!--    <sonar.tests>src/test</sonar.tests>-->
+<!--    <sonar.test.inclusions>**/*.java</sonar.test.inclusions>-->
+<!--    <sonar.test.exclusions>analytics-sample/**/*</sonar.test.exclusions>-->
     <!--Source encoding-->
     <sonar.sourceEncoding>UTF-8</sonar.sourceEncoding>
     <!--Exclusions for copy-paste detection-->
-    <sonar.cpd.exclusions>test/**/*,__tests__/**/*</sonar.cpd.exclusions>
+<!--    <sonar.cpd.exclusions>test/**/*,__tests__/**/*</sonar.cpd.exclusions>-->
   </properties>
 
   <scm>
@@ -208,6 +201,18 @@
         <artifactId>kotlin-stdlib</artifactId>
         <version>${kotlin.version}</version>
       </dependency>
+
+      <!--Jacoco aggregate coverage report-->
+      <dependency>
+        <groupId>com.rudderstack.sdk.java.analytics</groupId>
+        <artifactId>analytics</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.rudderstack.sdk.java.analytics</groupId>
+        <artifactId>analytics-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -283,6 +288,12 @@
             </lifecycleMappingMetadata>
           </configuration>
         </plugin>
+        <!--SoarQube plugin-->
+        <plugin>
+          <groupId>org.sonarsource.scanner.maven</groupId>
+          <artifactId>sonar-maven-plugin</artifactId>
+          <version>3.9.1.2184</version>
+        </plugin>
       </plugins>
     </pluginManagement>
 
@@ -356,11 +367,10 @@
           <useSystemClassLoader>false</useSystemClassLoader>
         </configuration>
       </plugin>
-      <!--To generate the Coverage report-->
+      <!--To generate the Jacoco Coverage report-->
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.8</version>
         <executions>
           <execution>
             <id>jacobo-prepare-agent</id>
@@ -368,20 +378,7 @@
               <goal>prepare-agent</goal>
             </goals>
           </execution>
-          <execution>
-            <id>generate-code-coverage-report</id>
-            <phase>install</phase>
-            <goals>
-              <goal>report</goal>
-            </goals>
-          </execution>
         </executions>
-      </plugin>
-      <!-- Sonarqube     -->
-      <plugin>
-        <groupId>org.sonarsource.scanner.maven</groupId>
-        <artifactId>sonar-maven-plugin</artifactId>
-        <version>3.7.0.1746</version>
       </plugin>
     </plugins>
   </build>

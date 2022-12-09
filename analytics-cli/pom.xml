@@ -12,16 +12,7 @@
   <artifactId>analytics-cli</artifactId>
   <name>Analytics Java CLI</name>
 
-  <properties>
-    <sonar.coverage.jacoco.xmlReportPaths>../analytics-cli/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
-  </properties>
-
-<!--  <properties>-->
-<!--    <sonar.coverage.jacoco.xmlReportPaths>-->
-<!--      analytics-cli/target/site/jacoco-aggregate/jacoco.xml-->
-<!--    </sonar.coverage.jacoco.xmlReportPaths>-->
-<!--  </properties>-->
-<!--  <properties><sonar.skip>true</sonar.skip></properties>-->
+  <properties><sonar.skip>true</sonar.skip></properties>
 
   <dependencies>
     <dependency>
@@ -41,11 +32,6 @@
     <dependency>
       <groupId>com.rudderstack.sdk.java.analytics</groupId>
       <artifactId>analytics-core</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.rudderstack.sdk.java.analytics</groupId>
-      <artifactId>analytics</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>
@@ -106,7 +92,7 @@
         <executions>
           <execution>
             <id>generate-aggregate-report</id>
-            <phase>install</phase>
+            <phase>verify</phase>
             <goals>
               <goal>report-aggregate</goal>
             </goals>
