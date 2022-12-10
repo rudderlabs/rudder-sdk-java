@@ -937,7 +937,5 @@ public class RudderAnalyticsClientTest {
     while (!isShutDown.get()) {}
 
     verify(networkExecutor, times(19)).submit(any(Runnable.class));
-    // Intentionally, asserting false condition to verify CI unit test detects it or not
-    assertTrue(false);
   }
 }

@@ -73,6 +73,7 @@
     <!--Meta-data for the project-->
     <sonar.links.scm>https://github.com/rudderlabs/rudder-sdk-java</sonar.links.scm>
     <sonar.links.issue>https://github.com/rudderlabs/rudder-sdk-java/issues</sonar.links.issue>
+    <!--suppress UnresolvedMavenProperty -->
     <sonar.coverage.jacoco.xmlReportPaths>${maven.multiModuleProjectDirectory}/analytics-cli/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     <sonar.junit.reportPaths>target/surefire-reports</sonar.junit.reportPaths>
     <!--Path to sources-->
