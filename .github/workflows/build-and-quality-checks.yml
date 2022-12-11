@@ -45,7 +45,7 @@ jobs:
       - name: Unit Test and Build
         run: mvn clean install
 
-      - name: Generate coverage report
+      - name: Jacoco Badge generator
         uses: cicirello/jacoco-badge-generator@v2
         with:
           generate-summary: true
