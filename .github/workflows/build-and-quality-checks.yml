@@ -2,7 +2,7 @@ name: Build & Code Quality Checks
 
 on:
   pull_request:
-    branches: [ 'master', 'develop', 'feat/latestPull' ]
+    branches: [ 'master', 'develop' ]
     types: [ 'opened', 'reopened', 'synchronize' ]
 
 jobs:
