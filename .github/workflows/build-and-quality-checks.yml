@@ -45,18 +45,18 @@ jobs:
       - name: Unit Test and Build
         run: mvn clean install
 
-      - name: Jacoco Badge generator
-        uses: cicirello/jacoco-badge-generator@v2
-        with:
-          generate-summary: true
-          jacoco-csv-file: analytics-cli/target/site/jacoco-aggregate/jacoco.csv
-
-      - name: Commit and push the badge (if it changed)
-        uses: EndBug/add-and-commit@v9.1.1
-        with:
-          default_author: github_actions
-          message: 'commit badge'
-          add: '*.svg'
+#      - name: Jacoco Badge generator
+#        uses: cicirello/jacoco-badge-generator@v2
+#        with:
+#          generate-summary: true
+#          jacoco-csv-file: analytics-cli/target/site/jacoco-aggregate/jacoco.csv
+#
+#      - name: Commit and push the badge (if it changed)
+#        uses: EndBug/add-and-commit@v9.1.1
+#        with:
+#          default_author: github_actions
+#          message: 'commit badge'
+#          add: '*.svg'
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v3
