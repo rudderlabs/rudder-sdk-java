@@ -65,7 +65,7 @@ public class RudderAnalyticsClientTest {
   private int MAX_MSG_SIZE = 1024 * 32; // 32kb //This is the limit for a message object
   private int MSG_MAX_CREATE_SIZE =
           MAX_MSG_SIZE
-                  - 200 - 55; // Once we create msg object with this size it barely below 32 threshold so good
+                  - 200 - 56; // Once we create msg object with this size it barely below 32 threshold so good
   // (55 bytes is the context object size attached per message)
   // for tests
 
