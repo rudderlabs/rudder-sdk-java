@@ -39,11 +39,8 @@ jobs:
       - name: Setup
         run: mvn clean && mvn templating:filter-sources
 
-      - name: Unit Test
-        run: mvn test
-
-      - name: Build
-        run: mvn clean install #-DskipTests=true # Skip Unit test as it has been executed previously
+      - name: Unit Test and Build
+        run: mvn clean install
 
       - name: Generate coverage report
         uses: cicirello/jacoco-badge-generator@v2
@@ -51,21 +48,20 @@ jobs:
           generate-branches-badge: true
           generate-summary: true
           jacoco-csv-file: analytics-cli/target/site/jacoco-aggregate/jacoco.csv
-#
-#      - name: Commit and push the badge (if it changed)
-#        uses: EndBug/add-and-commit@v9
-#        with:
-#          default_author: github_actions
-#          message: 'commit badge'
-#          add: '*.svg'
-#
-#
-#      - name: Upload coverage report
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: Coverage report
-#          path: |
-#            analytics-cli/target/site/jacoco-aggregate/
+
+      - name: Commit and push the badge (if it changed)
+        uses: EndBug/add-and-commit@v9
+        with:
+          default_author: github_actions
+          message: 'commit badge'
+          add: '*.svg'
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: Coverage report
+          path: |
+            analytics-cli/target/site/jacoco-aggregate/
 
       - name: Sonar analysis
         env:
