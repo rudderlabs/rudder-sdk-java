@@ -45,7 +45,6 @@ jobs:
       - name: Generate coverage report
         uses: cicirello/jacoco-badge-generator@v2
         with:
-          generate-branches-badge: true
           generate-summary: true
           jacoco-csv-file: analytics-cli/target/site/jacoco-aggregate/jacoco.csv
 
