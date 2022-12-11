@@ -88,6 +88,7 @@
     <sonar.sourceEncoding>UTF-8</sonar.sourceEncoding>
     <!--Exclusions for copy-paste detection-->
     <sonar.cpd.exclusions>test/**/*,__tests__/**/*</sonar.cpd.exclusions>
+    <sonar.java.skipUnchanged>false</sonar.java.skipUnchanged>
   </properties>
 
   <scm>
