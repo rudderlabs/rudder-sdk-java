@@ -202,18 +202,6 @@
         <artifactId>kotlin-stdlib</artifactId>
         <version>${kotlin.version}</version>
       </dependency>
-
-      <!--Jacoco aggregate coverage report-->
-      <dependency>
-        <groupId>com.rudderstack.sdk.java.analytics</groupId>
-        <artifactId>analytics</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.rudderstack.sdk.java.analytics</groupId>
-        <artifactId>analytics-core</artifactId>
-        <version>${project.version}</version>
-      </dependency>
     </dependencies>
   </dependencyManagement>
 
