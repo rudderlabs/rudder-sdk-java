@@ -57,6 +57,37 @@
     <burst.version>1.2.0</burst.version>
     <mockito.version>4.8.1</mockito.version>
     <assertj.version>3.23.1</assertj.version>
+
+    <!-- SonarQube -->
+    <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
+    <sonar.organization>rudderlabs</sonar.organization>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    <sonar.log.level>INFO</sonar.log.level>
+    <sonar.verbose>false</sonar.verbose>
+    <sonar.qualitygate.wait>false</sonar.qualitygate.wait>
+    <!--Project details-->
+    <sonar.projectKey>rudderlabs_rudder-sdk-java</sonar.projectKey>
+    <sonar.organization>rudderlabs</sonar.organization>
+    <sonar.projectName>rudder-sdk-java</sonar.projectName>
+    <sonar.projectVersion>2.1.0</sonar.projectVersion>
+    <!--Meta-data for the project-->
+    <sonar.links.scm>https://github.com/rudderlabs/rudder-sdk-java</sonar.links.scm>
+    <sonar.links.issue>https://github.com/rudderlabs/rudder-sdk-java/issues</sonar.links.issue>
+    <!--suppress UnresolvedMavenProperty -->
+    <sonar.coverage.jacoco.xmlReportPaths>${maven.multiModuleProjectDirectory}/analytics-cli/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    <sonar.junit.reportPaths>target/surefire-reports</sonar.junit.reportPaths>
+    <!--Path to sources-->
+    <!--    <sonar.sources>src</sonar.sources>-->
+    <!--    <sonar.inclusions>**/*.java</sonar.inclusions>-->
+    <!--    <sonar.exlusions>analytics-sample/**/*</sonar.exlusions>-->
+    <!--Path to tests-->
+    <!--    <sonar.tests>src/test</sonar.tests>-->
+    <!--    <sonar.test.inclusions>**/*.java</sonar.test.inclusions>-->
+    <!--    <sonar.test.exclusions>analytics-sample/**/*</sonar.test.exclusions>-->
+    <!--Source encoding-->
+    <sonar.sourceEncoding>UTF-8</sonar.sourceEncoding>
+    <!--Exclusions for copy-paste detection-->
+    <sonar.cpd.exclusions>test/**/*,__tests__/**/*</sonar.cpd.exclusions>
   </properties>
 
   <scm>
@@ -246,6 +277,12 @@
             </lifecycleMappingMetadata>
           </configuration>
         </plugin>
+        <!--SonarQube plugin-->
+        <plugin>
+          <groupId>org.sonarsource.scanner.maven</groupId>
+          <artifactId>sonar-maven-plugin</artifactId>
+          <version>3.9.1.2184</version>
+        </plugin>
       </plugins>
     </pluginManagement>
 
@@ -318,6 +355,19 @@
         <configuration>
           <useSystemClassLoader>false</useSystemClassLoader>
         </configuration>
+      </plugin>
+      <!--To generate the Jacoco Coverage report-->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>jacobo-prepare-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
