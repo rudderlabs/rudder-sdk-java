@@ -79,7 +79,7 @@
     <!--Path to sources-->
     <sonar.sources>src</sonar.sources>
     <!--    <sonar.inclusions>**/*.java</sonar.inclusions>-->
-    <!--    <sonar.exlusions>analytics-sample/**/*</sonar.exlusions>-->
+    <sonar.exlusions>**/*Test*/**</sonar.exlusions>
     <!--Path to tests-->
     <sonar.tests>src/test</sonar.tests>
     <!--    <sonar.test.inclusions>**/*.java</sonar.test.inclusions>-->
