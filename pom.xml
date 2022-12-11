@@ -77,13 +77,13 @@
     <sonar.coverage.jacoco.xmlReportPaths>${maven.multiModuleProjectDirectory}/analytics-cli/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     <sonar.junit.reportPaths>target/surefire-reports</sonar.junit.reportPaths>
     <!--Path to sources-->
-    <sonar.sources>src</sonar.sources>
+    <sonar.sources>src/main</sonar.sources>
     <!--    <sonar.inclusions>**/*.java</sonar.inclusions>-->
     <sonar.exlusions>**/*Test*/**</sonar.exlusions>
     <!--Path to tests-->
     <sonar.tests>src/test</sonar.tests>
-    <!--    <sonar.test.inclusions>**/*.java</sonar.test.inclusions>-->
-    <!--    <sonar.test.exclusions>analytics-sample/**/*</sonar.test.exclusions>-->
+<!--        <sonar.test.inclusions>**/*.java</sonar.test.inclusions>-->
+<!--        <sonar.test.exclusions>analytics-sample/**/*</sonar.test.exclusions>-->
     <!--Source encoding-->
     <sonar.sourceEncoding>UTF-8</sonar.sourceEncoding>
     <!--Exclusions for copy-paste detection-->
