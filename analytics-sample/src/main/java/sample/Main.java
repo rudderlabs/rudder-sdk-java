@@ -13,6 +13,10 @@ import okhttp3.OkHttpClient;
 public class Main {
   public static void main(String... args) throws Exception {
     final BlockingFlush blockingFlush = BlockingFlush.create();
+    // in case there's a chance of registered parties count going beyond
+    // 65563, opt for TierBlocking flush instead.
+
+//    final TierBlockingFlush blockingFlush = TierBlockingFlush.create();
 
     // https://rudder.com/rudder-engineering/sources/test-java/debugger
     final RudderAnalytics analytics =
@@ -41,8 +45,10 @@ public class Main {
 
     analytics.flush();
     blockingFlush.block();
+    System.out.println("Blocking flush complete");
     analytics.shutdown();
   }
+
 
   /**
    * By default, the analytics client uses an HTTP client with sane defaults. However you can
