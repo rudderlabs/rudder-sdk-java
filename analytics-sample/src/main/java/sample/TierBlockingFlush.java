@@ -22,8 +22,8 @@ public class TierBlockingFlush {
         this.parentPhaser = new Phaser(0);
         this.maxPartiesPerPhaser = maxPartiesPerPhaser;
         //adding first child
-        childPhasers.add(new Phaser(1));
         this.parentPhaser.register();
+        childPhasers.add(new Phaser(parentPhaser, 0));
     }
 
     private final Phaser parentPhaser;
@@ -38,9 +38,9 @@ public class TierBlockingFlush {
                     messageTransformationBuilder -> {
                         //get the latest phaser
                         Phaser currentPhaser = childPhasers.get(childPhasers.size() - 1);
-                        //in case the phaser cannot accept anymore parties, we create new one
+                        //in case the phaser cannot accept any more parties, we create new one
                         if (currentPhaser.getRegisteredParties() >= maxPartiesPerPhaser) {
-                            currentPhaser = new Phaser(parentPhaser, 1);
+                            currentPhaser = new Phaser(parentPhaser, 0);
                             childPhasers.add(currentPhaser);
                             System.out.println("Number of phasers increased to " + childPhasers.size());
 
@@ -53,13 +53,22 @@ public class TierBlockingFlush {
                     new Callback() {
                         @Override
                         public void success(Message message) {
-                            parentPhaser.arrive();
-
+                            onResult();
                         }
 
                         @Override
                         public void failure(Message message, Throwable throwable) {
-                            parentPhaser.arrive();
+                            onResult();
+                        }
+
+                        private void onResult(){
+                            if(childPhasers.size() > 0) {
+                                Phaser workableChildPhaser = childPhasers.get(0);
+                                workableChildPhaser.arrive();
+                                if(workableChildPhaser.getUnarrivedParties() == 0){
+                                    childPhasers.remove(workableChildPhaser);
+                                }
+                            }
                         }
                     });
         };
