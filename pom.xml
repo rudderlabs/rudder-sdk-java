@@ -91,8 +91,10 @@
 
     <!--suppress UnresolvedMavenProperty -->
     <sonar.java.pmd.reportPaths>
-      ${maven.multiModuleProjectDirectory}/target/pmd.xml,
-      ${maven.multiModuleProjectDirectory}/target/cpd.xml
+      ${maven.multiModuleProjectDirectory}/analytics-core/target/pmd.xml,
+      ${maven.multiModuleProjectDirectory}/analytics/target/pmd.xml,
+      ${maven.multiModuleProjectDirectory}/analytics-core/target/cpd.xml,
+      ${maven.multiModuleProjectDirectory}/analytics/target/cpd.xml
     </sonar.java.pmd.reportPaths>
     <sonar.java.checkstyle.reportPaths>target/checkstyle-result.xml</sonar.java.checkstyle.reportPaths>
   </properties>
