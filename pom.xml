@@ -89,6 +89,15 @@
     <!--Exclusions for copy-paste detection-->
 <!--    <sonar.cpd.exclusions>test/**/*,__tests__/**/*</sonar.cpd.exclusions>-->
     <sonar.java.skipUnchanged>false</sonar.java.skipUnchanged>
+    <!--Path to Lint reports-->
+    <!--suppress UnresolvedMavenProperty -->
+    <sonar.java.pmd.reportPaths>
+      ${maven.multiModuleProjectDirectory}/analytics-core/target/pmd.xml,
+      ${maven.multiModuleProjectDirectory}/analytics/target/pmd.xml,
+      ${maven.multiModuleProjectDirectory}/analytics-core/target/cpd.xml,
+      ${maven.multiModuleProjectDirectory}/analytics/target/cpd.xml
+    </sonar.java.pmd.reportPaths>
+    <sonar.java.checkstyle.reportPaths>target/checkstyle-result.xml</sonar.java.checkstyle.reportPaths>
   </properties>
 
   <scm>
