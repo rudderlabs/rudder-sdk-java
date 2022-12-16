@@ -88,6 +88,12 @@
     <sonar.sourceEncoding>UTF-8</sonar.sourceEncoding>
     <!--Exclusions for copy-paste detection-->
     <sonar.cpd.exclusions>test/**/*,__tests__/**/*</sonar.cpd.exclusions>
+
+    <sonar.java.pmd.reportPaths>
+      target/pmd.xml,
+      target/cpd.xml
+    </sonar.java.pmd.reportPaths>
+    <sonar.java.checkstyle.reportPaths>target/checkstyle-result.xml</sonar.java.checkstyle.reportPaths>
   </properties>
 
   <scm>
