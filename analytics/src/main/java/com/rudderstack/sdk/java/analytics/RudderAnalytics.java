@@ -189,14 +189,7 @@ public class RudderAnalytics {
      */
     @Deprecated
     public Builder endpoint(String endpoint) {
-      if (endpoint == null || endpoint.trim().length() == 0) {
-        throw new NullPointerException("endpoint cannot be null or empty.");
-      }
-      if (! endpoint.endsWith("/")){
-        endpoint += "/";
-      }
-      this.endpoint = HttpUrl.parse(endpoint + DEFAULT_PATH);
-      return this;
+      return setDataPlaneUrl(endpoint);
     }
 
     /**

@@ -243,7 +243,7 @@ public class RudderAnalyticsBuilderTest {
       builder.endpoint(null);
       fail("Should fail for null endpoint");
     } catch (NullPointerException e) {
-      assertThat(e).hasMessage("endpoint cannot be null or empty.");
+      assertThat(e).hasMessage("dataPlaneUrl cannot be null or empty.");
     }
   }
 
@@ -253,14 +253,14 @@ public class RudderAnalyticsBuilderTest {
       builder.endpoint("");
       fail("Should fail for empty endpoint");
     } catch (NullPointerException e) {
-      assertThat(e).hasMessage("endpoint cannot be null or empty.");
+      assertThat(e).hasMessage("dataPlaneUrl cannot be null or empty.");
     }
 
     try {
       builder.endpoint("  ");
       fail("Should fail for empty endpoint");
     } catch (NullPointerException e) {
-      assertThat(e).hasMessage("endpoint cannot be null or empty.");
+      assertThat(e).hasMessage("dataPlaneUrl cannot be null or empty.");
     }
   }
 
