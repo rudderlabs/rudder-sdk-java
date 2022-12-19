@@ -4,7 +4,6 @@ import com.rudderstack.sdk.java.analytics.Callback;
 import com.rudderstack.sdk.java.analytics.Plugin;
 import com.rudderstack.sdk.java.analytics.messages.Message;
 
-import java.util.*;
 import java.util.concurrent.Phaser;
 
 /**
@@ -12,39 +11,25 @@ import java.util.concurrent.Phaser;
  */
 public class TierBlockingFlush {
 
-    private static final int MAX_PARTIES_PER_PHASER = (1 << 16) - 1; // max a phaser can accommodate
+    private static final int MAX_PARTIES_PER_PHASER = (1 << 16) - 2; // max a phaser can accommodate
 
     public static TierBlockingFlush create() {
         return new TierBlockingFlush(MAX_PARTIES_PER_PHASER);
     }
 
     private TierBlockingFlush(int maxPartiesPerPhaser) {
-        this.parentPhaser = new Phaser(0);
+        this.currentPhaser = new Phaser(1);
         this.maxPartiesPerPhaser = maxPartiesPerPhaser;
-        //adding first child
-        this.parentPhaser.register();
-        childPhasers.add(new Phaser(parentPhaser, 0));
     }
 
-    private final Phaser parentPhaser;
+    private Phaser currentPhaser;
     private final int maxPartiesPerPhaser;
-
-    private final List<Phaser> childPhasers = new ArrayList<>();
-
 
     public Plugin plugin() {
         return builder -> {
             builder.messageTransformer(
                     messageTransformationBuilder -> {
-                        //get the latest phaser
-                        Phaser currentPhaser = childPhasers.get(childPhasers.size() - 1);
-                        //in case the phaser cannot accept any more parties, we create new one
-                        if (currentPhaser.getRegisteredParties() >= maxPartiesPerPhaser) {
-                            currentPhaser = new Phaser(parentPhaser, 0);
-                            childPhasers.add(currentPhaser);
-                            System.out.println("Number of phasers increased to " + childPhasers.size());
-
-                        }
+                        currentPhaser = currentPhaser.getRegisteredParties() == maxPartiesPerPhaser ? new Phaser(currentPhaser) : currentPhaser;
                         currentPhaser.register();
                         return true;
                     });
@@ -61,20 +46,17 @@ public class TierBlockingFlush {
                             onResult();
                         }
 
-                        private void onResult(){
-                            if(childPhasers.size() > 0) {
-                                Phaser workableChildPhaser = childPhasers.get(0);
-                                workableChildPhaser.arrive();
-                                if(workableChildPhaser.getUnarrivedParties() == 0){
-                                    childPhasers.remove(workableChildPhaser);
-                                }
+                        private void onResult() {
+                            if (currentPhaser.getUnarrivedParties() == 0) {
+                                currentPhaser = currentPhaser.getParent();
                             }
+                            currentPhaser.arrive();
                         }
                     });
         };
     }
 
     public void block() {
-        parentPhaser.arriveAndAwaitAdvance();
+        currentPhaser.arriveAndAwaitAdvance();
     }
 }
