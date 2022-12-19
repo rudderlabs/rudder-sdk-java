@@ -148,6 +148,7 @@ public class RudderAnalytics {
     private List<Callback> callbacks;
     private int queueCapacity;
     private boolean forceTlsV1 = false;
+    private boolean gzip = true;
 
     Builder(String writeKey) {
       if (writeKey == null || writeKey.trim().length() == 0) {
@@ -162,6 +163,12 @@ public class RudderAnalytics {
         throw new NullPointerException("Null client");
       }
       this.client = client;
+      return this;
+    }
+
+    /** Disable the GZIP client. */
+    public Builder setGZIP(boolean gzip) {
+      this.gzip = gzip;
       return this;
     }
 
@@ -358,7 +365,7 @@ public class RudderAnalytics {
       }
 
       if (client == null) {
-        client = Platform.get().defaultClient();
+        client = Platform.get().defaultClient(this.gzip);
       }
 
       if (log == null) {
