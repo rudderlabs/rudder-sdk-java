@@ -1,3 +1,6 @@
+[![Build & Code Quality Checks](https://github.com/rudderlabs/rudder-sdk-java/actions/workflows/build-and-quality-checks.yml/badge.svg?branch=ci%2FaddCIFeatures)](https://github.com/rudderlabs/rudder-sdk-java/actions/workflows/build-and-quality-checks.yml)
+
+[//]: # (![Coverage]&#40;.github/badges/jacoco.svg&#41;)
 
 # What is RudderStack?
 
