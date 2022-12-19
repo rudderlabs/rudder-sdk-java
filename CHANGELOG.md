@@ -2,6 +2,7 @@
 - [New](https://github.com/rudderlabs/rudder-sdk-java/pull/43) Add CI feature
 - [New](https://github.com/rudderlabs/rudder-sdk-java/pull/41) Add support for channel object in individual payload
 - [New](https://github.com/rudderlabs/rudder-sdk-java/pull/38) Add library info into the context object at each individual message
+- [New](https://github.com/rudderlabs/rudder-sdk-java/pull/45) Introduce setDataPlaneUrl and mark endPoint as deprecated
 - [Breaking change](https://github.com/rudderlabs/rudder-sdk-java/pull/42) Bundle the gzip support inside the core SDK
 
 - [Chore] Dependency upgrades
