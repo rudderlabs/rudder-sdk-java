@@ -17,7 +17,7 @@ public class Main {
     // https://rudder.com/rudder-engineering/sources/test-java/debugger
     final RudderAnalytics analytics =
             RudderAnalytics.builder("write_key")
-                    .endpoint("data_plane_url")
+                    .setDataPlaneUrl("data_plane_url")
                     .plugin(blockingFlush.plugin())
                     .plugin(new LoggingPlugin())
                     .client(createClient())

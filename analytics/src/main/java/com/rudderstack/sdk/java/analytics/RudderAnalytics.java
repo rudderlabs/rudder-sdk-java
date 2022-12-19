@@ -134,7 +134,7 @@ public class RudderAnalytics {
     private final String writeKey;
     private OkHttpClient client;
     private Log log;
-    public HttpUrl endpoint;
+    @Deprecated public HttpUrl endpoint;
     public HttpUrl uploadURL;
     private String userAgent = DEFAULT_USER_AGENT;
     private List<MessageTransformer> messageTransformers;
@@ -184,15 +184,25 @@ public class RudderAnalytics {
     /**
      * Set an endpoint (host only) that this client should upload events to. Uses {@code
      * http://hosted.rudderlabs.com} by default.
+     *
+     * &#064;Deprecated  use {@link #setDataPlaneUrl(String)}
      */
+    @Deprecated
     public Builder endpoint(String endpoint) {
-      if (endpoint == null || endpoint.trim().length() == 0) {
-        throw new NullPointerException("endpoint cannot be null or empty.");
+      return setDataPlaneUrl(endpoint);
+    }
+
+    /**
+     * Set a dataPlaneUrl that this client should upload events to.
+     */
+    public Builder setDataPlaneUrl(String dataPlaneUrl) {
+      if (dataPlaneUrl == null || dataPlaneUrl.trim().length() == 0) {
+        throw new NullPointerException("dataPlaneUrl cannot be null or empty.");
       }
-      if (! endpoint.endsWith("/")){
-        endpoint += "/";
+      if (! dataPlaneUrl.endsWith("/")){
+        dataPlaneUrl += "/";
       }
-      this.endpoint = HttpUrl.parse(endpoint + DEFAULT_PATH);
+      this.endpoint = HttpUrl.parse(dataPlaneUrl + DEFAULT_PATH);
       return this;
     }
 

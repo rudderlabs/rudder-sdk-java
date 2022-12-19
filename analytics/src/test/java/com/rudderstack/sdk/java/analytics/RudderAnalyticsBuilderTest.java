@@ -243,7 +243,7 @@ public class RudderAnalyticsBuilderTest {
       builder.endpoint(null);
       fail("Should fail for null endpoint");
     } catch (NullPointerException e) {
-      assertThat(e).hasMessage("endpoint cannot be null or empty.");
+      assertThat(e).hasMessage("dataPlaneUrl cannot be null or empty.");
     }
   }
 
@@ -253,14 +253,31 @@ public class RudderAnalyticsBuilderTest {
       builder.endpoint("");
       fail("Should fail for empty endpoint");
     } catch (NullPointerException e) {
-      assertThat(e).hasMessage("endpoint cannot be null or empty.");
+      assertThat(e).hasMessage("dataPlaneUrl cannot be null or empty.");
     }
 
     try {
       builder.endpoint("  ");
       fail("Should fail for empty endpoint");
     } catch (NullPointerException e) {
-      assertThat(e).hasMessage("endpoint cannot be null or empty.");
+      assertThat(e).hasMessage("dataPlaneUrl cannot be null or empty.");
+    }
+  }
+
+  @Test
+  public void emptyDataPlaneUrl() {
+    try {
+      builder.setDataPlaneUrl("");
+      fail("Should fail for empty dataPlaneUrl");
+    } catch (NullPointerException e) {
+      assertThat(e).hasMessage("dataPlaneUrl cannot be null or empty.");
+    }
+
+    try {
+      builder.setDataPlaneUrl("  ");
+      fail("Should fail for empty dataPlaneUrl");
+    } catch (NullPointerException e) {
+      assertThat(e).hasMessage("dataPlaneUrl cannot be null or empty.");
     }
   }
 
@@ -271,8 +288,21 @@ public class RudderAnalyticsBuilderTest {
   }
 
   @Test
+  public void buildsWithValidDataPlaneUrl() {
+    RudderAnalytics analytics = builder.setDataPlaneUrl("https://hosted.rudderlabs.com").build();
+    assertThat(analytics).isNotNull();
+  }
+
+  @Test
   public void buildsCorrectEndpoint() {
     builder.endpoint("https://hosted.rudderlabs.com");
+    String expectedURL = "https://hosted.rudderlabs.com/v1/batch";
+    assertEquals(expectedURL, builder.endpoint.toString());
+  }
+
+  @Test
+  public void buildsCorrectDataPlaneUrl() {
+    builder.setDataPlaneUrl("https://hosted.rudderlabs.com");
     String expectedURL = "https://hosted.rudderlabs.com/v1/batch";
     assertEquals(expectedURL, builder.endpoint.toString());
   }
