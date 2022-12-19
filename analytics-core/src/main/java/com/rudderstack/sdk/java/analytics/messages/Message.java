@@ -30,6 +30,9 @@ public interface Message {
   Date sentAt();
 
   @Nonnull
+  String channel();
+
+  @Nonnull
   Date timestamp();
 
   @Nullable
