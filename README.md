@@ -1,7 +1,5 @@
 [![Build & Code Quality Checks](https://github.com/rudderlabs/rudder-sdk-java/actions/workflows/build-and-quality-checks.yml/badge.svg?branch=ci%2FaddCIFeatures)](https://github.com/rudderlabs/rudder-sdk-java/actions/workflows/build-and-quality-checks.yml)
 
-[//]: # (![Coverage]&#40;.github/badges/jacoco.svg&#41;)
-
 # What is RudderStack?
 
 [RudderStack](https://rudderstack.com/) is a **customer data pipeline** tool for collecting, routing and processing data from your websites, apps, cloud tools, and data warehouse.
@@ -20,7 +18,7 @@ For detailed documentation on the Java SDK, click [here](https://www.rudderstack
 <dependency>
     <groupId>com.rudderstack.sdk.java.analytics</groupId>
     <artifactId>analytics</artifactId>
-    <version>2.1.0</version>
+    <version>3.0.0</version>
 </dependency>
 
 ```
@@ -28,7 +26,7 @@ For detailed documentation on the Java SDK, click [here](https://www.rudderstack
 *or if you're using Gradle:*
 
 ```bash
-implementation 'com.rudderstack.sdk.java.analytics:analytics:2.1.0'
+implementation 'com.rudderstack.sdk.java.analytics:analytics:3.0.0'
 ```
 
 ## Initializing ```RudderClient```
@@ -36,7 +34,7 @@ implementation 'com.rudderstack.sdk.java.analytics:analytics:2.1.0'
 ```java 
 RudderAnalytics analytics = RudderAnalytics
          .builder("<WRITE_KEY>")
-         .endpoint("<DATA_PLANE_URL>")
+         .setDataPlaneUrl("data_plane_url")
          .build();
 ```
 
