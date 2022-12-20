@@ -12,7 +12,7 @@ val usage = """
 Analytics Java CLI
 
 Usage:
-  analytics --writeKey=<writeKey> --type=<type> --userId=<userId> [--event=<event>] [--properties=<properties>] [--name=<name>] [--traits=<traits>] [--groupId=<groupId>] [--previousId=<previousId>] [--anonymousId=<anonymousId>] [--integrations=<integrations>] [--context=<context>]
+  analytics --writeKey=<writeKey> --dataPlaneUrl=<dataPlaneUrl> --type=<type> --userId=<userId> [--event=<event>] [--properties=<properties>] [--name=<name>] [--traits=<traits>] [--groupId=<groupId>] [--previousId=<previousId>] [--anonymousId=<anonymousId>] [--integrations=<integrations>] [--context=<context>]
 
 
   analytics -h | --help
@@ -104,10 +104,12 @@ fun main(rawArgs: Array<String>) {
 
     val writeKey = args["--writeKey"] as String
 
+    val dataPlaneUrl = args["--dataPlaneUrl"] as String
+
     val phaser = Phaser(1)
 
     val analytics = RudderAnalytics.builder(writeKey)
-            .setDataPlaneUrl("data_plane_url")
+            .setDataPlaneUrl(dataPlaneUrl)
             .flushQueueSize(1)
             .callback(object : Callback {
                 override fun success(message: Message?) {
