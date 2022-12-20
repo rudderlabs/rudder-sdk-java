@@ -23,6 +23,7 @@ import okhttp3.TlsVersion;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import javax.annotation.Nullable;
 
 /**
  * The entry point into the Rudder for Java library.
@@ -134,6 +135,9 @@ public class RudderAnalytics {
     private final String writeKey;
     private OkHttpClient client;
     private Log log;
+    /**
+     * &#064;Deprecated  use {@link #getDataPlaneUrl()}
+     */
     @Deprecated public HttpUrl endpoint;
     public HttpUrl uploadURL;
     private String userAgent = DEFAULT_USER_AGENT;
@@ -207,8 +211,19 @@ public class RudderAnalytics {
     }
 
     /**
+     *
+     * @return dataPlaneUrl (your data-plane url)
+     */
+    @Nullable
+    public HttpUrl getDataPlaneUrl() {
+      return this.endpoint;
+    }
+
+    /**
      * Set an endpoint (host and prefix) that this client should upload events to. Uses {@code
      *https://hosted.rudderlabs.com/v1} by default.
+     *
+     * Segment compatibility
      */
     public Builder setUploadURL(String uploadURL) {
       if (uploadURL == null || uploadURL.trim().length() == 0) {
