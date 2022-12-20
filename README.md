@@ -34,7 +34,7 @@ implementation 'com.rudderstack.sdk.java.analytics:analytics:3.0.0'
 ```java 
 RudderAnalytics analytics = RudderAnalytics
          .builder("<WRITE_KEY>")
-         .setDataPlaneUrl("data_plane_url")
+         .setDataPlaneUrl("<DATA_PLANE_URL>")
          .build();
 ```
 
