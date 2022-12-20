@@ -107,6 +107,7 @@ fun main(rawArgs: Array<String>) {
     val phaser = Phaser(1)
 
     val analytics = RudderAnalytics.builder(writeKey)
+            .setDataPlaneUrl("data_plane_url")
             .flushQueueSize(1)
             .callback(object : Callback {
                 override fun success(message: Message?) {
