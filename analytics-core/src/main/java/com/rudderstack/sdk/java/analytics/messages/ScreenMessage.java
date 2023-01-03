@@ -80,13 +80,25 @@ public abstract class ScreenMessage implements Message {
     protected ScreenMessage realBuild(
         Type type,
         String messageId,
+        Date sentAt,
+        String channel,
         Date timestamp,
         Map<String, ?> context,
         String anonymousId,
         String userId,
         Map<String, Object> integrations) {
       return new AutoValue_ScreenMessage(
-          type, messageId, timestamp, context, anonymousId, userId, integrations, name, properties);
+          type,
+          messageId,
+          sentAt,
+          channel,
+          timestamp,
+          context,
+          anonymousId,
+          userId,
+          integrations,
+          name,
+          properties);
     }
   }
 }

@@ -1,10 +1,8 @@
 package com.rudderstack.sdk.java.analytics.messages;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+
+import com.rudderstack.sdk.java.analytics.AnalyticsVersion;
 
 /**
  * Fluent API to construct instances of a {@link Message}.
@@ -16,11 +14,22 @@ import java.util.UUID;
 public abstract class MessageBuilder<T extends Message, V extends MessageBuilder> {
   private final Message.Type type;
   private String messageId;
+  private Date sentAt;
   private Date timestamp;
   private Map<String, ?> context;
   private String anonymousId;
   private String userId;
   private Map<String, Object> integrations;
+  private static final Map<String, ?> LIBRARY_CONTEXT;
+
+  static {
+    Map<String, String> library = new HashMap<>();
+    library.put("name", "analytics-java");
+    library.put("version", AnalyticsVersion.get());
+    Map<String, Object> context = new HashMap<>();
+    context.put("library", Collections.unmodifiableMap(library));
+    LIBRARY_CONTEXT = Collections.unmodifiableMap(context);
+  }
 
   // Hidden from Public API.
   MessageBuilder(Message.Type type) {
@@ -69,6 +78,17 @@ public abstract class MessageBuilder<T extends Message, V extends MessageBuilder
       throw new IllegalArgumentException("messageId cannot be null or empty.");
     }
     this.messageId = messageId;
+    return self();
+  }
+
+  /**
+   * Set a sentAt for the event. By default, the current sentAt is used, but you may override it for
+   * historical import.
+   *
+   * @see <a href="https://rudder.com/docs/spec/common/#-sentAt-">SentAt</a>
+   */
+  public V sentAt(Date sentAt) {
+    this.sentAt = sentAt;
     return self();
   }
 
@@ -180,6 +200,8 @@ public abstract class MessageBuilder<T extends Message, V extends MessageBuilder
   protected abstract T realBuild(
       Message.Type type,
       String messageId,
+      Date sentAt,
+      String channel,
       Date timestamp,
       Map<String, ?> context,
       String anonymousId,
@@ -203,10 +225,14 @@ public abstract class MessageBuilder<T extends Message, V extends MessageBuilder
       timestamp = new Date();
     }
 
+    Date sentAt = this.sentAt;
+
     String messageId = this.messageId;
     if (messageId == null) {
       messageId = UUID.randomUUID().toString();
     }
+
+    String channel = "server";
 
     Map<String, Object> integrations;
     if (this.integrations == null) {
@@ -215,7 +241,16 @@ public abstract class MessageBuilder<T extends Message, V extends MessageBuilder
       integrations = ImmutableMap.copyOf(this.integrations);
     }
 
-    return realBuild(type, messageId, timestamp, context, anonymousId, userId, integrations);
+    if (this.context != null) {
+      Map<String, Object> mergeContext = new HashMap<>(this.context);
+      mergeContext.putAll(LIBRARY_CONTEXT);
+      this.context = ImmutableMap.copyOf(mergeContext);
+    } else {
+      this.context = ImmutableMap.copyOf(LIBRARY_CONTEXT);
+    }
+
+    return realBuild(
+        type, messageId, sentAt, channel, timestamp, context, anonymousId, userId, integrations);
   }
 
   /** Returns the {@link Message.Type} of the message this builder is constructing. */

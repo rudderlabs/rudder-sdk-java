@@ -1,16 +1,25 @@
 package com.rudderstack.sdk.java.analytics;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import com.rudderstack.sdk.java.analytics.internal.*;
+import com.rudderstack.sdk.java.analytics.TestUtils.MessageBuilderTest;
+import com.rudderstack.sdk.java.analytics.internal.AnalyticsClient;
 import com.rudderstack.sdk.java.analytics.messages.Message;
 import com.rudderstack.sdk.java.analytics.messages.MessageBuilder;
 import com.squareup.burst.BurstJUnit4;
+import java.lang.reflect.Field;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,12 +28,9 @@ import org.mockito.Mock;
 @RunWith(BurstJUnit4.class)
 public class RudderAnalyticsTest {
   @Mock AnalyticsClient client;
-  @Mock
-  Log log;
-  @Mock
-  MessageTransformer messageTransformer;
-  @Mock
-  MessageInterceptor messageInterceptor;
+  @Mock Log log;
+  @Mock MessageTransformer messageTransformer;
+  @Mock MessageInterceptor messageInterceptor;
   RudderAnalytics analytics;
 
   @Before
@@ -92,7 +98,7 @@ public class RudderAnalyticsTest {
   }
 
   @Test
-  public void offerIsDispatched(TestUtils.MessageBuilderTest builder) {
+  public void offerIsDispatched(MessageBuilderTest builder) {
     MessageBuilder messageBuilder = builder.get().userId("dummy");
     Message message = messageBuilder.build();
     when(messageTransformer.transform(messageBuilder)).thenReturn(true);
@@ -103,5 +109,42 @@ public class RudderAnalyticsTest {
     verify(messageTransformer).transform(messageBuilder);
     verify(messageInterceptor).intercept(any(Message.class));
     verify(client).offer(message);
+  }
+
+  @Test
+  public void threadSafeTest(MessageBuilderTest builder)
+      throws NoSuchFieldException, IllegalAccessException, InterruptedException {
+    // we want to test if msgs get lost during a multithreaded env
+    RudderAnalytics analytics = RudderAnalytics.builder("testWriteKeyForIssue321").build();
+    // So we just want to spy on the client of an Analytics  object created normally
+    Field clientField = analytics.getClass().getDeclaredField("client");
+    clientField.setAccessible(true);
+    AnalyticsClient spy = spy((AnalyticsClient) clientField.get(analytics));
+    clientField.set(analytics, spy);
+
+    // we are going to run this test for a specific amount of seconds
+    int millisRunning = 200;
+    LocalDateTime initialTime = LocalDateTime.now();
+    LocalDateTime now;
+
+    // and a set number of threads will be using the library
+    ExecutorService service = Executors.newFixedThreadPool(20);
+    AtomicInteger counter = new AtomicInteger();
+
+    MessageBuilder messageBuilder = builder.get().userId("jorgen25");
+
+    do {
+      service.submit(
+          () -> {
+            analytics.enqueue(messageBuilder);
+            counter.incrementAndGet();
+          });
+      now = LocalDateTime.now();
+    } while (initialTime.until(now, ChronoUnit.MILLIS) < millisRunning);
+
+    service.shutdown();
+    while (!service.isShutdown() || !service.isTerminated()) {}
+
+    verify(spy, times(counter.get())).enqueue(any(Message.class));
   }
 }

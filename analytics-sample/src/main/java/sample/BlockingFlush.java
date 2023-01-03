@@ -15,7 +15,7 @@ import java.util.concurrent.Phaser;
  *
  * <pre><code>
  * BlockingFlush blockingFlush = BlockingFlush.create();
- * Analytics analytics = Analytics.builder(writeKey)
+ * RudderAnalytics analytics = RudderAnalytics.builder(writeKey)
  *      .plugin(blockingFlush.plugin())
  *      .build();
  *
@@ -39,31 +39,25 @@ public class BlockingFlush {
   final Phaser phaser;
 
   public Plugin plugin() {
-    return new Plugin() {
-      @Override
-      public void configure(RudderAnalytics.Builder builder) {
-        builder.messageTransformer(
-            new MessageTransformer() {
-              @Override
-              public boolean transform(MessageBuilder builder) {
+    return builder -> {
+      builder.messageTransformer(
+              builder1 -> {
                 phaser.register();
                 return true;
-              }
-            });
+              });
 
-        builder.callback(
-            new Callback() {
-              @Override
-              public void success(Message message) {
-                phaser.arrive();
-              }
+      builder.callback(
+          new Callback() {
+            @Override
+            public void success(Message message) {
+              phaser.arrive();
+            }
 
-              @Override
-              public void failure(Message message, Throwable throwable) {
-                phaser.arrive();
-              }
-            });
-      }
+            @Override
+            public void failure(Message message, Throwable throwable) {
+              phaser.arrive();
+            }
+          });
     };
   }
 
