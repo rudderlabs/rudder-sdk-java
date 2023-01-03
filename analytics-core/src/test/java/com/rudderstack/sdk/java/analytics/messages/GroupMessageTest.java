@@ -1,10 +1,10 @@
 package com.rudderstack.sdk.java.analytics.messages;
 
-import com.google.common.collect.ImmutableMap;
-import org.junit.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
+
+import com.google.common.collect.ImmutableMap;
+import org.junit.Test;
 
 public class GroupMessageTest {
 

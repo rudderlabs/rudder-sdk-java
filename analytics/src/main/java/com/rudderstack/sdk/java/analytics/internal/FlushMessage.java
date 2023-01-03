@@ -1,7 +1,6 @@
 package com.rudderstack.sdk.java.analytics.internal;
 
 import com.rudderstack.sdk.java.analytics.messages.Message;
-
 import java.util.Date;
 import java.util.Map;
 import javax.annotation.Nonnull;
@@ -21,6 +20,18 @@ class FlushMessage implements Message {
     @Nonnull
     @Override
     public String messageId() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Nullable
+    @Override
+    public Date sentAt() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Nonnull
+    @Override
+    public String channel() {
         throw new UnsupportedOperationException();
     }
 

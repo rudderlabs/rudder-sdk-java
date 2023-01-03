@@ -26,6 +26,12 @@ public interface Message {
   @Nonnull
   String messageId();
 
+  @Nullable
+  Date sentAt();
+
+  @Nonnull
+  String channel();
+
   @Nonnull
   Date timestamp();
 

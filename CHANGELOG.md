@@ -1,3 +1,21 @@
+# Version 3.0.0 (January 9, 2023)
+- [New](https://github.com/rudderlabs/rudder-sdk-java/pull/43) Add CI feature
+- [New](https://github.com/rudderlabs/rudder-sdk-java/pull/41) Add support for channel object in individual payload
+- [New](https://github.com/rudderlabs/rudder-sdk-java/pull/38) Add library info into the context object at each individual message
+- [New](https://github.com/rudderlabs/rudder-sdk-java/pull/45) Introduce setDataPlaneUrl and mark endPoint as deprecated
+- [New](https://github.com/rudderlabs/rudder-sdk-java/pull/44) Added tier blocking sample code
+- [Breaking change](https://github.com/rudderlabs/rudder-sdk-java/pull/42) Bundle the gzip support inside the core SDK
+
+- [Chore] Dependency upgrades
+- [New](https://github.com/rudderlabs/rudder-sdk-java/pull/38) Add option to sentAt field to be null
+- [New](https://github.com/rudderlabs/rudder-sdk-java/pull/38) Add throw interrupted exception when event exceeds 32kb to stop Thread
+
+- [Chore] Dependency upgrades
+- [Fix](https://github.com/rudderlabs/rudder-sdk-java/pull/38) Batching queue to regard to api limits
+- [Fix](https://github.com/rudderlabs/rudder-sdk-java/pull/38) Correctly measure the size of message queue
+- [Fix](https://github.com/rudderlabs/rudder-sdk-java/pull/38) Bugfix for TLS version error (protocol not supported error)
+- [Fix](https://github.com/rudderlabs/rudder-sdk-java/pull/38) AnalyticsClient Looper won't start if isShutdown is true
+
 # Version 2.0.2 (September 26, 2022)
 
 - [Fix] Removed "v1/import" endpoint

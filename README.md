@@ -1,13 +1,14 @@
+[![Build & Code Quality Checks](https://github.com/rudderlabs/rudder-sdk-java/actions/workflows/build-and-quality-checks.yml/badge.svg?branch=ci%2FaddCIFeatures)](https://github.com/rudderlabs/rudder-sdk-java/actions/workflows/build-and-quality-checks.yml)
 
 # What is RudderStack?
 
 [RudderStack](https://rudderstack.com/) is a **customer data pipeline** tool for collecting, routing and processing data from your websites, apps, cloud tools, and data warehouse.
 
-More information on RudderStack can be found [here](https://github.com/rudderlabs/rudder-server).
-
 ## RudderStack's Java SDK
 
 RudderStack’s Java SDK allows you to track your customer event data from your Java code. Once enabled, the event requests hit the RudderStack servers. RudderStack then routes the events to the specified destination platforms as configured by you.
+
+For detailed documentation on the Java SDK, click [here](https://www.rudderstack.com/docs/sources/event-streams/sdks/rudderstack-java-sdk/).
 
 ## Getting Started with the RudderStack Java SDK
 
@@ -17,7 +18,7 @@ RudderStack’s Java SDK allows you to track your customer event data from your 
 <dependency>
     <groupId>com.rudderstack.sdk.java.analytics</groupId>
     <artifactId>analytics</artifactId>
-    <version>2.0.2</version>
+    <version>3.0.0</version>
 </dependency>
 
 ```
@@ -25,28 +26,19 @@ RudderStack’s Java SDK allows you to track your customer event data from your 
 *or if you're using Gradle:*
 
 ```bash
-implementation 'com.rudderstack.sdk.java.analytics:analytics:2.0.2'
+implementation 'com.rudderstack.sdk.java.analytics:analytics:3.0.0'
 ```
 
-## Initialize ```RudderClient```
+## Initializing ```RudderClient```
 
 ```java 
-RudderAnalytics analytics = RudderAnalytics.builder(
-        "write_key",
-        "http://data-plane-url"
-)
-.synchronize(true) // optional (default : false).It is required to block further method invocation until the flush completes.
-.plugin(new PluginLog()) // optional. Used for Logging 
-.build();
-
-...YOUR CODE...
-
-analytics.flush(); // Triggers a flush.
-analytics.blockFlush(); //optional. Triggers a flush and block until the flush completes. Required in case of Synchronize. It calls implicitly the `flush` method. So, explicit `flush` call is not required.
-analytics.shutdown(); // Shut down after the flush is complete.
+RudderAnalytics analytics = RudderAnalytics
+         .builder("<WRITE_KEY>")
+         .setDataPlaneUrl("<DATA_PLANE_URL>")
+         .build();
 ```
 
-## Send Events
+## Sending events
 
 ```java
 Map<String, Object> map = new HashMap<>();
@@ -57,6 +49,8 @@ analytics.enqueue(IdentifyMessage.builder()
         .traits(map)
 );
 ```
+
+For more information on the different types of events supported by the Java SDK, refer to our [docs](https://www.rudderstack.com/docs/sources/event-streams/sdks/rudderstack-java-sdk/).
 
 ## Contact Us
 
