@@ -11,7 +11,7 @@
 
   <groupId>com.rudderstack.sdk.java.analytics</groupId>
   <artifactId>analytics-parent</artifactId>
-  <version>2.0.2</version>
+  <version>3.0.0</version>
   <packaging>pom</packaging>
   <name>Analytics for Java (Parent)</name>
   <description>The hassle-free way to add analytics to your Android app.</description>
@@ -38,25 +38,66 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>8</java.version>
-    <kotlin.version>1.5.31</kotlin.version>
-    <spotless.version>2.14.0</spotless.version>
+    <kotlin.version>1.7.20</kotlin.version>
+    <spotless.version>2.27.2</spotless.version>
     <retrofit.version>2.9.0</retrofit.version>
-    <auto.version>1.8.2</auto.version>
+    <auto.version>1.10</auto.version>
 
     <findbugs.version>3.0.1</findbugs.version>
-    <gson.version>2.8.8</gson.version>
-    <okhttp.version>4.3.0</okhttp.version>
-    <logging.version>4.9.1</logging.version>
-    <guava.version>31.0-jre</guava.version>
+    <gson.version>2.9.1</gson.version>
+    <okhttp.version>4.10.0</okhttp.version>
+    <logging.version>4.10.0</logging.version>
+    <guava.version>31.1-jre</guava.version>
     <backo.version>1.0.0</backo.version>
-    <spring.boot.version>2.5.5</spring.boot.version>
+    <spring.boot.version>2.7.5</spring.boot.version>
     <docopt.version>0.6.0.20150202</docopt.version>
 
     <!-- Test Dependencies -->
     <junit.version>4.13.2</junit.version>
     <burst.version>1.2.0</burst.version>
-    <mockito.version>3.12.4</mockito.version>
-    <assertj.version>3.21.0</assertj.version>
+    <mockito.version>4.8.1</mockito.version>
+    <assertj.version>3.23.1</assertj.version>
+
+    <!-- SonarQube -->
+    <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
+    <sonar.organization>rudderlabs</sonar.organization>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    <sonar.log.level>INFO</sonar.log.level>
+    <sonar.verbose>false</sonar.verbose>
+    <sonar.qualitygate.wait>false</sonar.qualitygate.wait>
+    <!--Project details-->
+    <sonar.projectKey>rudderlabs_rudder-sdk-java</sonar.projectKey>
+    <sonar.organization>rudderlabs</sonar.organization>
+    <sonar.projectName>rudder-sdk-java</sonar.projectName>
+    <sonar.projectVersion>2.1.0</sonar.projectVersion>
+    <!--Meta-data for the project-->
+    <sonar.links.scm>https://github.com/rudderlabs/rudder-sdk-java</sonar.links.scm>
+    <sonar.links.issue>https://github.com/rudderlabs/rudder-sdk-java/issues</sonar.links.issue>
+    <!--suppress UnresolvedMavenProperty -->
+    <sonar.coverage.jacoco.xmlReportPaths>${maven.multiModuleProjectDirectory}/analytics-cli/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    <sonar.junit.reportPaths>target/surefire-reports</sonar.junit.reportPaths>
+    <!--Path to sources-->
+<!--    <sonar.sources>src/main</sonar.sources>-->
+<!--    <sonar.inclusions>**/*.java</sonar.inclusions>-->
+<!--    <sonar.exlusions>**/*Test*/**</sonar.exlusions>-->
+    <!--Path to tests-->
+<!--    <sonar.tests>src/test</sonar.tests>-->
+<!--        <sonar.test.inclusions>**/*.java</sonar.test.inclusions>-->
+<!--        <sonar.test.exclusions>analytics-sample/**/*</sonar.test.exclusions>-->
+    <!--Source encoding-->
+    <sonar.sourceEncoding>UTF-8</sonar.sourceEncoding>
+    <!--Exclusions for copy-paste detection-->
+<!--    <sonar.cpd.exclusions>test/**/*,__tests__/**/*</sonar.cpd.exclusions>-->
+    <sonar.java.skipUnchanged>false</sonar.java.skipUnchanged>
+    <!--Path to Lint reports-->
+    <!--suppress UnresolvedMavenProperty -->
+    <sonar.java.pmd.reportPaths>
+      ${maven.multiModuleProjectDirectory}/analytics-core/target/pmd.xml,
+      ${maven.multiModuleProjectDirectory}/analytics/target/pmd.xml,
+      ${maven.multiModuleProjectDirectory}/analytics-core/target/cpd.xml,
+      ${maven.multiModuleProjectDirectory}/analytics/target/cpd.xml
+    </sonar.java.pmd.reportPaths>
+    <sonar.java.checkstyle.reportPaths>target/checkstyle-result.xml</sonar.java.checkstyle.reportPaths>
   </properties>
 
   <scm>
@@ -180,7 +221,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.1</version>
+          <version>3.10.1</version>
           <configuration>
             <forceJavacCompilerUse>true</forceJavacCompilerUse>
             <source>${java.version}</source>
@@ -245,6 +286,23 @@
               </pluginExecutions>
             </lifecycleMappingMetadata>
           </configuration>
+        </plugin>
+        <!--SonarQube plugin-->
+        <plugin>
+          <groupId>org.sonarsource.scanner.maven</groupId>
+          <artifactId>sonar-maven-plugin</artifactId>
+          <version>3.9.1.2184</version>
+        </plugin>
+        <!--Lint check-->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-pmd-plugin</artifactId>
+          <version>3.19.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>3.2.0</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -318,6 +376,20 @@
         <configuration>
           <useSystemClassLoader>false</useSystemClassLoader>
         </configuration>
+      </plugin>
+      <!--To generate the Jacoco Coverage report-->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.8</version>
+        <executions>
+          <execution>
+            <id>jacobo-prepare-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

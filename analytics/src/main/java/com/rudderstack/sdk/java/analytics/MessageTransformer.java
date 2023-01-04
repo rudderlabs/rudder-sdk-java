@@ -1,6 +1,13 @@
 package com.rudderstack.sdk.java.analytics;
 
-import com.rudderstack.sdk.java.analytics.messages.*;
+import com.rudderstack.sdk.java.analytics.messages.AliasMessage;
+import com.rudderstack.sdk.java.analytics.messages.GroupMessage;
+import com.rudderstack.sdk.java.analytics.messages.IdentifyMessage;
+import com.rudderstack.sdk.java.analytics.messages.Message;
+import com.rudderstack.sdk.java.analytics.messages.MessageBuilder;
+import com.rudderstack.sdk.java.analytics.messages.PageMessage;
+import com.rudderstack.sdk.java.analytics.messages.ScreenMessage;
+import com.rudderstack.sdk.java.analytics.messages.TrackMessage;
 
 /** Intercept every message before it is built in order to add additional data. */
 @Beta

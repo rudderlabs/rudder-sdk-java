@@ -1,9 +1,9 @@
 package com.rudderstack.sdk.java.analytics.messages;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class ScreenMessageTest {
 
