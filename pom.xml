@@ -55,7 +55,7 @@
     <!-- Test Dependencies -->
     <junit.version>4.13.2</junit.version>
     <burst.version>1.2.0</burst.version>
-    <mockito.version>4.8.1</mockito.version>
+    <mockito.version>4.11.0</mockito.version>
     <assertj.version>3.23.1</assertj.version>
 
     <!-- SonarQube -->
@@ -311,7 +311,7 @@
       <plugin>
         <groupId>org.sonatype.plugins</groupId>
         <artifactId>nexus-staging-maven-plugin</artifactId>
-        <version>1.6.7</version>
+        <version>1.6.13</version>
         <extensions>true</extensions>
         <configuration>
           <serverId>ossrh</serverId>
