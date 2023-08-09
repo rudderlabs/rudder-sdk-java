@@ -6,7 +6,7 @@
   <parent>
     <artifactId>analytics-parent</artifactId>
     <groupId>com.rudderstack.sdk.java.analytics</groupId>
-    <version>3.0.0</version>
+    <version>${revision}</version>
   </parent>
 
   <artifactId>analytics-sample</artifactId>
@@ -23,6 +23,10 @@
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
       <artifactId>okhttp</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.squareup.okio</groupId>
+      <artifactId>okio-jvm</artifactId>
     </dependency>
   </dependencies>
 

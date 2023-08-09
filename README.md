@@ -18,7 +18,7 @@ For detailed documentation on the Java SDK, click [here](https://www.rudderstack
 <dependency>
     <groupId>com.rudderstack.sdk.java.analytics</groupId>
     <artifactId>analytics</artifactId>
-    <version>3.0.0</version>
+    <version>3.0.1</version>
 </dependency>
 
 ```
