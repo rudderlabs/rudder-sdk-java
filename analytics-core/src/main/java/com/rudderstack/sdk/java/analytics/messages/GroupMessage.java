@@ -16,91 +16,90 @@ import javax.annotation.Nullable;
  *
  * <p>Use {@link #builder} to construct your own instances.
  *
- * @see <a href="https://rudder.com/docs/spec/group/">Group</a>
+ * @see <a href="https://www.rudderstack.com/docs/sources/event-streams/sdks/rudderstack-java-sdk/#screen">Group</a>
  */
 @AutoValue
 @AutoGson //
 public abstract class GroupMessage implements Message {
-  /**
-   * Start building an {@link GroupMessage} instance.
-   *
-   * @param groupId A unique identifier for the group in your database.
-   * @throws IllegalArgumentException if the event name is null or empty
-   * @see <a href="https://rudder.com/docs/spec/group/#group-id">Group ID</a>
-   */
-  public static Builder builder(String groupId) {
-    return new Builder(groupId);
-  }
-
-  public abstract String groupId();
-
-  @Nullable
-  public abstract Map<String, ?> traits();
-
-  public Builder toBuilder() {
-    return new Builder(this);
-  }
-
-  /** Fluent API for creating {@link GroupMessage} instances. */
-  public static class Builder extends MessageBuilder<GroupMessage, Builder> {
-    private String groupId;
-    private Map<String, ?> traits;
-
-    private Builder(GroupMessage group) {
-      super(group);
-      groupId = group.groupId();
-      traits = group.traits();
+    /**
+     * Start building an {@link GroupMessage} instance.
+     *
+     * @param groupId A unique identifier for the group in your database.
+     * @throws IllegalArgumentException if the event name is null or empty
+     */
+    public static Builder builder(String groupId) {
+        return new Builder(groupId);
     }
 
-    private Builder(String groupId) {
-      super(Type.group);
-      if (isNullOrEmpty(groupId)) {
-        throw new IllegalArgumentException("groupId cannot be null or empty.");
-      }
-      this.groupId = groupId;
+    public abstract String groupId();
+
+    @Nullable
+    public abstract Map<String, ?> traits();
+
+    public Builder toBuilder() {
+        return new Builder(this);
     }
 
     /**
-     * Set a map of information you know about a group, like number of employees or website.
-     *
-     * @see <a href="https://rudder.com/docs/spec/group/#traits">Traits</a>
+     * Fluent API for creating {@link GroupMessage} instances.
      */
-    public Builder traits(Map<String, ?> traits) {
-      if (traits == null) {
-        throw new NullPointerException("Null traits");
-      }
-      this.traits = ImmutableMap.copyOf(traits);
-      return this;
-    }
+    public static class Builder extends MessageBuilder<GroupMessage, Builder> {
+        private String groupId;
+        private Map<String, ?> traits;
 
-    @Override
-    protected GroupMessage realBuild(
-        Type type,
-        String messageId,
-        Date sentAt,
-        String channel,
-        Date timestamp,
-        Map<String, ?> context,
-        String anonymousId,
-        String userId,
-        Map<String, Object> integrations) {
-      return new AutoValue_GroupMessage(
-          type,
-          messageId,
-          sentAt,
-          channel,
-          timestamp,
-          context,
-          anonymousId,
-          userId,
-          integrations,
-          groupId,
-          traits);
-    }
+        private Builder(GroupMessage group) {
+            super(group);
+            groupId = group.groupId();
+            traits = group.traits();
+        }
 
-    @Override
-    Builder self() {
-      return this;
+        private Builder(String groupId) {
+            super(Type.group);
+            if (isNullOrEmpty(groupId)) {
+                throw new IllegalArgumentException("groupId cannot be null or empty.");
+            }
+            this.groupId = groupId;
+        }
+
+        /**
+         * Set a map of information you know about a group, like number of employees or website.
+         */
+        public Builder traits(Map<String, ?> traits) {
+            if (traits == null) {
+                throw new NullPointerException("Null traits");
+            }
+            this.traits = ImmutableMap.copyOf(traits);
+            return this;
+        }
+
+        @Override
+        protected GroupMessage realBuild(
+                Type type,
+                String messageId,
+                Date sentAt,
+                String channel,
+                Date timestamp,
+                Map<String, ?> context,
+                String anonymousId,
+                String userId,
+                Map<String, Object> integrations) {
+            return new AutoValue_GroupMessage(
+                    type,
+                    messageId,
+                    sentAt,
+                    channel,
+                    timestamp,
+                    context,
+                    anonymousId,
+                    userId,
+                    integrations,
+                    groupId,
+                    traits);
+        }
+
+        @Override
+        Builder self() {
+            return this;
+        }
     }
-  }
 }
