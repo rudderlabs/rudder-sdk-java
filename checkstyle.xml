@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<suppressions name="Checker">
+    <module name="LineLength">
+        <property name="max" value="125"/>
+    </module>
+</suppressions>
