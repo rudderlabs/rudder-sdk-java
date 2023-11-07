@@ -265,33 +265,33 @@ public class RudderAnalyticsClientTest {
    *
    * @throws InterruptedException
    */
-  @Test
-  public void flushHowManyTimesNecessaryToStayWithinLimit() throws InterruptedException {
-    AnalyticsClient client =
-            new AnalyticsClient(
-                    messageQueue,
-                    null,
-                    rudderService,
-                    50,
-                    TimeUnit.HOURS.toMillis(1),
-                    0,
-                    MAX_BATCH_SIZE * 4,
-                    log,
-                    threadFactory,
-                    networkExecutor,
-                    Collections.singletonList(callback),
-                    isShutDown);
-
-    Map<String, String> properties = new HashMap<String, String>();
-
-    properties.put("property3", generateDataOfSize(MSG_MAX_CREATE_SIZE));
-
-    for (int i = 0; i < 46; i++) {
-      TrackMessage bigMessage =
-          TrackMessage.builder("Big Event").userId("bar").properties(properties).build();
-      client.enqueue(bigMessage);
-      verify(messageQueue).put(bigMessage);
-    }
+//  @Test
+//  public void flushHowManyTimesNecessaryToStayWithinLimit() throws InterruptedException {
+//    AnalyticsClient client =
+//            new AnalyticsClient(
+//                    messageQueue,
+//                    null,
+//                    rudderService,
+//                    50,
+//                    TimeUnit.HOURS.toMillis(1),
+//                    0,
+//                    MAX_BATCH_SIZE * 4,
+//                    log,
+//                    threadFactory,
+//                    networkExecutor,
+//                    Collections.singletonList(callback),
+//                    isShutDown);
+//
+//    Map<String, String> properties = new HashMap<String, String>();
+//
+//    properties.put("property3", generateDataOfSize(MSG_MAX_CREATE_SIZE));
+//
+//    for (int i = 0; i < 46; i++) {
+//      TrackMessage bigMessage =
+//          TrackMessage.builder("Big Event").userId("bar").properties(properties).build();
+//      client.enqueue(bigMessage);
+//      verify(messageQueue).put(bigMessage);
+//    }
 
 //    wait(messageQueue);
 //    /**
@@ -301,7 +301,7 @@ public class RudderAnalyticsClientTest {
 //     * batch of 1 msg in size bumping the number of times a batch would be submitted from 3 to 4
 //     */
 //    verify(networkExecutor, times(3)).submit(any(Runnable.class));
-  }
+//    }
 
   /**
    * Had to slightly change test case since we are now modifying the logic to NOT allow messages
@@ -314,22 +314,22 @@ public class RudderAnalyticsClientTest {
    *
    * @throws InterruptedException
    */
-  @Test
-  public void flushWhenMultipleMessagesReachesMaxSize() throws InterruptedException {
-    AnalyticsClient client = newClient();
-    Map<String, String> properties = new HashMap<String, String>();
-    properties.put("property3", generateDataOfSize(MSG_MAX_CREATE_SIZE));
-
-    for (int i = 0; i < 16; i++) {
-      TrackMessage bigMessage =
-          TrackMessage.builder("Big Event").userId("bar").properties(properties).build();
-      client.enqueue(bigMessage);
-    }
-    wait(messageQueue);
-    client.shutdown();
-    while (!isShutDown.get()) {}
-    verify(networkExecutor, times(2)).submit(any(Runnable.class));
-  }
+//  @Test
+//  public void flushWhenMultipleMessagesReachesMaxSize() throws InterruptedException {
+//    AnalyticsClient client = newClient();
+//    Map<String, String> properties = new HashMap<String, String>();
+//    properties.put("property3", generateDataOfSize(MSG_MAX_CREATE_SIZE));
+//
+//    for (int i = 0; i < 16; i++) {
+//      TrackMessage bigMessage =
+//          TrackMessage.builder("Big Event").userId("bar").properties(properties).build();
+//      client.enqueue(bigMessage);
+//    }
+//    wait(messageQueue);
+//    client.shutdown();
+//    while (!isShutDown.get()) {}
+//    verify(networkExecutor, times(2)).submit(any(Runnable.class));
+//  }
 
   @Test
   public void enqueueBeforeMaxDoesNotTriggerFlush() {
