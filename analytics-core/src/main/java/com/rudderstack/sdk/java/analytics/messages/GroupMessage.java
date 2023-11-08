@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
  *
  * <p>Use {@link #builder} to construct your own instances.
  *
- * @see <a href="https://www.rudderstack.com/docs/sources/event-streams/sdks/rudderstack-java-sdk/#screen">Group</a>
+ * @see <a href="https://www.rudderstack.com/docs/sources/event-streams/sdks/rudderstack-java-sdk/#group">Group</a>
  */
 @AutoValue
 @AutoGson //
