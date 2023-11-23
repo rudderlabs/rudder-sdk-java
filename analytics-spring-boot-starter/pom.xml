@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>analytics-spring-boot-starter</artifactId>
-  <name>Spring Boot starter for Rudder Analytics for Java</name>
+  <name>Spring Boot starter for Rudderstack Analytics for Java</name>
 
   <properties />
 

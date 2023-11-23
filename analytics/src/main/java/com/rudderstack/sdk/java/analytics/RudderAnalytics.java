@@ -26,19 +26,17 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import javax.annotation.Nullable;
 
 /**
- * The entry point into the Rudder for Java library.
+ * The entry point into the Rudderstack for Java library.
  *
- * <p>The idea is simple: one pipeline for all your data. Rudder is the single hub to collect,
+ * <p>The idea is simple: one pipeline for all your data. Rudderstack is the single hub to collect,
  * translate and route your data with the flip of a switch.
  *
- * <p>Analytics for Java will automatically batch events and upload it periodically to Rudder's
- * servers for you. You only need to instrument Rudder once, then flip a switch to install new
+ * <p>Analytics for Java will automatically batch events and upload it periodically to Rudderstack's
+ * servers for you. You only need to instrument Rudderstack once, then flip a switch to install new
  * tools.
  *
  * <p>This class is the main entry point into the client API. Use {@link #builder} to construct your
  * own instances.
- *
- * @see <a href="https://Rudder/">Rudder</a>
  */
 public class RudderAnalytics {
   private final AnalyticsClient client;
@@ -60,13 +58,13 @@ public class RudderAnalytics {
   /**
    * Start building an {@link RudderAnalytics} instance.
    *
-   * @param writeKey Your project write key available on the Rudder dashboard.
+   * @param writeKey Your project write key available on the Rudderstack dashboard.
    */
   public static Builder builder(String writeKey) {
     return new Builder(writeKey);
   }
 
-  /** Enqueue the given message to be uploaded to Rudder's servers. */
+  /** Enqueue the given message to be uploaded to Rudderstack's servers. */
   public void enqueue(MessageBuilder builder) {
     Message message = buildMessage(builder);
     if (message == null) {

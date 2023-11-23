@@ -13,7 +13,7 @@ import java.util.Map;
  *
  * <p>Use {@link #builder} to construct your own instances.
  *
- * @see <a href="https://rudder.com/docs/spec/alias/">Alias</a>
+ * @see <a href="https://www.rudderstack.com/docs/sources/event-streams/sdks/rudderstack-java-sdk/#alias">Alias</a>
  */
 @AutoValue
 @AutoGson

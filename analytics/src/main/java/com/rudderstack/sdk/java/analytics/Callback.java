@@ -12,10 +12,10 @@ import com.rudderstack.sdk.java.analytics.messages.Message;
  */
 public interface Callback {
     /**
-     * Invoked when the message is successfully uploaded to Rudder.
+     * Invoked when the message is successfully uploaded to Rudderstack.
      *
-     * <p>Note: The Rudder HTTP API itself is asynchronous, so this doesn't indicate whether the
-     * message was sent to all integrations or not — just that the message was sent to the Rudder API
+     * <p>Note: The Rudderstack HTTP API itself is asynchronous, so this doesn't indicate whether the
+     * message was sent to all integrations or not — just that the message was sent to the Rudderstack API
      * and will be sent to integrations at a later time.
      */
     void success(Message message);
