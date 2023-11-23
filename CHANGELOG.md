@@ -45,7 +45,7 @@
 
 - [Fix](https://github.com/rudderlabs/rudder-sdk-java/pull/223) cli wasnt setting event fields
 - [Fix](https://github.com/rudderlabs/rudder-sdk-java/pull/222) e2e fix - traits was defined twice in command line opts
-- [Fix](https://github.com/rudderlabs/rudder-sdk-java/pull/221) Require either userId or anonymousId \(aligns with other Rudder SDK conventions\)
+- [Fix](https://github.com/rudderlabs/rudder-sdk-java/pull/221) Require either userId or anonymousId \(aligns with other Rudderstack SDK conventions\)
 
 - [Fix](https://github.com/rudderlabs/rudder-sdk-java/pull/117): This fix gracefully retries temporary HTTP errors such as 5xx server errors. Previously such HTTP errors were not being retried.
 
