@@ -59,7 +59,7 @@ jobs:
 #          add: '*.svg'
 
       - name: Upload coverage report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Coverage report
           path: |
@@ -71,7 +71,7 @@ jobs:
           mvn pmd:cpd
 
       - name: Upload PMD lint report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: PMD lint report
           path: |
@@ -82,7 +82,7 @@ jobs:
         run: mvn checkstyle:checkstyle
 
       - name: Upload Checklist lint report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Checklist lint report
           path: |
