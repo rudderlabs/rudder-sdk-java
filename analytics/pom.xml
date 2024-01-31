@@ -77,7 +77,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>templating-maven-plugin</artifactId>
-        <version>1.0.0</version>
+        <version>3.0.0</version>
         <executions>
           <execution>
             <goals>
@@ -89,6 +89,14 @@
           </execution>
         </executions>
       </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+                <source>19</source>
+                <target>19</target>
+            </configuration>
+        </plugin>
     </plugins>
   </build>
 </project>
