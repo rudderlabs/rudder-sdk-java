@@ -2,18 +2,20 @@ package com.rudderstack.sdk.java.analytics;
 
 import com.rudderstack.sdk.java.analytics.messages.*;
 import org.junit.Test;
+import org.mockito.Answers;
 
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 public class TypedTransformerTest {
   @Test
   public void messagesFanOutCorrectly() {
-    MessageTransformer.Typed transformer = mock(MessageTransformer.Typed.class);
+    MessageTransformer.Typed transformer = mock(MessageTransformer.Typed.class, Answers.CALLS_REAL_METHODS);
 
     AliasMessage.Builder alias = AliasMessage.builder("foo").userId("bar");
     transformer.transform(alias);
-    verify(transformer).alias(alias);
+    verify(transformer).alias(eq(alias));
 
     GroupMessage.Builder group = GroupMessage.builder("foo").userId("bar");
     transformer.transform(group);
