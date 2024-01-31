@@ -315,8 +315,8 @@ public class RudderAnalyticsBuilderTest {
 
   @Test
   public void buildsCorrectEndpointWithUploadURL() {
-    builder.setUploadURL("https://dummy.url/api/v1/rudder/").build();
-    String expectedURL = "https://dummy.url/api/v1/rudder/";
+    builder.setUploadURL("https://dummy.url/api/v1/rudderstack/").build();
+    String expectedURL = "https://dummy.url/api/v1/rudderstack/";
     assertEquals(expectedURL, builder.endpoint.toString());
   }
 
@@ -324,9 +324,9 @@ public class RudderAnalyticsBuilderTest {
   public void shouldPrioritizeUploadURLOverEndpoint() {
     builder
         .endpoint("this wont be set anyway")
-        .setUploadURL("https://dummy.url/api/v1/rudder/")
+        .setUploadURL("https://dummy.url/api/v1/rudderstack/")
         .build();
-    String expectedURL = "https://dummy.url/api/v1/rudder/";
+    String expectedURL = "https://dummy.url/api/v1/rudderstack/";
 
     assertEquals(expectedURL, builder.uploadURL.toString());
     assertNotEquals("this wont be set anyway", builder.endpoint.toString());

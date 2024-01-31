@@ -1,3 +1,7 @@
+# Version 3.1.0 (December 14, 2023)
+- [New](https://github.com/rudderlabs/rudder-sdk-java/pull/86) Update Java to the latest version
+- [New](https://github.com/rudderlabs/rudder-sdk-java/pull/83) Improve links in Rudderstack documentation
+
 # Version 3.0.0 (January 9, 2023)
 - [New](https://github.com/rudderlabs/rudder-sdk-java/pull/43) Add CI feature
 - [New](https://github.com/rudderlabs/rudder-sdk-java/pull/41) Add support for channel object in individual payload
@@ -45,7 +49,7 @@
 
 - [Fix](https://github.com/rudderlabs/rudder-sdk-java/pull/223) cli wasnt setting event fields
 - [Fix](https://github.com/rudderlabs/rudder-sdk-java/pull/222) e2e fix - traits was defined twice in command line opts
-- [Fix](https://github.com/rudderlabs/rudder-sdk-java/pull/221) Require either userId or anonymousId \(aligns with other Rudder SDK conventions\)
+- [Fix](https://github.com/rudderlabs/rudder-sdk-java/pull/221) Require either userId or anonymousId \(aligns with other Rudderstack SDK conventions\)
 
 - [Fix](https://github.com/rudderlabs/rudder-sdk-java/pull/117): This fix gracefully retries temporary HTTP errors such as 5xx server errors. Previously such HTTP errors were not being retried.
 

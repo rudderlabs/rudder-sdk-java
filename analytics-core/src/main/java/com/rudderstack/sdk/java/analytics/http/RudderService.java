@@ -9,7 +9,7 @@ import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Url;
 
-/** REST interface for the Rudder API. */
+/** REST interface for the Rudderstack API. */
 public interface RudderService {
   @POST
   @Headers(value = {"Content-Type:application/json"})
