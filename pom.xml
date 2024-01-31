@@ -56,7 +56,11 @@
         <!-- Test Dependencies -->
         <junit.version>4.13.2</junit.version>
         <burst.version>1.2.0</burst.version>
+<<<<<<< Updated upstream
         <mockito.version>4.11.0</mockito.version>
+=======
+        <mockito.version>5.10.0</mockito.version>
+>>>>>>> Stashed changes
         <assertj.version>3.24.2</assertj.version>
 
         <!-- SonarQube -->
