@@ -33,7 +33,6 @@
         <module>analytics-core</module>
         <module>analytics</module>
         <module>analytics-sample</module>
-<!--        <module>analytics-cli</module>-->
         <!--    <module>analytics-spring-boot-starter</module>-->
     </modules>
 
@@ -75,9 +74,6 @@
         <sonar.links.scm>https://github.com/rudderlabs/rudder-sdk-java</sonar.links.scm>
         <sonar.links.issue>https://github.com/rudderlabs/rudder-sdk-java/issues</sonar.links.issue>
         <!--suppress UnresolvedMavenProperty -->
-        <sonar.coverage.jacoco.xmlReportPaths>
-            ${maven.multiModuleProjectDirectory}/analytics-cli/target/site/jacoco-aggregate/jacoco.xml
-        </sonar.coverage.jacoco.xmlReportPaths>
         <sonar.junit.reportPaths>target/surefire-reports</sonar.junit.reportPaths>
         <!--Path to sources-->
         <!--    <sonar.sources>src/main</sonar.sources>-->
