@@ -70,6 +70,7 @@
         <sonar.organization>rudderlabs</sonar.organization>
         <sonar.projectName>rudder-sdk-java</sonar.projectName>
         <sonar.projectVersion>${revision}</sonar.projectVersion>
+        <sonar.java.source>11</sonar.java.source>
         <!--Meta-data for the project-->
         <sonar.links.scm>https://github.com/rudderlabs/rudder-sdk-java</sonar.links.scm>
         <sonar.links.issue>https://github.com/rudderlabs/rudder-sdk-java/issues</sonar.links.issue>
