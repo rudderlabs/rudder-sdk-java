@@ -345,14 +345,6 @@
                     </checkModificationExcludes>
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>-->
                 </configuration>
-<!--                <dependencies>-->
-<!--                    <dependency>-->
-<!--                        <groupId>com.thoughtworks.xstream</groupId>-->
-<!--                        <artifactId>xstream</artifactId>-->
-<!--                        <version>1.4.15-->
-<!--                        </version> &lt;!&ndash; apparently this needs to be exactly this version &ndash;&gt;-->
-<!--                    </dependency>-->
-<!--                </dependencies>-->
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
