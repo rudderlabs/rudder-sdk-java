@@ -6,7 +6,7 @@
   <parent>
     <artifactId>analytics-parent</artifactId>
     <groupId>com.rudderstack.sdk.java.analytics</groupId>
-    <version>${revision}</version>
+    <version>3.1.2</version>
   </parent>
 
   <artifactId>analytics-sample</artifactId>
