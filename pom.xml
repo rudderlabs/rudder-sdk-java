@@ -33,12 +33,12 @@
         <module>analytics-core</module>
         <module>analytics</module>
         <module>analytics-sample</module>
-        <module>analytics-cli</module>
+<!--        <module>analytics-cli</module>-->
         <!--    <module>analytics-spring-boot-starter</module>-->
     </modules>
 
     <properties>
-        <revision>3.1.0</revision>
+        <revision>3.1.1</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>20</java.version>
         <kotlin.version>1.7.20</kotlin.version>
@@ -345,14 +345,14 @@
                     </checkModificationExcludes>
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>-->
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.thoughtworks.xstream</groupId>
-                        <artifactId>xstream</artifactId>
-                        <version>1.4.15
-                        </version> <!-- apparently this needs to be exactly this version -->
-                    </dependency>
-                </dependencies>
+<!--                <dependencies>-->
+<!--                    <dependency>-->
+<!--                        <groupId>com.thoughtworks.xstream</groupId>-->
+<!--                        <artifactId>xstream</artifactId>-->
+<!--                        <version>1.4.15-->
+<!--                        </version> &lt;!&ndash; apparently this needs to be exactly this version &ndash;&gt;-->
+<!--                    </dependency>-->
+<!--                </dependencies>-->
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
