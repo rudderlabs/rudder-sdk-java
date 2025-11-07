@@ -64,7 +64,7 @@ jobs:
 #          add: '*.svg'
 
       - name: Upload coverage report
-        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5 # v3.2.1
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           name: Coverage report
           path: |
@@ -76,7 +76,7 @@ jobs:
           mvn pmd:cpd
 
       - name: Upload PMD lint report
-        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5 # v3.2.1
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           name: PMD lint report
           path: |
@@ -87,7 +87,7 @@ jobs:
         run: mvn checkstyle:checkstyle
 
       - name: Upload Checklist lint report
-        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5 # v3.2.1
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           name: Checklist lint report
           path: |
