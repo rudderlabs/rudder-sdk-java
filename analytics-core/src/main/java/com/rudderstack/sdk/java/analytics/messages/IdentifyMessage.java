@@ -13,72 +13,76 @@ import javax.annotation.Nullable;
  *
  * <p>Use {@link #builder} to construct your own instances.
  *
- * @see <a href="https://rudder.com/docs/spec/identify/">Identify</a>
+ * @see <a href="https://www.rudderstack.com/docs/sources/event-streams/sdks/rudderstack-java-sdk/#identify">Identify</a>
  */
 @AutoValue
-@AutoGson //
+@AutoGson
 public abstract class IdentifyMessage implements Message {
 
-  /** Start building an {@link IdentifyMessage} instance. */
-  public static Builder builder() {
-    return new Builder();
-  }
-
-  @Nullable
-  public abstract Map<String, ?> traits();
-
-  public Builder toBuilder() {
-    return new Builder(this);
-  }
-
-  /** Fluent API for creating {@link IdentifyMessage} instances. */
-  public static class Builder extends MessageBuilder<IdentifyMessage, Builder> {
-    private Map<String, ?> traits;
-
-    private Builder(IdentifyMessage identify) {
-      super(identify);
-      traits = identify.traits();
+    /**
+     * Start building an {@link IdentifyMessage} instance.
+     */
+    public static Builder builder() {
+        return new Builder();
     }
 
-    private Builder() {
-      super(Type.identify);
+    @Nullable
+    public abstract Map<String, ?> traits();
+
+    public Builder toBuilder() {
+        return new Builder(this);
     }
 
     /**
-     * Set a map of information of the user, like email or name.
-     *
-     * @see <a href="https://rudder.com/docs/spec/identify/#traits">Traits</a>
+     * Fluent API for creating {@link IdentifyMessage} instances.
      */
-    public Builder traits(Map<String, ?> traits) {
-      if (traits == null) {
-        throw new NullPointerException("Null traits");
-      }
-      this.traits = ImmutableMap.copyOf(traits);
-      return this;
-    }
+    public static class Builder extends MessageBuilder<IdentifyMessage, Builder> {
+        private Map<String, ?> traits;
 
-    @Override
-    protected IdentifyMessage realBuild(
-        Type type,
-        String messageId,
-        Date sentAt,
-        String channel,
-        Date timestamp,
-        Map<String, ?> context,
-        String anonymousId,
-        String userId,
-        Map<String, Object> integrations) {
-      if (userId == null && traits == null) {
-        throw new IllegalStateException("Either userId or traits must be provided.");
-      }
+        private Builder(IdentifyMessage identify) {
+            super(identify);
+            traits = identify.traits();
+        }
 
-      return new AutoValue_IdentifyMessage(
-          type, messageId, sentAt, channel, timestamp, context, anonymousId, userId, integrations, traits);
-    }
+        private Builder() {
+            super(Type.identify);
+        }
 
-    @Override
-    Builder self() {
-      return this;
+        /**
+         * Set a map of information of the user, like email or name.
+         *
+         * @see <a href="https://www.rudderstack.com/docs/event-spec/standard-events/identify/#identify-traits">Traits</a>
+         */
+        public Builder traits(Map<String, ?> traits) {
+            if (traits == null) {
+                throw new NullPointerException("Null traits");
+            }
+            this.traits = ImmutableMap.copyOf(traits);
+            return this;
+        }
+
+        @Override
+        protected IdentifyMessage realBuild(
+                Type type,
+                String messageId,
+                Date sentAt,
+                String channel,
+                Date timestamp,
+                Map<String, ?> context,
+                String anonymousId,
+                String userId,
+                Map<String, Object> integrations) {
+            if (userId == null && traits == null) {
+                throw new IllegalStateException("Either userId or traits must be provided.");
+            }
+
+            return new AutoValue_IdentifyMessage(
+                    type, messageId, sentAt, channel, timestamp, context, anonymousId, userId, integrations, traits);
+        }
+
+        @Override
+        Builder self() {
+            return this;
+        }
     }
-  }
 }

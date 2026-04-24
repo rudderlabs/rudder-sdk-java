@@ -16,9 +16,9 @@ public class Main {
     // in case there's a chance of registered parties count going beyond
     // 65563, opt for TierBlocking flush instead.
 
-//    final TierBlockingFlush blockingFlush = TierBlockingFlush.create();
+    //final TierBlockingFlush blockingFlush = TierBlockingFlush.create();
 
-    // https://rudder.com/rudder-engineering/sources/test-java/debugger
+    //https://www.rudderstack.com/docs/sources/event-streams/sdks/rudderstack-java-sdk/#initializing-the-rudderstack-client
     final RudderAnalytics analytics =
             RudderAnalytics.builder("write_key")
                     .setDataPlaneUrl("data_plane_url")
@@ -51,8 +51,8 @@ public class Main {
 
 
   /**
-   * By default, the analytics client uses an HTTP client with sane defaults. However you can
-   * customize the client to your needs. For instance, this client is configured to automatically
+   * By default, the analytics client uses an HTTP client with sane defaults.
+   * However, you can customize the client to your needs. For instance, this client is configured to automatically
    * gzip outgoing requests.
    */
   private static OkHttpClient createClient() {
