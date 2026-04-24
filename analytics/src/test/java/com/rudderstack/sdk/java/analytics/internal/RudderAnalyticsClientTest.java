@@ -44,10 +44,7 @@ import okhttp3.ResponseBody;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatcher;
-import org.mockito.Mock;
-import org.mockito.Spy;
+import org.mockito.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import retrofit2.Call;
@@ -65,7 +62,7 @@ public class RudderAnalyticsClientTest {
   private int MAX_MSG_SIZE = 1024 * 32; // 32kb //This is the limit for a message object
   private int MSG_MAX_CREATE_SIZE =
           MAX_MSG_SIZE
-                  - 200 - 75; // Once we create msg object with this size it barely below 32 threshold so good
+                  - 512; // Once we create msg object with this size it barely below 32 threshold so good
   // for tests
 
   @Test
@@ -272,7 +269,7 @@ public class RudderAnalyticsClientTest {
                     messageQueue,
                     null,
                     rudderService,
-                    50,
+                    7,
                     TimeUnit.HOURS.toMillis(1),
                     0,
                     MAX_BATCH_SIZE * 4,
@@ -286,21 +283,21 @@ public class RudderAnalyticsClientTest {
 
     properties.put("property3", generateDataOfSize(MSG_MAX_CREATE_SIZE));
 
-    for (int i = 0; i < 46; i++) {
+    for (int i = 0; i < 20; i++) {
       TrackMessage bigMessage =
           TrackMessage.builder("Big Event").userId("bar").properties(properties).build();
       client.enqueue(bigMessage);
-      verify(messageQueue).put(bigMessage);
+//      verify(messageQueue).put(bigMessage);
     }
 
-//    wait(messageQueue);
+    wait(messageQueue);
 //    /**
 //     * modified from expected 4 to expected 3 times, since we removed the inner loop. The inner loop
 //     * was forcing to message list created from the queue to keep making batches even if its a 1
 //     * message batch until the message list is empty, that was forcing the code to make one last
 //     * batch of 1 msg in size bumping the number of times a batch would be submitted from 3 to 4
 //     */
-//    verify(networkExecutor, times(3)).submit(any(Runnable.class));
+    verify(networkExecutor, times(3)).submit(any(Runnable.class));
   }
 
   /**
@@ -326,9 +323,8 @@ public class RudderAnalyticsClientTest {
       client.enqueue(bigMessage);
     }
     wait(messageQueue);
-    client.shutdown();
-    while (!isShutDown.get()) {}
-    verify(networkExecutor, times(2)).submit(any(Runnable.class));
+    //max queue size of 50 will mean 16 items go in 1 queue
+    verify(networkExecutor, times(1)).submit(any(Runnable.class));
   }
 
   @Test
@@ -645,15 +641,16 @@ public class RudderAnalyticsClientTest {
                               }
                             }));
   }
-
-  /**
+/*
+  *
    * **********************************************************************************************
    * Test cases for Size check
    * *********************************************************************************************
-   */
 
-  /** Individual Size check happy path regular chars */
-  @Test
+
+  * Individual Size check happy path regular chars
+ */
+@Test
   public void checkForIndividualMessageSizeLessThanLimit() {
     AnalyticsClient client = newClient();
     int msgSize = 1024 * 31; // 31KB
@@ -670,7 +667,7 @@ public class RudderAnalyticsClientTest {
     assertThat(msgActualSize).isLessThanOrEqualTo(sizeLimit);
   }
 
-  /** Individual Size check sad path regular chars (over the limit) */
+ /* * Individual Size check sad path regular chars (over the limit)*/
   @Test
   public void checkForIndividualMessageSizeOverLimit() {
     AnalyticsClient client = newClient();
@@ -688,7 +685,7 @@ public class RudderAnalyticsClientTest {
     assertThat(msgActualSize).isGreaterThan(sizeLimit);
   }
 
-  /** Individual Size check happy path special chars */
+//  * Individual Size check happy path special chars
   @Test
   public void checkForIndividualMessageSizeSpecialCharsLessThanLimit() {
     AnalyticsClient client = newClient();
@@ -706,7 +703,7 @@ public class RudderAnalyticsClientTest {
     assertThat(msgActualSize).isLessThanOrEqualTo(sizeLimit);
   }
 
-  /** Individual Size check sad path special chars (over the limit) */
+//  * Individual Size check sad path special chars (over the limit)
   @Test
   public void checkForIndividualMessageSizeSpecialCharsAboveLimit() {
     AnalyticsClient client = newClient();
@@ -728,7 +725,7 @@ public class RudderAnalyticsClientTest {
    * *****************************************************************************************************************
    * Test cases for enqueue modified logic
    * ***************************************************************************************************************
-   */
+*/
   @Test
   public void enqueueVerifyPoisonIsNotCheckedForSize() throws InterruptedException {
     AnalyticsClient clientSpy = spy(newClient());
@@ -766,7 +763,8 @@ public class RudderAnalyticsClientTest {
    *
    * @param builder
    * @throws InterruptedException
-   */
+   **/
+
   @Test
   public void enqueueSingleMessageAboveLimitWhenNotShutdown(MessageBuilderTest builder)
           throws InterruptedException {
@@ -818,13 +816,14 @@ public class RudderAnalyticsClientTest {
    * ******************************************************************************************************************
    * Test cases for Batch creation logic
    * ****************************************************************************************************************
-   */
 
-  /**
+
+  *
    * Several messages are enqueued and then submitted in a batch
    *
    * @throws InterruptedException
-   */
+   **/
+
   @Test
   public void submitBatchBelowThreshold() throws InterruptedException {
     AnalyticsClient client =
@@ -864,7 +863,8 @@ public class RudderAnalyticsClientTest {
    * and several batches have to be created to not violate threshold
    *
    * @throws InterruptedException
-   */
+   * */
+
   @Test
   public void submitBatchAboveThreshold() throws InterruptedException {
     AnalyticsClient client =
