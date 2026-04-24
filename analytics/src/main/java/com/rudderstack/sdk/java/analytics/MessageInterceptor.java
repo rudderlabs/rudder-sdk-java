@@ -27,15 +27,22 @@ public interface MessageInterceptor {
         public final Message intercept(Message message) {
             // todo: non final so messages can be filtered without duplicating logic?
             Message.Type type = message.type();
-            return switch (type) {
-                case alias -> alias((AliasMessage) message);
-                case group -> group((GroupMessage) message);
-                case identify -> identify((IdentifyMessage) message);
-                case screen -> screen((ScreenMessage) message);
-                case page -> page((PageMessage) message);
-                case track -> track((TrackMessage) message);
-                default -> throw new IllegalArgumentException("Unknown payload type: " + type);
-            };
+            switch (type) {
+                case alias:
+                    return alias((AliasMessage) message);
+                case group:
+                    return group((GroupMessage) message);
+                case identify:
+                    return identify((IdentifyMessage) message);
+                case screen:
+                    return screen((ScreenMessage) message);
+                case page:
+                    return page((PageMessage) message);
+                case track:
+                    return track((TrackMessage) message);
+                default:
+                    throw new IllegalArgumentException("Unknown payload type: " + type);
+            }
         }
 
         /** Called for every {@link AliasMessage}. */

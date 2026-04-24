@@ -1,4 +1,5 @@
 [![Build & Code Quality Checks](https://github.com/rudderlabs/rudder-sdk-java/actions/workflows/build-and-quality-checks.yml/badge.svg?branch=ci%2FaddCIFeatures)](https://github.com/rudderlabs/rudder-sdk-java/actions/workflows/build-and-quality-checks.yml)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/rudderlabs/rudder-sdk-java)
 
 # What is RudderStack?
 
@@ -22,7 +23,7 @@ click [here](https://www.rudderstack.com/docs/sources/event-streams/sdks/rudders
 <dependency>
     <groupId>com.rudderstack.sdk.java.analytics</groupId>
     <artifactId>analytics</artifactId>
-    <version>3.1.0</version>
+    <version>x.y.z</version>
 </dependency>
 
 ```
@@ -30,7 +31,7 @@ click [here](https://www.rudderstack.com/docs/sources/event-streams/sdks/rudders
 *or if you're using Gradle:*
 
 ```bash
-implementation 'com.rudderstack.sdk.java.analytics:analytics:3.1.0'
+implementation 'com.rudderstack.sdk.java.analytics:analytics:x.y.z'
 ```
 
 ## Initializing ```RudderClient```
