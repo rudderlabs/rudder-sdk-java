@@ -1,3 +1,10 @@
+# Version 3.1.2 (August 1, 2024)
+- [New](https://github.com/rudderlabs/rudder-sdk-java/pull/113) Release all Java modules with version 3.1.2
+
+# Version 3.1.0 (December 14, 2023)
+- [New](https://github.com/rudderlabs/rudder-sdk-java/pull/86) Update Java to the latest version
+- [New](https://github.com/rudderlabs/rudder-sdk-java/pull/83) Improve links in Rudderstack documentation
+
 # Version 3.0.0 (January 9, 2023)
 - [New](https://github.com/rudderlabs/rudder-sdk-java/pull/43) Add CI feature
 - [New](https://github.com/rudderlabs/rudder-sdk-java/pull/41) Add support for channel object in individual payload

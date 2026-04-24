@@ -2,6 +2,7 @@ package com.rudderstack.sdk.java.analytics;
 
 import com.rudderstack.sdk.java.analytics.messages.*;
 import org.junit.Test;
+import org.mockito.Answers;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -9,7 +10,7 @@ import static org.mockito.Mockito.verify;
 public class TypedInterceptorTest {
   @Test
   public void messagesFanOutCorrectly() {
-    MessageInterceptor.Typed interceptor = mock(MessageInterceptor.Typed.class);
+    MessageInterceptor.Typed interceptor = mock(MessageInterceptor.Typed.class, Answers.CALLS_REAL_METHODS);
 
     AliasMessage alias = AliasMessage.builder("foo").userId("bar").build();
     interceptor.intercept(alias);
