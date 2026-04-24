@@ -337,7 +337,6 @@
                     <!--<autoVersionSubmodules>true</autoVersionSubmodules>
                     <checkModificationExcludes>
                         <checkModificationExclude>pom.xml</checkModificationExclude>
-                        <checkModificationExclude>.buildscript/settings.xml</checkModificationExclude>
                     </checkModificationExcludes>
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>-->
                 </configuration>
