@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.timeout;
@@ -28,6 +29,9 @@ import com.segment.backo.Backo;
 import com.squareup.burst.BurstJUnit4;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -45,6 +49,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;
+import org.mockito.InOrder;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import retrofit2.Call;
@@ -420,6 +425,34 @@ public class RudderAnalyticsClientTest {
   }
 
   @Test
+  public void parsesRetryAfterSecondsAndCapsLargeValues() {
+    assertThat(BatchUploadTask.parseRetryAfterMillis("2", 0)).isEqualTo(2000);
+    assertThat(BatchUploadTask.parseRetryAfterMillis("9999", 0))
+        .isEqualTo(TimeUnit.MINUTES.toMillis(5));
+  }
+
+  @Test
+  public void parsesRetryAfterHttpDate() {
+    long now = Instant.parse("2026-08-17T10:00:00Z").toEpochMilli();
+    String retryAfter =
+        DateTimeFormatter.RFC_1123_DATE_TIME
+            .format(Instant.ofEpochMilli(now + 3000).atZone(ZoneOffset.UTC));
+
+    assertThat(BatchUploadTask.parseRetryAfterMillis(retryAfter, now)).isEqualTo(3000);
+  }
+
+  @Test
+  public void ignoresInvalidOrExpiredRetryAfterValues() {
+    long now = Instant.parse("2026-08-17T10:00:00Z").toEpochMilli();
+    String expired =
+        DateTimeFormatter.RFC_1123_DATE_TIME
+            .format(Instant.ofEpochMilli(now - 1000).atZone(ZoneOffset.UTC));
+
+    assertThat(BatchUploadTask.parseRetryAfterMillis("invalid", now)).isZero();
+    assertThat(BatchUploadTask.parseRetryAfterMillis(expired, now)).isZero();
+  }
+
+  @Test
   public void batchDoesNotRetryForNon5xxAndNon429HTTPErrors() {
     AnalyticsClient client = newClient();
     TrackMessage trackMessage = TrackMessage.builder("foo").userId("bar").build();
@@ -607,6 +640,10 @@ public class RudderAnalyticsClientTest {
     verify(networkExecutor).shutdown();
     verify(networkExecutor).awaitTermination(1, TimeUnit.SECONDS);
     verify(networkExecutor).submit(any(AnalyticsClient.BatchUploadTask.class));
+
+    InOrder shutdownOrder = inOrder(networkExecutor);
+    shutdownOrder.verify(networkExecutor).submit(any(AnalyticsClient.BatchUploadTask.class));
+    shutdownOrder.verify(networkExecutor).shutdown();
   }
 
   @Test
