@@ -100,8 +100,14 @@ jobs:
             analytics-core/target/site
             analytics/target/site
 
+      - name: Set up JDK 21 for Sonar analysis
+        uses: actions/setup-java@17f84c3641ba7b8f6deff6309fc4c864478f5d62 # v3.14.1
+        with:
+          java-version: 21
+          distribution: 'zulu'
+
       - name: Sonar analysis
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=rudderlabs_rudder-sdk-java
+        run: mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=rudderlabs_rudder-sdk-java
