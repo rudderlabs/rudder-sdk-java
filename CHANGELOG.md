@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.1.4](https://github.com/rudderlabs/rudder-sdk-java/compare/v3.1.3...v3.1.4) (2026-08-20)
+
+
+### Bug Fixes
+
+* sdk-4992 migrate maven publishing to central portal ([5f93b62](https://github.com/rudderlabs/rudder-sdk-java/commit/5f93b627d3944fb50f44173d0766f9ee5d63c3fb))
+* sdk-4992 migrate maven publishing to central portal ([405a1dc](https://github.com/rudderlabs/rudder-sdk-java/commit/405a1dc2ca20218a460e7c549b099de98e33fd87))
+
 ## [3.1.3](https://github.com/rudderlabs/rudder-sdk-java/compare/v3.1.2...v3.1.3) (2026-07-17)
 
 
