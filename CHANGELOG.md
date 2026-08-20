@@ -1,11 +1,38 @@
-# Version 3.1.2 (August 1, 2024)
+# Changelog
+
+## [3.1.4](https://github.com/rudderlabs/rudder-sdk-java/compare/v3.1.3...v3.1.4) (2026-08-20)
+
+
+### Bug Fixes
+
+* sdk-4992 migrate maven publishing to central portal ([405a1dc](https://github.com/rudderlabs/rudder-sdk-java/commit/405a1dc2ca20218a460e7c549b099de98e33fd87))
+
+## [3.1.3](https://github.com/rudderlabs/rudder-sdk-java/compare/v3.1.2...v3.1.3) (2026-07-17)
+
+
+### Miscellaneous
+
+* add DeepWiki badge to README.md ([#134](https://github.com/rudderlabs/rudder-sdk-java/issues/134)) ([3b11c8c](https://github.com/rudderlabs/rudder-sdk-java/commit/3b11c8cfe3e1f9c9df739fdd89d95ea204963024))
+* apply security best practices from step security ([d505ac2](https://github.com/rudderlabs/rudder-sdk-java/commit/d505ac2e98a06c34d6e5d24dfa28d9d7ccf022af))
+* apply security best practices from step security ([#133](https://github.com/rudderlabs/rudder-sdk-java/issues/133)) ([ed57028](https://github.com/rudderlabs/rudder-sdk-java/commit/ed57028d20f9f68135a4bfde8290dfe45b385071))
+* pull develop into master ([1400272](https://github.com/rudderlabs/rudder-sdk-java/commit/14002722dc6b96732d56a72e63bb4c83c9e0499a))
+* remove dead build scripts containing supply-chain vulnerability ([#137](https://github.com/rudderlabs/rudder-sdk-java/issues/137)) ([1be0a0f](https://github.com/rudderlabs/rudder-sdk-java/commit/1be0a0f44a72ffacb9963e4b9c6031b38c9a22dc))
+* sdk-4992 migrate java sdk to release-please ([47ffdfe](https://github.com/rudderlabs/rudder-sdk-java/commit/47ffdfe24a122b51276bd44ebc5570dbb31cba6e))
+* sdk-4992 migrate java sdk to release-please ([42e690b](https://github.com/rudderlabs/rudder-sdk-java/commit/42e690bf465bc8f62167da0c0eba74e77b983d79))
+* **vuln:** pin and bump action refs (SEC-171) ([#135](https://github.com/rudderlabs/rudder-sdk-java/issues/135)) ([179e53a](https://github.com/rudderlabs/rudder-sdk-java/commit/179e53ae945ccc898c716d99d402125bf3b08fa1))
+* **vuln:** scope workflow permissions to least privilege (SEC-167) ([5ca7fb6](https://github.com/rudderlabs/rudder-sdk-java/commit/5ca7fb6ab078feed3041e16c6864fdf63adee344))
+* **vuln:** scope workflow permissions to least privilege (SEC-167) ([a956034](https://github.com/rudderlabs/rudder-sdk-java/commit/a95603459eb29d072a7fde3d7e0ed9fd85fe4685))
+* **vuln:** zizmor --fix=all findings (SEC-199) ([b240026](https://github.com/rudderlabs/rudder-sdk-java/commit/b240026bda4d3691313aa68b0fa26651bdad0ee8))
+* **vuln:** zizmor --fix=all findings (SEC-199) ([db44a71](https://github.com/rudderlabs/rudder-sdk-java/commit/db44a714e77c352905557e00431677f4cc59b9c3))
+
+## Version 3.1.2 (August 1, 2024)
 - [New](https://github.com/rudderlabs/rudder-sdk-java/pull/113) Release all Java modules with version 3.1.2
 
-# Version 3.1.0 (December 14, 2023)
+## Version 3.1.0 (December 14, 2023)
 - [New](https://github.com/rudderlabs/rudder-sdk-java/pull/86) Update Java to the latest version
 - [New](https://github.com/rudderlabs/rudder-sdk-java/pull/83) Improve links in Rudderstack documentation
 
-# Version 3.0.0 (January 9, 2023)
+## Version 3.0.0 (January 9, 2023)
 - [New](https://github.com/rudderlabs/rudder-sdk-java/pull/43) Add CI feature
 - [New](https://github.com/rudderlabs/rudder-sdk-java/pull/41) Add support for channel object in individual payload
 - [New](https://github.com/rudderlabs/rudder-sdk-java/pull/38) Add library info into the context object at each individual message
@@ -23,10 +50,10 @@
 - [Fix](https://github.com/rudderlabs/rudder-sdk-java/pull/38) Bugfix for TLS version error (protocol not supported error)
 - [Fix](https://github.com/rudderlabs/rudder-sdk-java/pull/38) AnalyticsClient Looper won't start if isShutdown is true
 
-# Version 2.0.2 (September 26, 2022)
+## Version 2.0.2 (September 26, 2022)
 
 - [Fix] Removed "v1/import" endpoint
-# Version 2.0.0 (December 8, 2021)
+## Version 2.0.0 (December 8, 2021)
 
 - [Fix] Set the default retries to 3
 - [Chore] Dependency upgrades
