@@ -34,7 +34,7 @@ jobs:
           maven-version: 3.8.6
 
       - name: Cache local Maven repository
-        uses: actions/cache@6f8efc29b200d32929f49075959781ed54ec270c # v3.5.0
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -42,7 +42,7 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Cache SonarCloud packages
-        uses: actions/cache@6f8efc29b200d32929f49075959781ed54ec270c # v3.5.0
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
@@ -72,7 +72,7 @@ jobs:
 #          add: '*.svg'
 
       - name: Upload coverage report
-        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5 # v3.2.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: Coverage report
           path: |
@@ -84,7 +84,7 @@ jobs:
           mvn pmd:cpd
 
       - name: Upload PMD lint report
-        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5 # v3.2.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: PMD lint report
           path: |
@@ -95,7 +95,7 @@ jobs:
         run: mvn checkstyle:checkstyle
 
       - name: Upload Checklist lint report
-        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5 # v3.2.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: Checklist lint report
           path: |
