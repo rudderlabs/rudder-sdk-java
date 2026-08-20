@@ -17,6 +17,9 @@ import com.segment.backo.Backo;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -26,6 +29,7 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
@@ -42,6 +46,7 @@ public class AnalyticsClient {
   private static final int MSG_MAX_SIZE = 1024 * 32;
   private static final Charset ENCODING = StandardCharsets.UTF_8;
   private static Gson gsonInstance;
+  private static final int LOOPER_COMPLETION_TIMEOUT_SECONDS = 5;
 
   static {
     Map<String, String> library = new LinkedHashMap<>();
@@ -65,6 +70,7 @@ public class AnalyticsClient {
   private final ExecutorService looperExecutor;
   private final ScheduledExecutorService flushScheduler;
   private final AtomicBoolean isShutDown;
+  private volatile Future<?> looperFuture;
 
   public static AnalyticsClient create(
       HttpUrl uploadUrl,
@@ -120,7 +126,7 @@ public class AnalyticsClient {
 
     this.currentQueueSizeInBytes = 0;
 
-    if (!isShutDown.get()) looperExecutor.submit(new Looper());
+    if (!isShutDown.get()) looperFuture = looperExecutor.submit(new Looper());
 
     flushScheduler = Executors.newScheduledThreadPool(1, threadFactory);
     flushScheduler.scheduleAtFixedRate(
@@ -225,11 +231,27 @@ public class AnalyticsClient {
       // we can shutdown the flush scheduler without worrying
       flushScheduler.shutdownNow();
 
+      waitForLooperCompletion();
       shutdownAndWait(looperExecutor, "looper");
       shutdownAndWait(networkExecutor, "network");
 
       log.print(
           VERBOSE, "Analytics client shut down in %s ms", (System.currentTimeMillis() - start));
+    }
+  }
+
+  private void waitForLooperCompletion() {
+    if (looperFuture == null) return;
+
+    try {
+      looperFuture.get(LOOPER_COMPLETION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+    } catch (InterruptedException exception) {
+      log.print(ERROR, exception, "Interrupted while waiting for looper to complete.");
+      Thread.currentThread().interrupt();
+      if (!looperFuture.isDone()) looperFuture.cancel(true);
+    } catch (Exception exception) {
+      log.print(ERROR, exception, "Error waiting for looper to complete.");
+      if (!looperFuture.isDone()) looperFuture.cancel(true);
     }
   }
 
@@ -329,6 +351,7 @@ public class AnalyticsClient {
   }
 
   static class BatchUploadTask implements Runnable {
+    private static final long MAX_RETRY_AFTER_MILLIS = TimeUnit.MINUTES.toMillis(5);
     private static final Backo BACKO =
         Backo.builder() //
             .base(TimeUnit.SECONDS, 15) //
@@ -340,6 +363,7 @@ public class AnalyticsClient {
     private final Backo backo;
     final Batch batch;
     private final int maxRetries;
+    private long retryAfterMillis;
 
     static BatchUploadTask create(AnalyticsClient client, Batch batch, int maxRetries) {
       return new BatchUploadTask(client, BACKO, batch, maxRetries);
@@ -362,6 +386,7 @@ public class AnalyticsClient {
 
     /** Returns {@code true} to indicate a batch should be retried. {@code false} otherwise. */
     boolean upload() {
+      retryAfterMillis = 0;
       client.log.print(VERBOSE, "Uploading batch %s.", batch.sequence());
 
       try {
@@ -382,10 +407,16 @@ public class AnalyticsClient {
 
         int status = response.code();
         if (is5xx(status)) {
+          retryAfterMillis =
+              parseRetryAfterMillis(
+                  response.headers().get("Retry-After"), System.currentTimeMillis());
           client.log.print(
               DEBUG, "Could not upload batch %s due to server error. Retrying.", batch.sequence());
           return true;
         } else if (status == 429) {
+          retryAfterMillis =
+              parseRetryAfterMillis(
+                  response.headers().get("Retry-After"), System.currentTimeMillis());
           client.log.print(
               DEBUG, "Could not upload batch %s due to rate limiting. Retrying.", batch.sequence());
           return true;
@@ -416,7 +447,11 @@ public class AnalyticsClient {
         boolean retry = upload();
         if (!retry) return;
         try {
-          backo.sleep(attempt);
+          if (retryAfterMillis > 0) {
+            Thread.sleep(retryAfterMillis);
+          } else {
+            backo.sleep(attempt);
+          }
         } catch (InterruptedException e) {
           client.log.print(
               DEBUG, "Thread interrupted while backing off for batch %s.", batch.sequence());
@@ -431,6 +466,26 @@ public class AnalyticsClient {
 
     private static boolean is5xx(int status) {
       return status >= 500 && status < 600;
+    }
+
+    static long parseRetryAfterMillis(String value, long nowMillis) {
+      if (value == null || value.trim().isEmpty()) return 0;
+
+      try {
+        long seconds = Long.parseLong(value.trim());
+        if (seconds <= 0) return 0;
+        return Math.min(TimeUnit.SECONDS.toMillis(seconds), MAX_RETRY_AFTER_MILLIS);
+      } catch (NumberFormatException ignored) {
+        try {
+          long retryAtMillis =
+              ZonedDateTime.parse(value.trim(), DateTimeFormatter.RFC_1123_DATE_TIME)
+                  .toInstant()
+                  .toEpochMilli();
+          return Math.min(Math.max(retryAtMillis - nowMillis, 0), MAX_RETRY_AFTER_MILLIS);
+        } catch (DateTimeParseException invalidDate) {
+          return 0;
+        }
+      }
     }
   }
 
