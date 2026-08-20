@@ -53,6 +53,11 @@ jobs:
       - name: Unit Test and Build
         run: mvn clean install
 
+      - name: Verify published POMs
+        run: |
+          version="$(mvn --batch-mode --quiet --no-transfer-progress help:evaluate -Dexpression=revision -DforceStdout)"
+          scripts/verify-published-poms.sh "$version"
+
 #      - name: Jacoco Badge generator
 #        uses: cicirello/jacoco-badge-generator@v2
 #        with:

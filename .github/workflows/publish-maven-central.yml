@@ -1,0 +1,219 @@
+name: Publish to Maven Central
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: maven-central-${{ github.event.release.tag_name }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Build, sign, publish, and verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    environment: maven-central
+    outputs:
+      version: ${{ steps.release.outputs.version }}
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
+
+      - name: Checkout the exact release tag
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.release.tag_name }}
+          fetch-depth: 0
+
+      - name: Set up JDK 17 and Maven Central credentials
+        uses: actions/setup-java@17f84c3641ba7b8f6deff6309fc4c864478f5d62 # v3.14.1
+        with:
+          java-version: 17
+          distribution: zulu
+          cache: maven
+          server-id: central
+          server-username: NEXUS_USERNAME
+          server-password: NEXUS_PASSWORD
+
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@07fbbe97d97ef44336b7382563d66743297e442f # v4.5
+        with:
+          maven-version: 3.9.11
+
+      - name: Verify the release tag and version
+        id: release
+        env:
+          TAG_NAME: ${{ github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+
+          if [[ ! "$TAG_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid release tag: $TAG_NAME" >&2
+            exit 1
+          fi
+
+          git tag --points-at HEAD | grep -Fx "$TAG_NAME"
+          git merge-base --is-ancestor HEAD origin/master
+
+          version="${TAG_NAME#v}"
+          pom_version="$(mvn --batch-mode --quiet --no-transfer-progress \
+            help:evaluate -Dexpression=revision -DforceStdout)"
+
+          if [[ "$pom_version" != "$version" ]]; then
+            echo "Tag $TAG_NAME does not match POM revision $pom_version" >&2
+            exit 1
+          fi
+
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "RELEASE_VERSION=$version" >> "$GITHUB_ENV"
+
+      - name: Check whether the version is already public
+        id: publication
+        run: |
+          set -euo pipefail
+
+          pom_url="https://repo1.maven.org/maven2/com/rudderstack/sdk/java/analytics/analytics/${RELEASE_VERSION}/analytics-${RELEASE_VERSION}.pom"
+
+          if curl --fail --silent --head "$pom_url" >/dev/null; then
+            echo "already-published=true" >> "$GITHUB_OUTPUT"
+            echo "Version ${RELEASE_VERSION} is already public. The workflow will verify it without publishing again."
+          else
+            echo "already-published=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Validate publishing secrets and import the signing key
+        if: ${{ steps.publication.outputs.already-published != 'true' }}
+        env:
+          NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
+          SIGNING_PRIVATE_KEY_BASE64: ${{ secrets.SIGNING_PRIVATE_KEY_BASE64 }}
+        run: |
+          set -euo pipefail
+
+          for name in NEXUS_USERNAME NEXUS_PASSWORD SIGNING_KEY_ID SIGNING_PRIVATE_KEY_BASE64; do
+            if [[ -z "${!name:-}" ]]; then
+              echo "Missing required maven-central Environment secret: $name" >&2
+              exit 1
+            fi
+          done
+
+          gnupg_home="$RUNNER_TEMP/gnupg"
+          mkdir -m 700 "$gnupg_home"
+          echo "GNUPGHOME=$gnupg_home" >> "$GITHUB_ENV"
+          echo "GPG_KEY_ID=$SIGNING_KEY_ID" >> "$GITHUB_ENV"
+
+          printf '%s' "$SIGNING_PRIVATE_KEY_BASE64" | base64 --decode | \
+            GNUPGHOME="$gnupg_home" gpg --batch --import
+          GNUPGHOME="$gnupg_home" gpg --batch --list-secret-keys "$SIGNING_KEY_ID"
+
+      - name: Build, test, sign, and validate release artifacts
+        if: ${{ steps.publication.outputs.already-published != 'true' }}
+        run: |
+          set -euo pipefail
+          mvn --batch-mode --no-transfer-progress \
+            -Prelease \
+            -Dgpg.keyname="$GPG_KEY_ID" \
+            clean verify
+          scripts/verify-release-artifacts.sh "$RELEASE_VERSION"
+
+      - name: Publish and wait for Maven Central
+        if: ${{ steps.publication.outputs.already-published != 'true' }}
+        env:
+          NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+        run: |
+          set -euo pipefail
+          mvn --batch-mode --no-transfer-progress \
+            -Prelease \
+            -DskipTests \
+            -Dgpg.keyname="$GPG_KEY_ID" \
+            -Dcentral.autoPublish=true \
+            -Dcentral.waitUntil=published \
+            deploy
+
+      - name: Verify the public Maven Central release
+        run: scripts/verify-maven-central-release.sh "$RELEASE_VERSION"
+
+  notify-success:
+    name: Notify successful Maven Central publication
+    needs: [publish]
+    if: ${{ needs.publish.result == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      RELEASE_URL: https://github.com/${{ github.repository }}/releases/tag/${{ github.event.release.tag_name }}
+      CENTRAL_URL: https://central.sonatype.com/artifact/com.rudderstack.sdk.java.analytics/analytics/${{ needs.publish.outputs.version }}
+      TAG_NAME: ${{ github.event.release.tag_name }}
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
+
+      - name: Notify Slack channel
+        uses: slackapi/slack-github-action@dcb1066f776dd043e64d0e8ba94ca15cc7e1875d # v4.0.0
+        continue-on-error: true
+        with:
+          method: chat.postMessage
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          errors: true
+          retries: rapid
+          payload: |
+            {
+              "channel": "${{ secrets.SLACK_RELEASE_CHANNEL_ID }}",
+              "text": "Java SDK ${{ env.TAG_NAME }} is available on Maven Central: ${{ env.CENTRAL_URL }}",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": ":package: Java SDK published to Maven Central"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*<${{ env.RELEASE_URL }}|${{ env.TAG_NAME }}>* is now available on *<${{ env.CENTRAL_URL }}|Maven Central>*\nCC: <!subteam^S03SW7DM8P3>"
+                  }
+                }
+              ]
+            }
+
+  notify-failure:
+    name: Notify failed Maven Central publication
+    needs: [publish]
+    if: ${{ always() && needs.publish.result == 'failure' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      TAG_NAME: ${{ github.event.release.tag_name }}
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
+
+      - name: Notify Slack channel
+        uses: slackapi/slack-github-action@dcb1066f776dd043e64d0e8ba94ca15cc7e1875d # v4.0.0
+        continue-on-error: true
+        with:
+          method: chat.postMessage
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          errors: true
+          retries: rapid
+          payload: |
+            {
+              "channel": "${{ secrets.SLACK_RELEASE_CHANNEL_ID }}",
+              "text": "Java SDK ${{ env.TAG_NAME }} failed to publish to Maven Central: ${{ env.RUN_URL }}"
+            }

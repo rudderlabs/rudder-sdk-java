@@ -58,6 +58,10 @@ Map<String, Object> map=new HashMap<>();
 For more information on the different types of events supported by the Java SDK, refer to
 our [docs](https://www.rudderstack.com/docs/sources/event-streams/sdks/rudderstack-java-sdk/).
 
+## Maintainer documentation
+
+See the [Java SDK release process](docs/RELEASING.md) for versioning, Maven Central publication, verification, and recovery.
+
 ## Contact Us
 
 If you come across any issues while configuring or using this SDK, feel free to start a conversation on
