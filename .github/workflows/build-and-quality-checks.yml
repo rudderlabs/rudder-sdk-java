@@ -29,12 +29,10 @@ jobs:
           distribution: 'zulu' # Alternative distribution options are available.
 
       - name: Set up Maven
-        uses: stCarolas/setup-maven@07fbbe97d97ef44336b7382563d66743297e442f # v4.5
-        with:
-          maven-version: 3.8.6
+        run: mvn --version
 
       - name: Cache local Maven repository
-        uses: actions/cache@6f8efc29b200d32929f49075959781ed54ec270c # v3.5.0
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -42,7 +40,7 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Cache SonarCloud packages
-        uses: actions/cache@6f8efc29b200d32929f49075959781ed54ec270c # v3.5.0
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
@@ -52,6 +50,11 @@ jobs:
 
       - name: Unit Test and Build
         run: mvn clean install
+
+      - name: Verify published POMs
+        run: |
+          version="$(mvn --batch-mode --quiet --no-transfer-progress help:evaluate -Dexpression=revision -DforceStdout)"
+          scripts/verify-published-poms.sh "$version"
 
 #      - name: Jacoco Badge generator
 #        uses: cicirello/jacoco-badge-generator@v2
@@ -67,7 +70,7 @@ jobs:
 #          add: '*.svg'
 
       - name: Upload coverage report
-        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5 # v3.2.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: Coverage report
           path: |
@@ -79,7 +82,7 @@ jobs:
           mvn pmd:cpd
 
       - name: Upload PMD lint report
-        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5 # v3.2.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: PMD lint report
           path: |
@@ -90,15 +93,21 @@ jobs:
         run: mvn checkstyle:checkstyle
 
       - name: Upload Checklist lint report
-        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5 # v3.2.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: Checklist lint report
           path: |
             analytics-core/target/site
             analytics/target/site
 
+      - name: Set up JDK 21 for Sonar analysis
+        uses: actions/setup-java@17f84c3641ba7b8f6deff6309fc4c864478f5d62 # v3.14.1
+        with:
+          java-version: 21
+          distribution: 'zulu'
+
       - name: Sonar analysis
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=rudderlabs_rudder-sdk-java
+        run: mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=rudderlabs_rudder-sdk-java
