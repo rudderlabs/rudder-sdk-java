@@ -67,14 +67,6 @@
         <sonar.links.issue>https://github.com/rudderlabs/rudder-sdk-java/issues</sonar.links.issue>
         <!--suppress UnresolvedMavenProperty -->
         <sonar.junit.reportPaths>target/surefire-reports</sonar.junit.reportPaths>
-        <!--Path to sources-->
-        <!--    <sonar.sources>src/main</sonar.sources>-->
-        <!--    <sonar.inclusions>**/*.java</sonar.inclusions>-->
-        <!--    <sonar.exlusions>**/*Test*/**</sonar.exlusions>-->
-        <!--Path to tests-->
-        <!--    <sonar.tests>src/test</sonar.tests>-->
-        <!--        <sonar.test.inclusions>**/*.java</sonar.test.inclusions>-->
-        <!--        <sonar.test.exclusions>analytics-sample/**/*</sonar.test.exclusions>-->
         <!--Source encoding-->
         <sonar.sourceEncoding>UTF-8</sonar.sourceEncoding>
         <!--Exclusions for copy-paste detection-->
