@@ -411,7 +411,7 @@
                             <publishingServerId>central</publishingServerId>
                             <autoPublish>${central.autoPublish}</autoPublish>
                             <waitUntil>${central.waitUntil}</waitUntil>
-                            <waitMaxTime>3600</waitMaxTime>
+                            <waitMaxTime>7200</waitMaxTime>
                             <checksums>all</checksums>
                             <deploymentName>rudder-sdk-java-${revision}</deploymentName>
                         </configuration>
