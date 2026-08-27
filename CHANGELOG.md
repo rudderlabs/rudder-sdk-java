@@ -1,5 +1,24 @@
 # Changelog
 
+## [3.1.5](https://github.com/rudderlabs/rudder-sdk-java/compare/v3.1.4...v3.1.5) (2026-08-27)
+
+
+### Bug Fixes
+
+* sdk-5363 remove obsolete sonar configuration comments ([#162](https://github.com/rudderlabs/rudder-sdk-java/issues/162)) ([fb0c365](https://github.com/rudderlabs/rudder-sdk-java/commit/fb0c365ec85d483e32f3d817624e488246527ec1))
+
+
+### Miscellaneous
+
+* add new branding images to readme ([#161](https://github.com/rudderlabs/rudder-sdk-java/issues/161)) ([331a4ca](https://github.com/rudderlabs/rudder-sdk-java/commit/331a4ca0a14ae57d1d3f2d489f1f7dcba8b2979d))
+* **deps:** bump actions/checkout to 7.0.1 ([#141](https://github.com/rudderlabs/rudder-sdk-java/issues/141)) ([c9ff1c1](https://github.com/rudderlabs/rudder-sdk-java/commit/c9ff1c1d1d3bf0e79dbf20ada46b75901c305523))
+* **deps:** bump assertj-core to 3.27.7 ([#140](https://github.com/rudderlabs/rudder-sdk-java/issues/140)) ([e7e6d2d](https://github.com/rudderlabs/rudder-sdk-java/commit/e7e6d2d9c48748395e8305150eea651d815c1541))
+* **deps:** bump org.apache.maven.plugins:maven-pmd-plugin from 3.21.0 to 3.28.0 ([#127](https://github.com/rudderlabs/rudder-sdk-java/issues/127)) ([4ce47ca](https://github.com/rudderlabs/rudder-sdk-java/commit/4ce47cab33a13b91f87f535118e69634e186b8e6))
+* **deps:** bump org.apache.maven.plugins:maven-surefire-plugin from 2.22.2 to 3.5.4 ([#126](https://github.com/rudderlabs/rudder-sdk-java/issues/126)) ([26f009d](https://github.com/rudderlabs/rudder-sdk-java/commit/26f009de93f557f3ef8d61e5eb0564d467464891))
+* **deps:** bump rudderlabs/github-action-check-pr-title from 1.0.7 to 1.0.11 ([#104](https://github.com/rudderlabs/rudder-sdk-java/issues/104)) ([1a522b2](https://github.com/rudderlabs/rudder-sdk-java/commit/1a522b298103e30cb6d3ef1f7c9aa1b4440fd0e2))
+* sdk-5334 notify slack of github releases ([#152](https://github.com/rudderlabs/rudder-sdk-java/issues/152)) ([cf08002](https://github.com/rudderlabs/rudder-sdk-java/commit/cf08002ca7e3fab2f38d1dcbb868825580705f34))
+* sdk-5337 automate maven central publishing ([#154](https://github.com/rudderlabs/rudder-sdk-java/issues/154)) ([c9202b8](https://github.com/rudderlabs/rudder-sdk-java/commit/c9202b8aa953ce23401f0570f289746886cba9c7))
+
 ## [3.1.4](https://github.com/rudderlabs/rudder-sdk-java/compare/v3.1.3...v3.1.4) (2026-08-20)
 
 
