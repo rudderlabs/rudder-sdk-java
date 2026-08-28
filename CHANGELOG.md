@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.1.6](https://github.com/rudderlabs/rudder-sdk-java/compare/v3.1.5...v3.1.6) (2026-08-28)
+
+
+### Bug Fixes
+
+* sdk-5293 preserve java sdk delivery semantics ([#149](https://github.com/rudderlabs/rudder-sdk-java/issues/149)) ([c440953](https://github.com/rudderlabs/rudder-sdk-java/commit/c440953d61958720c5e870831e8d8e5864f2c099))
+* sdk-5367 increase maven central publication timeout ([#165](https://github.com/rudderlabs/rudder-sdk-java/issues/165)) ([e1ae054](https://github.com/rudderlabs/rudder-sdk-java/commit/e1ae0546b7c24a84aaa562aec8a3b097c532a567))
+
 ## [3.1.5](https://github.com/rudderlabs/rudder-sdk-java/compare/v3.1.4...v3.1.5) (2026-08-27)
 
 
