@@ -8,6 +8,9 @@ concurrency:
   group: maven-central-${{ github.event.release.tag_name }}
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
 jobs:
   publish:
     name: Build, sign, publish, and verify
