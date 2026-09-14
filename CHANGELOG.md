@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.1.7](https://github.com/rudderlabs/rudder-sdk-java/compare/v3.1.6...v3.1.7) (2026-09-11)
+
+
+### Miscellaneous
+
+* apply security best practices from step security ([#163](https://github.com/rudderlabs/rudder-sdk-java/issues/163)) ([605bd4a](https://github.com/rudderlabs/rudder-sdk-java/commit/605bd4a5fdeb37c86e1bb0de2eb47fad3223e4c1))
+* switch branding images to CDN URLs ([#170](https://github.com/rudderlabs/rudder-sdk-java/issues/170)) ([d1a5dd1](https://github.com/rudderlabs/rudder-sdk-java/commit/d1a5dd1c4b841c1fb6fac0b8a9391a1c9ac3ece2))
+* update codeowners ([#166](https://github.com/rudderlabs/rudder-sdk-java/issues/166)) ([f87f2ec](https://github.com/rudderlabs/rudder-sdk-java/commit/f87f2ec2ebd1c89f71edeb35b6ffc502e762f181))
+
 ## [3.1.6](https://github.com/rudderlabs/rudder-sdk-java/compare/v3.1.5...v3.1.6) (2026-08-28)
 
 
