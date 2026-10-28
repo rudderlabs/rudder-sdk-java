@@ -87,6 +87,28 @@ class ReleaseWorkflowTests(unittest.TestCase):
                          "${{ steps.public-verified.outcome == 'success' }}")
         self.assertIn("PUBLIC_VERIFIED", steps(workflow["jobs"]["notify-failure"])["Select failure status"][1]["run"])
 
+    def test_failure_notifications_encode_untrusted_tags_as_json(self):
+        automatic = load("publish-maven-central.yml")["jobs"]["notify-failure"]
+        failure_step = steps(automatic)["Select failure status"][1]
+        self.assertIn("jq -cn --arg message", failure_step["run"])
+        self.assertIn("$message", failure_step["run"])
+        self.assertEqual(steps(automatic)["Notify Slack channel"][1]["with"]["payload"].splitlines()[-2].strip(),
+                         '"text": ${{ steps.status.outputs.message }}')
+
+        retry = load("validate-published-maven-central.yml")["jobs"]["notify-failure"]
+        payload = steps(retry)["Notify Slack channel"][1]["with"]["payload"]
+        self.assertIn("toJSON(format(", payload)
+        self.assertIn("inputs.tag,", payload)
+        self.assertNotIn('"text": "Java SDK ${{ inputs.tag }}', payload)
+
+    def test_pr_checks_install_yaml_parser_before_offline_tests(self):
+        workflow = load("build-and-quality-checks.yml")
+        ci_steps = workflow["jobs"]["unit_test_and_build"]["steps"]
+        offline = next(step["run"] for step in ci_steps
+                       if step.get("name") == "Verify release workflow guards and ordering (offline)")
+        self.assertIn("PyYAML==6.0.3", offline)
+        self.assertLess(offline.index("pip install"), offline.index("unittest discover"))
+
     def test_retry_is_only_validation_on_master(self):
         workflow = load("validate-published-maven-central.yml")
         self.assertEqual(set(workflow[True]["workflow_dispatch"]["inputs"]), {"tag", "expected-commit"})

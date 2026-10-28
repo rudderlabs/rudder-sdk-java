@@ -144,5 +144,5 @@ jobs:
           payload: |
             {
               "channel": "${{ secrets.SLACK_RELEASE_CHANNEL_ID }}",
-              "text": "Java SDK ${{ inputs.tag }} validation-only retry did not establish release acceptance (public verification: ${{ needs.verify-public.result }}, full E2E: ${{ needs.published-e2e.result }}). No publication or unpublish was attempted: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+              "text": ${{ toJSON(format('Java SDK {0} validation-only retry did not establish release acceptance (public verification: {1}, full E2E: {2}). No publication or unpublish was attempted: https://github.com/{3}/actions/runs/{4}', inputs.tag, needs.verify-public.result, needs.published-e2e.result, github.repository, github.run_id)) }}
             }

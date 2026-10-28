@@ -219,12 +219,13 @@ jobs:
           E2E_RESULT: ${{ needs.published-e2e.result }}
         run: |
           if [[ "$PUBLIC_VERIFIED" == true ]]; then
-            echo "message=Java SDK $TAG_NAME passed exact public Maven verification but full E2E acceptance did not complete (E2E: $E2E_RESULT). No unpublish was attempted. Retry validation only: $RUN_URL" >> "$GITHUB_OUTPUT"
+            message="Java SDK $TAG_NAME passed exact public Maven verification but full E2E acceptance did not complete (E2E: $E2E_RESULT). No unpublish was attempted. Retry validation only: $RUN_URL"
           elif [[ "$PUBLICATION_CONFIRMED" == true ]]; then
-            echo "message=Java SDK $TAG_NAME publication was reported by Central, but exact public verification or full E2E acceptance did not complete (publish: $PUBLISH_RESULT, E2E: $E2E_RESULT). No unpublish was attempted. Inspect: $RUN_URL" >> "$GITHUB_OUTPUT"
+            message="Java SDK $TAG_NAME publication was reported by Central, but exact public verification or full E2E acceptance did not complete (publish: $PUBLISH_RESULT, E2E: $E2E_RESULT). No unpublish was attempted. Inspect: $RUN_URL"
           else
-            echo "message=Java SDK $TAG_NAME publication was not confirmed (publish: $PUBLISH_RESULT, E2E: $E2E_RESULT). Inspect: $RUN_URL" >> "$GITHUB_OUTPUT"
+            message="Java SDK $TAG_NAME publication was not confirmed (publish: $PUBLISH_RESULT, E2E: $E2E_RESULT). Inspect: $RUN_URL"
           fi
+          echo "message=$(jq -cn --arg message "$message" '$message')" >> "$GITHUB_OUTPUT"
 
       - name: Notify Slack channel
         uses: slackapi/slack-github-action@dcb1066f776dd043e64d0e8ba94ca15cc7e1875d # v4.0.0
@@ -237,5 +238,5 @@ jobs:
           payload: |
             {
               "channel": "${{ secrets.SLACK_RELEASE_CHANNEL_ID }}",
-              "text": "${{ steps.status.outputs.message }}"
+              "text": ${{ steps.status.outputs.message }}
             }
