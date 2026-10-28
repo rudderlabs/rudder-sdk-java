@@ -21,9 +21,6 @@ jobs:
       contents: read
     outputs:
       version: ${{ steps.release.outputs.version }}
-      commit: ${{ steps.release.outputs.commit }}
-      published: ${{ steps.publication.outputs.already-published == 'true' || steps.deployed.outcome == 'success' }}
-      public-verified: ${{ steps.public-verified.outcome == 'success' }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
@@ -33,9 +30,8 @@ jobs:
       - name: Checkout the exact release tag
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event.release.tag_name }}
-          fetch-depth: 0
           persist-credentials: false
+          fetch-depth: 0
 
       - name: Set up JDK 17 and Maven Central credentials
         uses: actions/setup-java@17f84c3641ba7b8f6deff6309fc4c864478f5d62 # v3.14.1
@@ -53,17 +49,31 @@ jobs:
         id: release
         env:
           TAG_NAME: ${{ github.event.release.tag_name }}
-          EVENT_REF: ${{ github.ref }}
-          RELEASE_DRAFT: ${{ github.event.release.draft }}
-          RELEASE_PRERELEASE: ${{ github.event.release.prerelease }}
         run: |
-          scripts/verify-release-origin.sh "$TAG_NAME" "$EVENT_REF" \
-            "$RELEASE_DRAFT" "$RELEASE_PRERELEASE"
+          set -euo pipefail
+
+          if [[ ! "$TAG_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid release tag: $TAG_NAME" >&2
+            exit 1
+          fi
+
+          git tag --points-at HEAD | grep -Fx "$TAG_NAME"
+          git merge-base --is-ancestor HEAD origin/master
+
+          version="${TAG_NAME#v}"
+          pom_version="$(mvn --batch-mode --quiet --no-transfer-progress \
+            help:evaluate -Dexpression=revision -DforceStdout)"
+
+          if [[ "$pom_version" != "$version" ]]; then
+            echo "Tag $TAG_NAME does not match POM revision $pom_version" >&2
+            exit 1
+          fi
+
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "RELEASE_VERSION=$version" >> "$GITHUB_ENV"
 
       - name: Check whether the version is already public
         id: publication
-        env:
-          RELEASE_VERSION: ${{ steps.release.outputs.version }}
         run: |
           set -euo pipefail
 
@@ -104,8 +114,6 @@ jobs:
 
       - name: Build, test, sign, and validate release artifacts
         if: ${{ steps.publication.outputs.already-published != 'true' }}
-        env:
-          RELEASE_VERSION: ${{ steps.release.outputs.version }}
         run: |
           set -euo pipefail
           mvn --batch-mode --no-transfer-progress \
@@ -115,7 +123,6 @@ jobs:
           scripts/verify-release-artifacts.sh "$RELEASE_VERSION"
 
       - name: Publish and wait for Maven Central
-        id: deployed
         if: ${{ steps.publication.outputs.already-published != 'true' }}
         env:
           NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
@@ -131,24 +138,21 @@ jobs:
             deploy
 
       - name: Verify the public Maven Central release
-        id: public-verified
-        env:
-          RELEASE_VERSION: ${{ steps.release.outputs.version }}
         run: scripts/verify-maven-central-release.sh "$RELEASE_VERSION"
 
   published-e2e:
-    name: Accept exact published package with full E2E
-    needs: [publish]
-    if: ${{ needs.publish.result == 'success' }}
-    uses: ./.github/workflows/published-package-e2e.yml
+    name: Accept exact published package
+    needs: publish
+    permissions:
+      contents: read
+    uses: ./.github/workflows/published-sdk-e2e.yml
     with:
-      version: ${{ needs.publish.outputs.version }}
-      source-sha: ${{ needs.publish.outputs.commit }}
+      package-version: ${{ needs.publish.outputs.version }}
     secrets:
       RELEASE_PRIVATE_KEY: ${{ secrets.RELEASE_PRIVATE_KEY }}
 
   notify-success:
-    name: Notify publication and full E2E acceptance
+    name: Notify successful Maven Central publication
     needs: [publish, published-e2e]
     if: ${{ needs.publish.result == 'success' && needs.published-e2e.result == 'success' }}
     runs-on: ubuntu-latest
@@ -175,57 +179,40 @@ jobs:
           payload: |
             {
               "channel": "${{ secrets.SLACK_RELEASE_CHANNEL_ID }}",
-              "text": "Java SDK ${{ env.TAG_NAME }} is public on Maven Central and passed full published-package E2E: ${{ env.CENTRAL_URL }}",
+              "text": "Java SDK ${{ env.TAG_NAME }} is available on Maven Central: ${{ env.CENTRAL_URL }}",
               "blocks": [
                 {
                   "type": "header",
                   "text": {
                     "type": "plain_text",
-                    "text": ":package: Java SDK release accepted"
+                    "text": ":package: Java SDK published to Maven Central"
                   }
                 },
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*<${{ env.RELEASE_URL }}|${{ env.TAG_NAME }}>* is public on *<${{ env.CENTRAL_URL }}|Maven Central>* and passed full published-package E2E delivery and cleanup.\nCC: <!subteam^S03SW7DM8P3>"
+                    "text": "*<${{ env.RELEASE_URL }}|${{ env.TAG_NAME }}>* is now available on *<${{ env.CENTRAL_URL }}|Maven Central>*\nCC: <!subteam^S03SW7DM8P3>"
                   }
                 }
               ]
             }
 
   notify-failure:
-    name: Notify incomplete publication or E2E acceptance
+    name: Notify failed Maven Central publication
     needs: [publish, published-e2e]
-    if: ${{ always() && (needs.publish.result != 'success' || needs.published-e2e.result != 'success') }}
+    if: ${{ always() && (needs.publish.result == 'failure' || (needs.publish.result == 'success' && needs.published-e2e.result != 'success')) }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
     env:
       RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
       TAG_NAME: ${{ github.event.release.tag_name }}
-      PUBLICATION_CONFIRMED: ${{ needs.publish.outputs.published }}
-      PUBLIC_VERIFIED: ${{ needs.publish.outputs.public-verified }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
         with:
           egress-policy: audit
-
-      - name: Select failure status
-        id: status
-        env:
-          PUBLISH_RESULT: ${{ needs.publish.result }}
-          E2E_RESULT: ${{ needs.published-e2e.result }}
-        run: |
-          if [[ "$PUBLIC_VERIFIED" == true ]]; then
-            message="Java SDK $TAG_NAME passed exact public Maven verification but full E2E acceptance did not complete (E2E: $E2E_RESULT). No unpublish was attempted. Retry validation only: $RUN_URL"
-          elif [[ "$PUBLICATION_CONFIRMED" == true ]]; then
-            message="Java SDK $TAG_NAME publication was reported by Central, but exact public verification or full E2E acceptance did not complete (publish: $PUBLISH_RESULT, E2E: $E2E_RESULT). No unpublish was attempted. Inspect: $RUN_URL"
-          else
-            message="Java SDK $TAG_NAME publication was not confirmed (publish: $PUBLISH_RESULT, E2E: $E2E_RESULT). Inspect: $RUN_URL"
-          fi
-          echo "message=$(jq -cn --arg message "$message" '$message')" >> "$GITHUB_OUTPUT"
 
       - name: Notify Slack channel
         uses: slackapi/slack-github-action@dcb1066f776dd043e64d0e8ba94ca15cc7e1875d # v4.0.0
@@ -238,5 +225,5 @@ jobs:
           payload: |
             {
               "channel": "${{ secrets.SLACK_RELEASE_CHANNEL_ID }}",
-              "text": ${{ steps.status.outputs.message }}
+              "text": "Java SDK ${{ env.TAG_NAME }} release incomplete. Publish: ${{ needs.publish.result }}. Published-package E2E: ${{ needs.published-e2e.result }}. A published package remains published. ${{ env.RUN_URL }}"
             }
