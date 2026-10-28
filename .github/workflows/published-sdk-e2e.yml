@@ -17,16 +17,21 @@ permissions:
   contents: read
 
 # Do not cancel live validation; the central workflow owns locking and cleanup.
+concurrency:
+  group: published-java-e2e-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   validate:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     timeout-minutes: 55
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
         with:
           egress-policy: audit
       - name: Require an exact release tag
+        id: release
         env:
           PACKAGE_VERSION: ${{ inputs.package-version || github.ref_name }}
           RELEASE_TAG: ${{ github.event.release.tag_name || github.ref_name }}
@@ -36,15 +41,35 @@ jobs:
             echo 'Published validation only accepts release events or manual retries.' >&2
             exit 1
           fi
-          if [[ "$GITHUB_REF_TYPE" != tag ]] ||
+          if [[ "$GITHUB_REF" != "refs/tags/$RELEASE_TAG" ]] ||
              [[ ! "$RELEASE_TAG" =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]] ||
              [[ "${PACKAGE_VERSION#v}" != "${RELEASE_TAG#v}" ]]; then
             echo 'Select the existing stable release tag that matches the exact package version.' >&2
             exit 1
           fi
+          echo "version=${RELEASE_TAG#v}" >> "$GITHUB_OUTPUT"
+      - name: Check out the exact release tag
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Confirm the event commit and published release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$(git rev-parse HEAD)" == "$GITHUB_SHA" ]]
+          git merge-base --is-ancestor HEAD origin/master
+          release_json="$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/$RELEASE_TAG")"
+          jq -e --arg tag "$RELEASE_TAG" \
+            '.tag_name == $tag and .draft == false and .prerelease == false and .published_at != null' \
+            <<< "$release_json" >/dev/null
       - name: Create a central validation token
         id: token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
           client-id: ${{ vars.RELEASE_APP_CLIENT_ID }}
           private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
@@ -53,8 +78,8 @@ jobs:
           permission-actions: write
       - name: Validate the exact public package, delivery, and cleanup
         # SDK-5962. Merge only after the shared action and central published mode are reviewed.
-        uses: rudderlabs/github-action-sdk-e2e@855d3e174e917aab71b93a862c7e74592904d10e
+        uses: rudderlabs/github-action-sdk-e2e@855d3e174e917aab71b93a862c7e74592904d10e # SDK-5962 PR #5
         with:
           token: ${{ steps.token.outputs.token }}
-          package-version: ${{ inputs.package-version || github.ref_name }}
+          package-version: ${{ steps.release.outputs.version }}
           suite: full
