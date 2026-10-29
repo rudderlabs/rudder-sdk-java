@@ -2,6 +2,7 @@
 
 import os
 import pathlib
+import shutil
 import subprocess
 import tempfile
 import unittest
@@ -33,8 +34,7 @@ class ReleaseWorkflowTests(unittest.TestCase):
         self.assertFalse(release["concurrency"]["cancel-in-progress"])
         publish = release["jobs"]["publish"]
         s = steps(publish)
-        self.assertEqual(s["Checkout the exact release tag"][1]["with"]["ref"],
-                         "${{ github.event.release.tag_name }}")
+        self.assertNotIn("ref", s["Checkout the release-event commit"][1]["with"])
         guard = s["Verify the release tag and version"][1]
         for field in ("github.ref", "github.sha", "github.event.release.draft",
                       "github.event.release.prerelease"):
@@ -59,6 +59,7 @@ class ReleaseWorkflowTests(unittest.TestCase):
         notify = jobs["notify-release"]
         self.assertEqual(notify["needs"], ["publish", "published-e2e"])
         self.assertIn("always()", notify["if"])
+        self.assertIn("github.run_attempt == '1'", notify["if"])
         s = steps(notify)
         status = s["Prepare one final status and its details"][1]["run"]
         self.assertIn('"$PUBLISH_RESULT" == success && "$PUBLIC_VERIFIED" == true && "$E2E_RESULT" == success', status)
@@ -71,13 +72,16 @@ class ReleaseWorkflowTests(unittest.TestCase):
         reply = s["Post non-broadcast detail reply"][1]
         for step in (root, reply):
             self.assertEqual(step["with"]["token"], "${{ secrets.SLACK_BOT_TOKEN }}")
-            self.assertIn("secrets.SLACK_RELEASE_CHANNEL_ID", step["with"]["payload"])
+            self.assertIn("toJSON(env.SLACK_RELEASE_CHANNEL_ID)", step["with"]["payload"])
             self.assertIn('"unfurl_links": false', step["with"]["payload"])
             self.assertIn('"unfurl_media": false', step["with"]["payload"])
         self.assertEqual(root["uses"], reply["uses"])
-        self.assertIn("fromJSON(steps.root.outputs.response).ts", reply["with"]["payload"])
+        self.assertIn("steps.root.outputs.ts", reply["with"]["payload"])
+        self.assertIn("steps.root.outputs.ok == 'true'", reply["if"])
+        self.assertEqual(notify["env"]["SLACK_RELEASE_CHANNEL_ID"], "${{ secrets.SLACK_RELEASE_CHANNEL_ID }}")
         self.assertIn('"reply_broadcast": false', reply["with"]["payload"])
 
+    @unittest.skipUnless(shutil.which("bash"), "Bash is required for workflow script tests")
     def test_final_status_words_follow_acceptance_and_upload_state(self):
         run = steps(workflow("publish-maven-central.yml")["jobs"]["notify-release"])[
             "Prepare one final status and its details"][1]["run"]
@@ -104,24 +108,56 @@ class ReleaseWorkflowTests(unittest.TestCase):
                         "UPLOAD_CONFIRMED": upload,
                         "PUBLIC_VERIFIED": public,
                         "E2E_RESULT": e2e,
+                        "CENTRAL_RUN_URL": "https://example.test/central-run",
+                        "GITHUB_STEP_SUMMARY": str(pathlib.Path(directory) / "summary"),
                     }
                     subprocess.run(["bash", "-e", "-c", run], env=env, check=True)
                     message = output.read_text()
                     self.assertIn(f"Java SDK v1.2.3 (2026-10-28): {expected}", message)
                     self.assertIn("Public registry verification:", message)
                     self.assertIn("Full E2E delivery and cleanup:", message)
+                    self.assertIn("https://example.test/central-run", message)
+                    self.assertIn(expected, (pathlib.Path(directory) / "summary").read_text())
 
     def test_retry_dispatch_is_exact_and_cannot_publish_or_announce(self):
         retry = workflow("published-sdk-e2e.yml")
         self.assertIn("workflow_dispatch", retry[True])
-        self.assertFalse(retry["concurrency"]["cancel-in-progress"])
+        self.assertNotIn("concurrency", retry)
         job = retry["jobs"]["validate"]
         self.assertNotIn("steps", job)
         self.assertRegex(job["uses"], r"^rudderlabs/github-action-sdk-e2e/\.github/workflows/published-sdk-e2e\.yml@[0-9a-f]{40}$")
+        self.assertTrue(job["uses"].endswith("@b6de40cc65abe8ee6c6593aac1787aea746b671f"))
         self.assertEqual(job["with"]["package-version"], "${{ inputs.package-version || github.ref_name }}")
         self.assertEqual(job["secrets"], {"RELEASE_PRIVATE_KEY": "${{ secrets.RELEASE_PRIVATE_KEY }}"})
         self.assertNotIn("pull_request", str(retry[True]))
         self.assertNotRegex(str(retry), r"NEXUS_|SIGNING_|central\.autoPublish|\bdeploy\b|SLACK_BOT_TOKEN")
+
+    @unittest.skipUnless(shutil.which("bash"), "Bash is required for workflow script tests")
+    def test_stable_tag_guard_rejects_versions_the_shared_workflow_cannot_accept(self):
+        run = steps(workflow("publish-maven-central.yml")["jobs"]["publish"])[
+            "Verify the release tag and version"][1]["run"]
+        for tag in ("v01.2.3", "v1.02.3", "v1.2.03", "v1.2.3-rc.1", "v1.2.3.post1"):
+            result = subprocess.run(["bash", "-e", "-c", run],
+                                    env={**os.environ, "TAG_NAME": tag},
+                                    text=True, capture_output=True)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("Invalid release tag", result.stderr)
+
+    @unittest.skipUnless(shutil.which("bash"), "Bash is required for workflow script tests")
+    def test_notification_requires_confirmed_root_and_reply(self):
+        run = steps(workflow("publish-maven-central.yml")["jobs"]["notify-release"])[
+            "Require confirmed release notification"][1]["run"]
+        for root, ts, reply, accepted in (("true", "123.456", "true", True),
+                                          ("false", "", "false", False),
+                                          ("true", "", "true", False),
+                                          ("true", "invalid", "true", False),
+                                          ("true", "123.456", "false", False)):
+            with tempfile.TemporaryDirectory() as directory:
+                result = subprocess.run(["bash", "-e", "-c", run],
+                                        env={**os.environ, "ROOT_OK": root, "ROOT_TS": ts,
+                                             "REPLY_OK": reply, "GITHUB_STEP_SUMMARY": str(pathlib.Path(directory) / "summary")},
+                                        capture_output=True, text=True)
+                self.assertEqual(result.returncode == 0, accepted)
 
 
 if __name__ == "__main__":
