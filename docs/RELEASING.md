@@ -35,7 +35,8 @@ The Maven Central workflow then:
 8. Uploads through Sonatype's Central Publishing Maven Plugin.
 9. Waits until Central reports `PUBLISHED`.
 10. Resolves the public SDK and its dependencies from a clean Maven cache.
-11. Sends the final Maven Central result to the release Slack channel.
+11. Runs full published-package E2E against the exact verified version and release commit.
+12. Posts one final release status to Slack, with links and check results in a non-broadcast thread reply.
 
 ## Verify a release
 
@@ -53,7 +54,7 @@ The public POM project and parent version elements must contain concrete version
 
 - If publication did not start, fix the workflow or build and rerun the failed job.
 - If Central rejected the deployment, inspect the validation errors before retrying.
-- If Central published the version but public verification failed, rerun the workflow. The workflow skips duplicate publication and repeats public verification.
+- If Central published the version but public verification or full E2E failed, use the validation-only retry at the same release tag. Do not rerun the upload path.
 - Never move or recreate a published version tag.
 - Never attempt to replace a published Maven Central version. Publish a new patch version instead.
 
@@ -67,3 +68,7 @@ After rotation, verify that:
 - The private key matches `SIGNING_KEY_ID`.
 - The private key can sign without interactive input.
 - The public key remains available to Maven Central signature validation.
+
+## Published-package E2E acceptance
+
+Release completion also requires the exact public package to pass full E2E delivery and cleanup checks. See [release acceptance and validation-only retries](../.github/RELEASE_E2E.md). Hosted acceptance remains pending the next normal release.
