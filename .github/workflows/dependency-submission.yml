@@ -1,0 +1,88 @@
+name: Maven Dependency Submission
+
+on:
+  push:
+    branches: [master]
+    paths: ['**/pom.xml', '.mvn/**', 'mvnw*', '.github/workflows/dependency-submission.yml']
+  pull_request:
+    paths: ['**/pom.xml', '.mvn/**', 'mvnw*', '.github/workflows/dependency-submission.yml']
+  schedule:
+    - cron: '31 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-resolution:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: step-security/harden-runner@fa2e9d605c4eeb9fcad4c99c224cee0c6c7f3594 # v2.16.0
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@17f84c3641ba7b8f6deff6309fc4c864478f5d62 # v3.14.1
+        with:
+          java-version: '17'
+          distribution: zulu
+      # Use the same resolver as the submission action, across the parent reactor.
+      - name: Resolve all module graphs
+        run: >-
+          mvn -B -ntp com.github.ferstl:depgraph-maven-plugin:4.0.3:graph
+          -DgraphFormat=json -DoutputFileName=dependency-graph.json
+      - name: Check module coverage
+        shell: python
+        run: |
+          import json
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+
+          ns = {'m': 'http://maven.apache.org/POM/4.0.0'}
+          modules = [m.text for m in ET.parse('pom.xml').findall('m:modules/m:module', ns)]
+          if not modules:
+              raise SystemExit('No reactor modules found')
+          for module in modules:
+              graph = json.loads((Path(module) / 'target/dependency-graph.json').read_text())
+              external = [a for a in graph['artifacts'] if a['groupId'] != 'com.rudderstack.sdk.java.analytics']
+              if not external or not graph['dependencies']:
+                  raise SystemExit(f'Missing resolved dependencies for {module}')
+              print(f'{module}: {len(external)} external Maven entries')
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: maven-dependency-graphs
+          path: '**/target/dependency-graph.json'
+          if-no-files-found: error
+          retention-days: 7
+
+  submit-dependencies:
+    needs: validate-resolution
+    # The upstream action resolves and submits together. Run it only on trusted master.
+    if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: step-security/harden-runner@fa2e9d605c4eeb9fcad4c99c224cee0c6c7f3594 # v2.16.0
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@17f84c3641ba7b8f6deff6309fc4c864478f5d62 # v3.14.1
+        with:
+          java-version: '17'
+          distribution: zulu
+      - name: Submit resolved reactor dependencies
+        uses: advanced-security/maven-dependency-submission-action@a64327a7329c9939cf675e458452febe1894a70c # v6.0.1
+        with:
+          directory: .
+          maven-args: -ntp
+          correlator: maven-reactor
