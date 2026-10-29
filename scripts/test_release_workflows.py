@@ -116,24 +116,10 @@ class ReleaseWorkflowTests(unittest.TestCase):
         self.assertIn("workflow_dispatch", retry[True])
         self.assertFalse(retry["concurrency"]["cancel-in-progress"])
         job = retry["jobs"]["validate"]
-        self.assertEqual(job["runs-on"], "ubuntu-latest")
-        s = steps(job)
-        self.assertIn('"$GITHUB_REF" != "refs/tags/$RELEASE_TAG"',
-                      s["Require an exact release tag"][1]["run"])
-        self.assertEqual(s["Check out the exact release tag"][1]["with"]["ref"],
-                         "${{ github.ref_name }}")
-        provenance = s["Confirm the event commit and published release"][1]["run"]
-        self.assertIn('"$(git rev-parse HEAD)" == "$GITHUB_SHA"', provenance)
-        self.assertIn(".draft == false and .prerelease == false", provenance)
-        self.assertIn(".published_at != null", provenance)
-        self.assertLess(s["Confirm the event commit and published release"][0],
-                        s["Create a central validation token"][0])
-        token = s["Create a central validation token"][1]["with"]
-        self.assertEqual(token["repositories"], "rudder-sdk-e2e-tests")
-        self.assertEqual(token["permission-actions"], "write")
-        action = s["Validate the exact public package, delivery, and cleanup"][1]
-        self.assertEqual(action["with"]["package-version"], "${{ steps.release.outputs.version }}")
-        self.assertEqual(action["with"]["suite"], "full")
+        self.assertNotIn("steps", job)
+        self.assertRegex(job["uses"], r"^rudderlabs/github-action-sdk-e2e/\.github/workflows/published-sdk-e2e\.yml@[0-9a-f]{40}$")
+        self.assertEqual(job["with"]["package-version"], "${{ inputs.package-version || github.ref_name }}")
+        self.assertEqual(job["secrets"], {"RELEASE_PRIVATE_KEY": "${{ secrets.RELEASE_PRIVATE_KEY }}"})
         self.assertNotIn("pull_request", str(retry[True]))
         self.assertNotRegex(str(retry), r"NEXUS_|SIGNING_|central\.autoPublish|\bdeploy\b|SLACK_BOT_TOKEN")
 
