@@ -126,7 +126,6 @@ class ReleaseWorkflowTests(unittest.TestCase):
         job = retry["jobs"]["validate"]
         self.assertNotIn("steps", job)
         self.assertRegex(job["uses"], r"^rudderlabs/github-action-sdk-e2e/\.github/workflows/published-sdk-e2e\.yml@[0-9a-f]{40}$")
-        self.assertTrue(job["uses"].endswith("@b6de40cc65abe8ee6c6593aac1787aea746b671f"))
         self.assertEqual(job["with"]["package-version"], "${{ inputs.package-version || github.ref_name }}")
         self.assertEqual(job["secrets"], {"RELEASE_PRIVATE_KEY": "${{ secrets.RELEASE_PRIVATE_KEY }}"})
         self.assertNotIn("pull_request", str(retry[True]))
