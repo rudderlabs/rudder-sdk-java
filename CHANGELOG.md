@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.1.8](https://github.com/rudderlabs/rudder-sdk-java/compare/v3.1.7...v3.1.8) (2026-10-30)
+
+
+### Miscellaneous
+
+* **deps:** apply security-first dependabot policy ([#173](https://github.com/rudderlabs/rudder-sdk-java/issues/173)) ([33e6c96](https://github.com/rudderlabs/rudder-sdk-java/commit/33e6c96364da1b468af6630a5f80295f36637182))
+* move the PR title check to check-pr-title v2.0.3 ([#175](https://github.com/rudderlabs/rudder-sdk-java/issues/175)) ([f068ce5](https://github.com/rudderlabs/rudder-sdk-java/commit/f068ce53bebba9b4c7aa9fe0bfa7d39828a62bd4))
+* run full live e2e on release prs ([#179](https://github.com/rudderlabs/rudder-sdk-java/issues/179)) ([560e1ea](https://github.com/rudderlabs/rudder-sdk-java/commit/560e1ea506b85c35582014eba275122cd9d8af1a))
+* validate the exact published java package ([#176](https://github.com/rudderlabs/rudder-sdk-java/issues/176)) ([8257fba](https://github.com/rudderlabs/rudder-sdk-java/commit/8257fba8e99ad9323fdb1ba9c87cad593c89990c))
+* verify published e2e with per-run cleanup ([#178](https://github.com/rudderlabs/rudder-sdk-java/issues/178)) ([ede1e03](https://github.com/rudderlabs/rudder-sdk-java/commit/ede1e03d47d5a493ae024e665db7d8a374547408))
+
 ## [3.1.7](https://github.com/rudderlabs/rudder-sdk-java/compare/v3.1.6...v3.1.7) (2026-09-11)
 
 
