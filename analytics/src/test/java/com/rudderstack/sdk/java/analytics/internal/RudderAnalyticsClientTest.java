@@ -704,6 +704,44 @@ public class RudderAnalyticsClientTest {
     assertThat(msgActualSize).isLessThanOrEqualTo(sizeLimit);
   }
 
+  @Test
+  public void oversizedMessageDoesNotInterruptSubsequentEnqueue() throws InterruptedException {
+    AnalyticsClient client = newClient();
+    Map<String, String> properties = new HashMap<String, String>();
+    properties.put("property1", generateDataOfSize(1024 * 33));
+    TrackMessage oversized =
+        TrackMessage.builder("Oversized").userId("foo").properties(properties).build();
+    TrackMessage valid = TrackMessage.builder("Valid").userId("foo").build();
+
+    try {
+      client.enqueue(oversized);
+      client.enqueue(valid);
+
+      assertThat(Thread.currentThread().isInterrupted()).isFalse();
+      verify(messageQueue, never()).put(oversized);
+      verify(messageQueue).put(valid);
+    } finally {
+      Thread.interrupted();
+      client.shutdown();
+    }
+  }
+
+  @Test
+  public void enqueuePreservesRealInterruption() {
+    AnalyticsClient client = newClient();
+    TrackMessage message = TrackMessage.builder("Valid").userId("foo").build();
+
+    try {
+      Thread.currentThread().interrupt();
+      client.enqueue(message);
+
+      assertThat(Thread.currentThread().isInterrupted()).isTrue();
+    } finally {
+      Thread.interrupted();
+      client.shutdown();
+    }
+  }
+
  /* * Individual Size check sad path regular chars (over the limit)*/
   @Test
   public void checkForIndividualMessageSizeOverLimit() {
