@@ -11,6 +11,11 @@
   <artifactId>analytics</artifactId>
   <name>Analytics for Java</name>
 
+  <properties>
+    <!-- Measured 86.6% line coverage on 2026-11-23. Raise when coverage improves. -->
+    <jacoco.minLineCoverage>0.84</jacoco.minLineCoverage>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>com.rudderstack.sdk.java.analytics</groupId>
