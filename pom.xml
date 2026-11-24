@@ -30,6 +30,8 @@
         <revision>3.1.7</revision> <!-- x-release-please-released-version -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>8</java.version>
+        <!-- Minimum line coverage ratio per module. Modules set their own value. -->
+        <jacoco.minLineCoverage>0.00</jacoco.minLineCoverage>
         <kotlin.version>1.7.20</kotlin.version>
         <spotless.version>2.27.2</spotless.version>
         <retrofit.version>2.9.0</retrofit.version>
@@ -391,6 +393,28 @@
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
+                    </execution>
+                    <!-- Fails the build when line coverage is below jacoco.minLineCoverage.
+                         Modules without test execution data are skipped. -->
+                    <execution>
+                        <id>jacoco-check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>${jacoco.minLineCoverage}</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
