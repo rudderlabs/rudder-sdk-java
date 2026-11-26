@@ -203,6 +203,8 @@ public class AnalyticsClient {
         } else {
           log.print(
               ERROR, "Message was above individual limit. MessageId: %s", message.messageId());
+          notifyFailure(
+              message, new IllegalArgumentException("Message exceeds " + MSG_MAX_SIZE + " bytes"));
         }
       } else {
         messageQueue.put(message);
@@ -210,6 +212,12 @@ public class AnalyticsClient {
     } catch (InterruptedException e) {
       log.print(ERROR, e, "Interrupted while adding message %s.", message);
       Thread.currentThread().interrupt();
+    }
+  }
+
+  private void notifyFailure(Message message, Exception exception) {
+    for (Callback callback : callbacks) {
+      callback.failure(message, exception);
     }
   }
 
@@ -376,9 +384,7 @@ public class AnalyticsClient {
 
     private void notifyCallbacksWithException(Batch batch, Exception exception) {
       for (Message message : batch.batch()) {
-        for (Callback callback : client.callbacks) {
-          callback.failure(message, exception);
-        }
+        client.notifyFailure(message, exception);
       }
     }
 

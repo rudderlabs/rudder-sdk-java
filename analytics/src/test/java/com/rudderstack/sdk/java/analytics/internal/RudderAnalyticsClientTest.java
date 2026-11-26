@@ -720,6 +720,7 @@ public class RudderAnalyticsClientTest {
       assertThat(Thread.currentThread().isInterrupted()).isFalse();
       verify(messageQueue, never()).put(oversized);
       verify(messageQueue).put(valid);
+      verify(callback).failure(eq(oversized), any(IllegalArgumentException.class));
     } finally {
       Thread.interrupted();
       client.shutdown();
