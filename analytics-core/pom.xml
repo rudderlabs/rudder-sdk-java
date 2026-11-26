@@ -13,6 +13,11 @@
     <artifactId>analytics-core</artifactId>
     <name>Analytics for Java (Core)</name>
 
+    <properties>
+        <!-- Measured 58.8% line coverage on 2026-11-23. Raise when coverage improves. -->
+        <jacoco.minLineCoverage>0.56</jacoco.minLineCoverage>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.squareup.retrofit2</groupId>
