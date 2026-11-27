@@ -70,7 +70,7 @@ public class AnalyticsClient {
   private final ExecutorService looperExecutor;
   private final ScheduledExecutorService flushScheduler;
   private final AtomicBoolean isShutDown;
-  private volatile Future<?> looperFuture;
+  private final Future<?> looperFuture;
 
   public static AnalyticsClient create(
       HttpUrl uploadUrl,
@@ -126,7 +126,7 @@ public class AnalyticsClient {
 
     this.currentQueueSizeInBytes = 0;
 
-    if (!isShutDown.get()) looperFuture = looperExecutor.submit(new Looper());
+    looperFuture = isShutDown.get() ? null : looperExecutor.submit(new Looper());
 
     flushScheduler = Executors.newScheduledThreadPool(1, threadFactory);
     flushScheduler.scheduleAtFixedRate(
@@ -203,6 +203,7 @@ public class AnalyticsClient {
         } else {
           log.print(
               ERROR, "Message was above individual limit. MessageId: %s", message.messageId());
+          notifyOversizedMessage(message);
         }
       } else {
         messageQueue.put(message);
@@ -210,6 +211,18 @@ public class AnalyticsClient {
     } catch (InterruptedException e) {
       log.print(ERROR, e, "Interrupted while adding message %s.", message);
       Thread.currentThread().interrupt();
+    }
+  }
+
+  private void notifyOversizedMessage(Message message) {
+    IllegalArgumentException failure =
+        new IllegalArgumentException("Message exceeds " + MSG_MAX_SIZE + " bytes");
+    for (Callback callback : callbacks) {
+      try {
+        callback.failure(message, failure);
+      } catch (RuntimeException exception) {
+        log.print(ERROR, exception, "Failure callback threw for message %s.", message.messageId());
+      }
     }
   }
 
