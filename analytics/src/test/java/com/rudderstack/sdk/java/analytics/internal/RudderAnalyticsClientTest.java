@@ -712,6 +712,9 @@ public class RudderAnalyticsClientTest {
     TrackMessage oversized =
         TrackMessage.builder("Oversized").userId("foo").properties(properties).build();
     TrackMessage valid = TrackMessage.builder("Valid").userId("foo").build();
+    Mockito.doThrow(new IllegalStateException("callback error"))
+        .when(callback)
+        .failure(eq(oversized), any(IllegalArgumentException.class));
 
     try {
       client.enqueue(oversized);
