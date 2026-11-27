@@ -1,5 +1,25 @@
 # Changelog
 
+## [3.1.8](https://github.com/rudderlabs/rudder-sdk-java/compare/v3.1.7...v3.1.8) (2026-11-27)
+
+
+### Bug Fixes
+
+* avoid interrupting callers when rejecting oversized messages ([#183](https://github.com/rudderlabs/rudder-sdk-java/issues/183)) ([ebf54b3](https://github.com/rudderlabs/rudder-sdk-java/commit/ebf54b391b4386a7ac960f8f1fd0c2505304e940))
+* **deps:** update guava to patched version ([#182](https://github.com/rudderlabs/rudder-sdk-java/issues/182)) ([75631e3](https://github.com/rudderlabs/rudder-sdk-java/commit/75631e3f21ef378e53dd2bbe8cefd9586dc7df06))
+* notify callbacks when rejecting oversized messages ([#186](https://github.com/rudderlabs/rudder-sdk-java/issues/186)) ([d72f811](https://github.com/rudderlabs/rudder-sdk-java/commit/d72f811be083ad95b822040e3f0d129bc0a0bb52))
+
+
+### Miscellaneous
+
+* **deps:** apply security-first dependabot policy ([#173](https://github.com/rudderlabs/rudder-sdk-java/issues/173)) ([33e6c96](https://github.com/rudderlabs/rudder-sdk-java/commit/33e6c96364da1b468af6630a5f80295f36637182))
+* enforce a minimum unit test coverage ([#184](https://github.com/rudderlabs/rudder-sdk-java/issues/184)) ([5e2ebf1](https://github.com/rudderlabs/rudder-sdk-java/commit/5e2ebf18e6e6eadad57e02e9e7ec7d4c9371cfe2))
+* move the PR title check to check-pr-title v2.0.3 ([#175](https://github.com/rudderlabs/rudder-sdk-java/issues/175)) ([f068ce5](https://github.com/rudderlabs/rudder-sdk-java/commit/f068ce53bebba9b4c7aa9fe0bfa7d39828a62bd4))
+* run full live e2e on release prs ([#179](https://github.com/rudderlabs/rudder-sdk-java/issues/179)) ([560e1ea](https://github.com/rudderlabs/rudder-sdk-java/commit/560e1ea506b85c35582014eba275122cd9d8af1a))
+* update e2e action pin ([#185](https://github.com/rudderlabs/rudder-sdk-java/issues/185)) ([1bb3cf6](https://github.com/rudderlabs/rudder-sdk-java/commit/1bb3cf6525889f64ccdb70a6fe50f26fdb8e9820))
+* validate the exact published java package ([#176](https://github.com/rudderlabs/rudder-sdk-java/issues/176)) ([8257fba](https://github.com/rudderlabs/rudder-sdk-java/commit/8257fba8e99ad9323fdb1ba9c87cad593c89990c))
+* verify published e2e with per-run cleanup ([#178](https://github.com/rudderlabs/rudder-sdk-java/issues/178)) ([ede1e03](https://github.com/rudderlabs/rudder-sdk-java/commit/ede1e03d47d5a493ae024e665db7d8a374547408))
+
 ## [3.1.7](https://github.com/rudderlabs/rudder-sdk-java/compare/v3.1.6...v3.1.7) (2026-09-11)
 
 
