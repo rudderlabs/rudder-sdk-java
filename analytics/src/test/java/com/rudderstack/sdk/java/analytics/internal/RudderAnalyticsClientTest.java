@@ -723,7 +723,11 @@ public class RudderAnalyticsClientTest {
       assertThat(Thread.currentThread().isInterrupted()).isFalse();
       verify(messageQueue, never()).put(oversized);
       verify(messageQueue).put(valid);
-      verify(callback).failure(eq(oversized), any(IllegalArgumentException.class));
+      ArgumentCaptor<Throwable> failure = ArgumentCaptor.forClass(Throwable.class);
+      verify(callback).failure(eq(oversized), failure.capture());
+      assertThat(failure.getValue())
+          .isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("32768 bytes");
     } finally {
       Thread.interrupted();
       client.shutdown();
